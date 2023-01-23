@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/src/OpenFrp.Launcher/bin/Debug/net462
+/src/OpenFrp.Launcher/obj
+/src/.vs/OpenFrp
