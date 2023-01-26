@@ -7,9 +7,32 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+
+
                 <ui:XamlControlsResources />
                 <ui:ThemeResources />
+                <ResourceDictionary Source="/ModernWpf.Controls;component/ToggleSwitch/ToggleSwitch.xaml" />
+
+
+                <ResourceDictionary Source="/ModernWpf;component/DesignTime/SystemColors.xaml" />
+                <ResourceDictionary Source="/ModernWpf;component/ThemeResources/Light.xaml" />
+                <ResourceDictionary Source="/ModernWpf;component/ControlsResources.xaml" />
+
+                <ResourceDictionary Source="./Controls/ViewPage.xaml" />
+                <ResourceDictionary Source="./Controls/SettingItem.xaml" />
+                <ResourceDictionary Source="./Controls/ElementLoader.xaml" />
+
+
+
             </ResourceDictionary.MergedDictionaries>
+
+            <DynamicResource x:Key="DescriptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+
+            <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
+
+
+
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

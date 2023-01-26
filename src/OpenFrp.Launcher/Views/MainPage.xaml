@@ -1,0 +1,416 @@
+﻿
+<!--
+    Created on 2023/1/21
+    Author: AYue (https://github.com/Yue-cn)
+    
+    本软件的源代码归 ZGIT Network 所有。
+-->
+<Window
+    x:Class="OpenFrp.Launcher.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:OpenFrp.Launcher.ViewModels"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    MinWidth="540"
+    MinHeight="320"
+    d:DesignHeight="594"
+    d:DesignWidth="1155.5"
+    ui:ThemeManager.RequestedTheme="Light"
+    ui:TitleBar.ExtendViewIntoTitleBar="True"
+    ui:WindowHelper.SystemBackdropType="None"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    ShowActivated="True"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <models:MainPageModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Opacity" Value="0" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding (ui:WindowHelper.SystemBackdropType), RelativeSource={RelativeSource AncestorType=Window}}" Value="None" />
+                                <Condition Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.3"
+                                            Duration="0:0:.3">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0"
+                                            Duration="0:0:.0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+        <ui:NavigationView
+            x:Name="Of_nView"
+            IsTitleBarAutoPaddingEnabled="False"
+            OpenPaneLength="250">
+            <ui:NavigationView.PaneCustomContent>
+                <Border Padding="4,2,4,2">
+                    <Grid>
+                        <Button
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0">
+
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="Background"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}"
+                                                    SnapsToDevicePixels="True">
+                                                    <Border
+                                                        x:Name="Border"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        CornerRadius="{TemplateBinding ui:ControlHelper.CornerRadius}">
+
+                                                        <ui:ContentPresenterEx
+                                                            x:Name="ContentPresenter"
+                                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                            Focusable="False"
+                                                            RecognizesAccessKey="True"
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                    </Border>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                            <Condition Property="ui:ThemeManager.ActualTheme" Value="Dark" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Background" Property="Background" Value="{DynamicResource ButtonBackgroundPointerOver}" />
+                                                        <Setter TargetName="Background" Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPointerOver}" />
+                                                        <Setter TargetName="ContentPresenter" Property="Foreground" Value="{DynamicResource ButtonForegroundPointerOver}" />
+                                                    </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                            <Condition Property="ui:ThemeManager.ActualTheme" Value="Light" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Background" Property="Background" Value="#0F000000" />
+                                                        <Setter TargetName="Background" Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPointerOver}" />
+                                                        <Setter TargetName="ContentPresenter" Property="Foreground" Value="{DynamicResource ButtonForegroundPointerOver}" />
+                                                    </MultiTrigger>
+
+
+
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter TargetName="Background" Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}" />
+                                                        <Setter TargetName="Background" Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" />
+                                                        <Setter TargetName="ContentPresenter" Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding DisplayMode, ElementName=Of_nView}" Value="Compact" />
+                                                <Condition Binding="{Binding IsPaneOpen, ElementName=Of_nView}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ui:ControlHelper.CornerRadius" Value="20" />
+                                            <Setter Property="Padding" Value="0" />
+                                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                                            <Setter Property="RenderTransform">
+                                                <Setter.Value>
+                                                    <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <MultiDataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="0,0,0,0"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.EnterActions>
+                                            <MultiDataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="12,8,8,8"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.ExitActions>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding DisplayMode, ElementName=Of_nView}" Value="Expanded" />
+                                                <Condition Binding="{Binding IsPaneOpen, ElementName=Of_nView}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ui:ControlHelper.CornerRadius" Value="20" />
+
+                                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                                            <Setter Property="RenderTransform">
+                                                <Setter.Value>
+                                                    <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <MultiDataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="0"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.EnterActions>
+                                            <MultiDataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="0"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.ExitActions>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+
+                                                <Condition Binding="{Binding IsPaneOpen, ElementName=Of_nView}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="12,8,8,8"
+                                                            Duration="0:0:.2">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.EnterActions>
+                                            <MultiDataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Margin"
+                                                            To="0"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                        <ThicknessAnimation
+                                                            Storyboard.TargetProperty="Padding"
+                                                            To="0"
+                                                            Duration="0:0:.3">
+                                                            <ThicknessAnimation.EasingFunction>
+                                                                <CircleEase EasingMode="EaseOut" />
+                                                            </ThicknessAnimation.EasingFunction>
+                                                        </ThicknessAnimation>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiDataTrigger.ExitActions>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <ui:PersonPicture Height="40" ProfilePicture="E:\Win10\Desktop\Pictures\QQ图片20221204212958.jpg" />
+                                </Grid>
+                                <Grid Grid.Column="2">
+                                    <TextBlock
+                                        Padding="0,0,0,2"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        TextTrimming="CharacterEllipsis">
+                                        <Run Text="测试文段？" />
+                                        <LineBreak />
+                                        <Run Foreground="{StaticResource DescriptionForeground}" Text="TestEMail@OpenFrp.net" />
+                                    </TextBlock>
+                                </Grid>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Border>
+            </ui:NavigationView.PaneCustomContent>
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Network" Icon="&#xe969;" />
+                <ui:NavigationViewItem Content="Internet" Icon="&#xe9F5;" />
+                <ui:NavigationViewItem Content="Market" Icon="&#xe765;" />
+            </ui:NavigationView.MenuItems>
+            <ui:Frame x:Name="Of_nViewFrame" />
+        </ui:NavigationView>
+        <Grid Height="{Binding CompactPaneLength, ElementName=Of_nView}" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding CompactPaneLength, ElementName=Of_nView}" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="{Binding (ui:TitleBar.SystemOverlayRightInset), RelativeSource={RelativeSource AncestorType=Window}}" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Margin" Value="0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DisplayMode, ElementName=Of_nView}" Value="Minimal">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                Storyboard.TargetProperty="Margin"
+                                                To="36,0,0,0"
+                                                Duration="0:0:0.2">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                Storyboard.TargetProperty="Margin"
+                                                To="0,0,0,0"
+                                                Duration="0:0:0.2">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Padding="4,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Text="Yue" />
+                <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                    <!--  标题栏 操控钮 Addon  -->
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</Window>

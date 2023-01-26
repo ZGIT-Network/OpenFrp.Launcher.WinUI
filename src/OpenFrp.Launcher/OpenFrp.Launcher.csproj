@@ -7,12 +7,26 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
-		<AssemblyTitle>DOpenFrp Wrapper</AssemblyTitle>
+		<AssemblyTitle>OpenFrp - Let's Fix it</AssemblyTitle>
 		<Authors>AYue</Authors>
 		<ApplicationManifest>.\Properties\App.manifest</ApplicationManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Using Include="ModernWpf" />
+	  <Using Include="ModernWpf.Controls" />
+	  <Using Include="ModernWpf.Controls.Frame">
+	    <Alias>Frame</Alias>
+	  </Using>
+	  <Using Include="ModernWpf.Controls.Page">
+	    <Alias>Page</Alias>
+	  </Using>
 	</ItemGroup>
 </Project>

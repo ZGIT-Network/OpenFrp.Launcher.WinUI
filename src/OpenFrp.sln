@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFrp.Launcher", "OpenFrp.Launcher\OpenFrp.Launcher.csproj", "{5D501669-6C79-4BED-97F4-3E6842418DAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Launcher", "OpenFrp.Launcher\OpenFrp.Launcher.csproj", "{5D501669-6C79-4BED-97F4-3E6842418DAA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Core", "OpenFrp.Core\OpenFrp.Core.csproj", "{109FB52E-0CE8-4E25-B999-863BB2BF02B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFrp.Core.Libraries", "OpenFrp.Core.Libraries\OpenFrp.Core.Libraries.csproj", "{69266936-1913-4E4C-918B-5B049CCC40A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{5D501669-6C79-4BED-97F4-3E6842418DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D501669-6C79-4BED-97F4-3E6842418DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D501669-6C79-4BED-97F4-3E6842418DAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{109FB52E-0CE8-4E25-B999-863BB2BF02B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{109FB52E-0CE8-4E25-B999-863BB2BF02B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{109FB52E-0CE8-4E25-B999-863BB2BF02B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{109FB52E-0CE8-4E25-B999-863BB2BF02B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69266936-1913-4E4C-918B-5B049CCC40A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69266936-1913-4E4C-918B-5B049CCC40A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69266936-1913-4E4C-918B-5B049CCC40A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69266936-1913-4E4C-918B-5B049CCC40A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<ApplicationManifest>.\App.manifest</ApplicationManifest>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\OpenFrp.Core.Libraries\OpenFrp.Core.Libraries.csproj" />
+	</ItemGroup>
+</Project>
