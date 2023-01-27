@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,5 +60,17 @@ namespace OpenFrp.Core.Helper
         /// 将目录拼成一个完整路径
         /// </summary>
         public static string CombinePath(this string str,params string[] strs) => Path.Combine(str, Path.Combine(strs));
+        /// <summary>
+        /// 获取文本的 MD5 值
+        /// </summary>
+        public static string GetMD5(this string str)
+        {
+            StringBuilder builder = new();
+            foreach (var item in MD5.Create().ComputeHash(str.GetBytes()))
+            {
+                builder.Append(item.ToString("x2"));
+            }
+            return builder.ToString();
+        }
     }
 }

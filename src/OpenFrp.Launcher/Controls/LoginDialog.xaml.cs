@@ -1,4 +1,5 @@
-﻿using OpenFrp.Launcher.Helper;
+﻿using Google.Protobuf;
+using OpenFrp.Launcher.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,13 @@ namespace OpenFrp.Launcher.Controls
                 AppShareHelper.HasDialog = false;
                 sender.Hide();
 
+                var request = new OpenFrp.Core.Libraries.Protobuf.RequestBase()
+                {
+                    Success = true
+                };
+                
+
+                AppShareHelper.PipeClient.Worker?.Send(request.ToByteArray());
                 return;
             }
 

@@ -1,4 +1,5 @@
-﻿using OpenFrp.Core.Helper;
+﻿
+using OpenFrp.Core.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,10 +20,21 @@ namespace OpenFrp.Core
         /// 配置文件
         /// </summary>
         public static string ConfigFile { get => ApplicatioDataPath.CombinePath("config.json"); }
+
+        /// <summary>
+        /// 管道的名称
+        /// </summary>
+        public static string PipesName { get => $"{ApplicatioDataPath.GetMD5()}_OfApp2023_rl".GetMD5(); }
+        /// <summary>
+        /// 是否以系统服务模式运行
+        /// </summary>
+        public static bool IsWindowsService { get => !Environment.UserInteractive; }
         /// <summary>
         /// 应用主窗口
         /// </summary>
         public static Window MainWindow { get => Application.Current.MainWindow;  }
+
+        
 
     }
 }

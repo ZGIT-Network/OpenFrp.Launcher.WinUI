@@ -8,10 +8,13 @@
 		<Nullable>enable</Nullable>
 		<ApplicationManifest>.\App.manifest</ApplicationManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="System.Memory" Version="4.5.5" />
+	  <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="7.0.0-preview.2.22152.2" />
 	  <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 	</ItemGroup>
 	<ItemGroup>

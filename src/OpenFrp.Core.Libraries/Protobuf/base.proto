@@ -1,0 +1,8 @@
+﻿syntax = "proto3";
+option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
+
+message RequestBase{
+	bool success = 1;
+	string message = 2;
+}
+

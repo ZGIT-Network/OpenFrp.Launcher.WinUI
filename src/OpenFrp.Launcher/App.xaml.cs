@@ -8,6 +8,7 @@ using System.Windows;
 using ModernWpf.Controls.Primitives;
 using Newtonsoft.Json;
 using OpenFrp.Core.Helper;
+using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Launcher.Helper;
 using OpenFrp.Launcher.Views;
 
@@ -37,6 +38,10 @@ namespace OpenFrp.Launcher
             await Core.Helper.ConfigHelper.ReadConfig();
             CreateWindow();
             Microsoft.Win32.SystemEvents.SessionEnding += OnSystemShutdowning;
+
+            Helper.AppShareHelper.PipeClient.Start();
+            
+
         }
 
         /// <summary>
