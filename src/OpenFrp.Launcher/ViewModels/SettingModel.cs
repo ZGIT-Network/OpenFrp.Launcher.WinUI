@@ -13,6 +13,7 @@ namespace OpenFrp.Launcher.ViewModels
     public partial class SettingModel : ObservableObject
     {
 
+
         public int ThemeSet
         {
             get => (int)Core.Helper.ConfigHelper.Instance.ThemeSet;

@@ -19,5 +19,11 @@ namespace OpenFrp.Launcher.Helper
         /// 管道 - 客户端
         /// </summary>
         public static PipeClient PipeClient { get; set; } = new();
+
+        public static bool HasDeamonProcess
+        {
+            get => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess;
+            set => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess = value;
+        }
     }
 }

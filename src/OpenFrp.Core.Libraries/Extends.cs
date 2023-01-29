@@ -33,6 +33,8 @@ namespace OpenFrp.Core.Helper
             catch(Exception ex)
             {
                 // Write error to logs
+                Utils.Log(ex, true);
+
                 return default;
             }
         }

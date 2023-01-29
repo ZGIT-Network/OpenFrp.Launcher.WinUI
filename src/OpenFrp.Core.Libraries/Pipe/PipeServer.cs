@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Protobuf;
+using OpenFrp.Core.Libraries.Protobuf;
+using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
@@ -9,30 +11,34 @@ using System.Threading.Tasks;
 
 namespace OpenFrp.Core.Libraries.Pipe
 {
-    public class PipeServer : IDisposable
+    public class PipeServer : PipeWorker,IDisposable
     {
-        public NamedPipeServerStream? _server { get; set; }
-
-        public PipeWorker? Worker { get; set; }
+        public NamedPipeServerStream? Server { get; set; }
 
         public bool IsRunning { get; private set; }
 
-        public void Log(string message) => Console.WriteLine(message);
-
-        void IDisposable.Dispose() => _server?.Dispose();
-
+        void IDisposable.Dispose() => Server?.Dispose();
+        /// <summary>
+        /// 释放该对象。
+        /// </summary>
         public void Disponse()
         {
-            _server?.Dispose();
-            Worker?.Dispose();
+            Server?.Dispose();
+            Dispose();
         }
-
-        public void Start()
+        /// <summary>
+        /// 启动管道 - 服务端
+        /// </summary>
+        /// <param name="isPush">是否为推送管道</param>
+        public override void Start(bool isPush = false)
         {
-            _server = CreatePipeServer(OnConnected);
+            Server = CreatePipeServer(OnConnected,isPush);
+            Console.WriteLine($"Started，{$"{Utils.PipesName}{(isPush ? "_PUSH" : "")}"}");
         }
-
-        private NamedPipeServerStream? CreatePipeServer(AsyncCallback callback)
+        /// <summary>
+        /// 创建服务端
+        /// </summary>
+        private NamedPipeServerStream? CreatePipeServer(AsyncCallback callback,bool isPush)
         {
             if (IsRunning) return null;
             try
@@ -43,70 +49,106 @@ namespace OpenFrp.Core.Libraries.Pipe
                 security.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.NetworkSid, null), PipeAccessRights.FullControl, AccessControlType.Deny));
 
 
-                var server = new NamedPipeServerStream(Utils.PipesName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, PipeWorker.MaxbufferSize, PipeWorker.MaxbufferSize, security);
+                var server = new NamedPipeServerStream($"{Utils.PipesName}{(isPush ? "_PUSH" : "")}", PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, PipeWorker.MaxbufferSize, PipeWorker.MaxbufferSize, security);
 
                 server.ReadMode = PipeTransmissionMode.Message;
-
-                server.BeginWaitForConnection(callback, server);
-
+                if (!isPush)
+                {
+                    server.BeginWaitForConnection(callback, server);
+                }
+                else
+                {
+                    server.BeginWaitForConnection((callback) =>
+                    {
+                        server.EndWaitForConnection(callback);
+                        Utils.Log($"客户端已连接到PUSH", true);
+                    }, server);
+                }
                 return server;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 Disponse();
                 return null;
             }
         }
 
-        private async void OnConnected(IAsyncResult iar)
+        private void OnConnected(IAsyncResult iar)
         {
             try
             {
-                Log("Get Connection");
+                
                 NamedPipeServerStream server = (NamedPipeServerStream)iar.AsyncState;
+                Utils.Log("获得连接!", true);
                 server.EndWaitForConnection(iar);
                 IsRunning = true;
-                Worker = new(server, new byte[server.InBufferSize]);
+                Pipe = server;
+                Buffer = new byte[server.InBufferSize];
 
                 while (IsRunning)
                 {
-                    if (!await OnDataReviced(Worker)) break;
+                    var request = OnDataReviced();
+                    // 当请求体为 Null 或 不在运行状态 则退出;
+                    if (request is null || !IsRunning)
+                    {
+                        IsRunning = false;
+                        break;
+                    }
+                    var response = ExcuteAction(request);
+                    Utils.Log("请求反馈: " + response, true);
+                    Send(response.ToByteArray());
                 }
-
-                
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Utils.Log("(PipeServer.OnConnected) Try => Catch : " + ex,true);
             }
+            Utils.Log("客户端已断开",true);
+            Disponse();
             Start();
         }
 
-        private async ValueTask<bool> OnDataReviced(PipeWorker worker)
+        private RequestBase? OnDataReviced()
         {
-            if (_server is not null)
+            if (Server is not null)
             {
-                return await Task.Run(() =>
+                int count;
+                try
                 {
-                    int count;
-                    try
+                    count = Read();
+                    if (count > 0)
                     {
-                        count = _server.Read(worker.Buffer, 0, PipeWorker.MaxbufferSize);
+                        var obj = RequestBase.Parser.ParseFrom(Buffer, 0, EnsureMessageComplete(count));
+                        Utils.Log("Get Protobuf Content: " + obj, true);
+                        return obj;
                     }
-                    catch
-                    {
-                        return false;
-                    }
-                    var obj = Protobuf.RequestBase.Parser.ParseFrom(worker.Buffer, 0, worker.ReadMessage(count));
-                    Console.WriteLine(obj);
-                    return true;
-                });
+                }
+                catch { }
+                return default;
             }
-            return false;
+            return default;
             
         }
 
+        private ResponseBase ExcuteAction(RequestBase reqeest)
+        {
+            return reqeest.Action switch
+            {
+                _ => new()
+                {
+                    Message = string.IsNullOrEmpty(reqeest.Message) ? "找不到对应 Function" : reqeest.Message,
+                    Success = false
+                }
+            };
+        }
 
-        
+        public override void Disconnect()
+        {
+            if (Server?.IsConnected == true)
+            {
+                Server?.Disconnect();
+            }
+        }
     }
 }

@@ -1,8 +1,20 @@
-﻿syntax = "proto3";
+﻿// OpenFRP Libraries - Protobuf 数据体 (用 protoc 工具生存)
+
+syntax = "proto3";
 option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
 
 message RequestBase{
+	RequestType action = 1;
+	optional string  message = 2;
+}
+
+message ResponseBase{
 	bool success = 1;
 	string message = 2;
 }
 
+enum RequestType{
+	SERVER_CLOSED = 0;
+	CLIENT_TEST = 1;
+
+}

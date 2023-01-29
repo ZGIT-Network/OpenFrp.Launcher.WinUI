@@ -5,8 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Google.Protobuf;
 using ModernWpf.Controls.Primitives;
 using Newtonsoft.Json;
+using OpenFrp.Core;
 using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Launcher.Helper;
@@ -28,19 +30,23 @@ namespace OpenFrp.Launcher
             {
                 UxThemeHelper.AllowDarkModeForApp(true);
                 UxThemeHelper.ShouldSystemUseDarkMode();
-                
             }
-
             JsonConvert.DefaultSettings = () => new()
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
-            await Core.Helper.ConfigHelper.ReadConfig();
-            CreateWindow();
-            Microsoft.Win32.SystemEvents.SessionEnding += OnSystemShutdowning;
-
-            Helper.AppShareHelper.PipeClient.Start();
+            await ConfigHelper.ReadConfig();
+            Microsoft.Win32.SystemEvents.SessionEnding += async (sender, e) =>
+            {
+                // 保存 Config
+                e.Cancel = true;
+                await ConfigHelper.Instance.WriteConfig();
+                e.Cancel = false;
+            };
             
+            CreateWindow();
+
+            PipeIOStart();
 
         }
 
@@ -60,28 +66,64 @@ namespace OpenFrp.Launcher
             wind.Show();
         }
 
+        private void PipeIOStart()
+        {
+            AppShareHelper.PipeClient.Start();
+            // 服务端推送到客户端
+            var pushClient = new PipeClient();
+            pushClient.Start(true);
+            pushClient.OnPushStart = async worker =>
+            {
+                AppShareHelper.HasDeamonProcess = true;
+                while (worker.IsConnected && worker.IsPushMode)
+                {
+                    int count;
+                    try
+                    {
+                        count = await worker.ReadAsync();
+                        if (count > 0)
+                        {
+                            var request = Core.Libraries.Protobuf.RequestBase.Parser.ParseFrom(worker.Buffer, 0, worker.EnsureMessageComplete(count));
+                            Core.Libraries.Protobuf.ResponseBase response = request.Action switch
+                            {
+                                _ => new()
+                                {
+                                    Message = "Action not found",
+                                    Success = false
+                                },
+                            };
+                            await worker.SendAsync(response.ToByteArray());
+                        }
+                        else
+                        {
+                            AppShareHelper.PipeClient.Disconnect();
+                            AppShareHelper.HasDeamonProcess = false;
+                            Utils.Log("Service IO was Closed.", true);
+                            // 在PipeServer被关闭时，会发送一个 长度为 0 的数据包
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.Log(ex, true);
+                        break;
+                    }
+                }
+                worker.Client?.Close();
+                worker.IsPushMode = false;
+                // 先等待1500秒
+                await Task.Delay(1500);
+                PipeIOStart();
+            };
+        }
+
+
         /// <summary>
         /// Launcher 退出时
         /// </summary>
         protected override async void OnExit(ExitEventArgs e)
         {
-            await SaveConfig();
+            await ConfigHelper.Instance.WriteConfig();
         }
-
-        /// <summary>
-        /// 系统正在关闭时
-        /// </summary>
-        private async void OnSystemShutdowning(object sender, Microsoft.Win32.SessionEndingEventArgs e)
-        {
-            // 保存 Config
-            e.Cancel = true;
-            await SaveConfig();
-            e.Cancel = false;
-        }
-
-        /// <summary>
-        /// 保存配置
-        /// </summary>
-        private async ValueTask SaveConfig() => await ConfigHelper.Instance.WriteConfig();
     }
 }

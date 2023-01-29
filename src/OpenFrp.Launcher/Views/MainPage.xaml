@@ -38,6 +38,7 @@
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding (ui:WindowHelper.SystemBackdropType), RelativeSource={RelativeSource AncestorType=Window}}" Value="None" />
                                 <Condition Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True" />
+                                <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=Window}}" Value="Dark" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
                             <MultiDataTrigger.EnterActions>
@@ -46,6 +47,42 @@
                                         <DoubleAnimation
                                             Storyboard.TargetProperty="Opacity"
                                             To="0.3"
+                                            Duration="0:0:.3">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0"
+                                            Duration="0:0:.0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding (ui:WindowHelper.SystemBackdropType), RelativeSource={RelativeSource AncestorType=Window}}" Value="None" />
+                                <Condition Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True" />
+                                <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=Window}}" Value="Light" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="Gray" />
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.1"
                                             Duration="0:0:.3">
                                             <DoubleAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut" />
@@ -336,7 +373,7 @@
                                         TextTrimming="CharacterEllipsis">
                                         <Run Text="测试文段？" />
                                         <LineBreak />
-                                        <Run Foreground="{StaticResource DescriptionForeground}" Text="TestEMail@OpenFrp.net" />
+                                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="TestEMail@OpenFrp.net" />
                                     </TextBlock>
                                 </Grid>
                             </Grid>
@@ -411,6 +448,66 @@
                 </StackPanel>
             </Grid>
         </Grid>
-
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <ui:InfoBar
+                Title="提示"
+                IsClosable="False"
+                IsOpen="True"
+                Message="未连接到守护进程，大部分功能无法正常使用。"
+                Severity="Error">
+                <ui:InfoBar.Style>
+                    <Style TargetType="ui:InfoBar">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasDeamonProcess}" Value="False">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                Storyboard.TargetProperty="Margin"
+                                                To="0,0,0,16"
+                                                Duration="0:0:.3">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <QuarticEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                            <DoubleAnimation
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="1"
+                                                Duration="0:0:.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                Storyboard.TargetProperty="Margin"
+                                                To="0,0,0,-48"
+                                                Duration="0:0:.3">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <QuarticEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                            <DoubleAnimation
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="1"
+                                                Duration="0:0:.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:InfoBar.Style>
+            </ui:InfoBar>
+        </Grid>
     </Grid>
 </Window>

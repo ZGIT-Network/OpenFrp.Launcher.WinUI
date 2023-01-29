@@ -11,6 +11,9 @@ namespace OpenFrp.Launcher.ViewModels
 {
     public partial class MainPageModel : ObservableObject
     {
+        [ObservableProperty]
+        public bool hasDeamonProcess;
+
         [RelayCommand]
         void AccountInfo()
         {

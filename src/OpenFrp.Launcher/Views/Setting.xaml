@@ -82,7 +82,7 @@
                     <ofc:SettingItem.Icon>
                         <ui:FontIcon FontSize="24" Glyph="&#xE7F2;" />
                     </ofc:SettingItem.Icon>
-                    <ui:ToggleSwitch FocusVisualMargin="-10,-4,0,-4" Margin="4,0,-86,0" Style="{StaticResource LeftLabelToggleSwitchStyle}" />
+                    <ui:ToggleSwitch FocusVisualMargin="-10,-4,0,-4" Margin="4,0,-8,0" Style="{StaticResource LeftLabelToggleSwitchStyle}" />
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>

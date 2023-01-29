@@ -26,7 +26,8 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <DynamicResource x:Key="DescriptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+            <!--  SystemControlForegroundBaseMediumBrush  -->
+
 
             <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
 

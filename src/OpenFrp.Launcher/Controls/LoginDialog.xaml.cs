@@ -36,7 +36,7 @@ namespace OpenFrp.Launcher.Controls
             _of_LoginLoader.ShowLoader();
 
             // 模拟操作
-            await Task.Delay(1500);
+            await Task.Delay(750);
 
             if (bool.TrueString == "True")
             {
@@ -45,11 +45,13 @@ namespace OpenFrp.Launcher.Controls
 
                 var request = new OpenFrp.Core.Libraries.Protobuf.RequestBase()
                 {
-                    Success = true
+                    Action = Core.Libraries.Protobuf.RequestType.ClientTest
                 };
                 
 
-                AppShareHelper.PipeClient.Worker?.Send(request.ToByteArray());
+                var response = await AppShareHelper.PipeClient.Request(request);
+                MessageBox.Show(response.Message);
+
                 return;
             }
 

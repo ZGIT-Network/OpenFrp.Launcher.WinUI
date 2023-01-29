@@ -2,6 +2,7 @@
 using OpenFrp.Core.Helper;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,19 @@ namespace OpenFrp.Core
         /// </summary>
         public static Window MainWindow { get => Application.Current.MainWindow;  }
 
-        
+        public static void Log(object message,bool debug = false)
+        {
+            try
+            {
+                if (Console.WindowWidth is not -1)
+                {
+                    Console.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
+                    return;
+                }
+            }
+            catch { return; }
+            Debug.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
+        }
 
     }
 }

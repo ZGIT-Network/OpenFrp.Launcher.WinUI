@@ -17,7 +17,17 @@
 
     <Grid Width="498" Height="300">
         <local:ElementLoader x:Name="_of_LoginLoader">
-            <Button Margin="8" Content="你是一个已安慰我殴打我叫我记得"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ui:SimpleStackPanel Spacing="8" Grid.Column="0">
+                    <TextBox ui:TextBoxHelper.IsDeleteButtonVisible="True" ui:ControlHelper.Header="账户"/>
+                    <PasswordBox ui:ControlHelper.Header="密码" ui:PasswordBoxHelper.PasswordRevealMode="Peek"/>
+                </ui:SimpleStackPanel>
+            </Grid>
         </local:ElementLoader>
     </Grid>
 </ui:ContentDialog>

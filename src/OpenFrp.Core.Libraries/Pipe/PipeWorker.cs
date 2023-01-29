@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace OpenFrp.Core.Libraries.Pipe
     /// <summary>
     /// Stream I/O 简约化
     /// </summary>
-    public class PipeWorker : IDisposable
+    public abstract class PipeWorker : IDisposable
     {
         public static int MaxbufferSize { get => 1048576; }
 
@@ -19,19 +20,19 @@ namespace OpenFrp.Core.Libraries.Pipe
 
         public byte[] Buffer { get; set; } = new byte[] { };
 
-        public PipeWorker(PipeStream pipe, byte[] buffer) 
-        {
-            Pipe = pipe;
-            Buffer = buffer;
-        }
-
         void IDisposable.Dispose() => Pipe?.Dispose();
 
         public void Dispose() => Pipe?.Dispose();
 
-        public void Send(byte[] data) => Pipe?.Write(data,0, data.Length);
+        public void Send(byte[] data) => Pipe?.Write(data,0,data.Length);
 
-        public int ReadMessage(int read)
+        public async ValueTask SendAsync(byte[] data) => await Task.Run(() => Send(data));
+
+        public int Read() => Pipe?.Read(Buffer, 0, Buffer.Length) ?? 0;
+
+        public async ValueTask<int> ReadAsync() => await Task.Run(Read);
+        
+        public int EnsureMessageComplete(int read)
         {
             int index = read;
             while (Pipe?.IsMessageComplete == false)
@@ -44,5 +45,9 @@ namespace OpenFrp.Core.Libraries.Pipe
             }
             return index;
         }
+
+        public abstract void Start(bool isPush = false);
+
+        public abstract void Disconnect();
     }
 }
