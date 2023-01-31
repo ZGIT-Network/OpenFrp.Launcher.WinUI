@@ -1,20 +1,36 @@
 ﻿// OpenFRP Libraries - Protobuf 数据体 (用 protoc 工具生存)
 
 syntax = "proto3";
+
+
+
 option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
+
+
+
 
 message RequestBase{
 	RequestType action = 1;
 	optional string  message = 2;
+	optional LoginRequest loginRequest = 3;
+
+}
+
+message LoginRequest{
+	string authorization = 1;
+	string sessionId = 2;
+
 }
 
 message ResponseBase{
 	bool success = 1;
 	string message = 2;
+	optional string exception = 3;
 }
 
-enum RequestType{
-	SERVER_CLOSED = 0;
-	CLIENT_TEST = 1;
 
+
+enum RequestType{
+	CLIENT_PUSH_LOGINSTATE = 0;
+	CLIENT_PUSH_CLEARLOGIN = 1;
 }

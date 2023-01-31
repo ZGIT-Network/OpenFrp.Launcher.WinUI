@@ -2,12 +2,14 @@
 using OpenFrp.Core.Libraries.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls.Ribbon;
 
 namespace OpenFrp.Core.Libraries.Pipe
 {
@@ -16,6 +18,10 @@ namespace OpenFrp.Core.Libraries.Pipe
         public NamedPipeServerStream? Server { get; set; }
 
         public bool IsRunning { get; private set; }
+
+        public Action OnRestart { get; set; } = delegate { };
+
+        public Action<PipeWorker, RequestBase> OnDataRecived { get; set; } = delegate { };
 
         void IDisposable.Dispose() => Server?.Dispose();
         /// <summary>
@@ -33,7 +39,7 @@ namespace OpenFrp.Core.Libraries.Pipe
         public override void Start(bool isPush = false)
         {
             Server = CreatePipeServer(OnConnected,isPush);
-            Console.WriteLine($"Started，{$"{Utils.PipesName}{(isPush ? "_PUSH" : "")}"}");
+            Utils.Log($"PipeWorker ID: {$"{Utils.PipesName}{(isPush ? "_PUSH" : "")}"}",true);
         }
         /// <summary>
         /// 创建服务端
@@ -95,9 +101,8 @@ namespace OpenFrp.Core.Libraries.Pipe
                         IsRunning = false;
                         break;
                     }
-                    var response = ExcuteAction(request);
-                    Utils.Log("请求反馈: " + response, true);
-                    Send(response.ToByteArray());
+                    
+                    OnDataRecived(this, request);
                 }
             }
             catch (Exception ex)
@@ -106,6 +111,7 @@ namespace OpenFrp.Core.Libraries.Pipe
             }
             Utils.Log("客户端已断开",true);
             Disponse();
+            OnRestart();
             Start();
         }
 
@@ -129,18 +135,6 @@ namespace OpenFrp.Core.Libraries.Pipe
             }
             return default;
             
-        }
-
-        private ResponseBase ExcuteAction(RequestBase reqeest)
-        {
-            return reqeest.Action switch
-            {
-                _ => new()
-                {
-                    Message = string.IsNullOrEmpty(reqeest.Message) ? "找不到对应 Function" : reqeest.Message,
-                    Success = false
-                }
-            };
         }
 
         public override void Disconnect()

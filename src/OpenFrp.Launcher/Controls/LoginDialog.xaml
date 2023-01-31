@@ -9,6 +9,7 @@
     Title="登录"
     d:DesignHeight="768"
     d:DesignWidth="1366"
+    CloseButtonClick="ContentDialog_CloseButtonClick"
     CloseButtonText="取消"
     DefaultButton="Primary"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
@@ -19,14 +20,81 @@
         <local:ElementLoader x:Name="_of_LoginLoader">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <ui:SimpleStackPanel Spacing="8" Grid.Column="0">
-                    <TextBox ui:TextBoxHelper.IsDeleteButtonVisible="True" ui:ControlHelper.Header="账户"/>
-                    <PasswordBox ui:ControlHelper.Header="密码" ui:PasswordBoxHelper.PasswordRevealMode="Peek"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ui:SimpleStackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Spacing="8">
+                    <TextBox
+                        x:Name="OfApp_Input_UserName"
+                        ui:ControlHelper.Header="账户"
+                        ui:TextBoxHelper.IsDeleteButtonVisible="True" />
+                    <PasswordBox
+                        x:Name="OfApp_Input_Password"
+                        ui:ControlHelper.Header="密码"
+                        ui:PasswordBoxHelper.PasswordRevealMode="Peek" />
                 </ui:SimpleStackPanel>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        HorizontalAlignment="Left"
+                        Text="OpenFrp Launcher"
+                        TextWrapping="Wrap" />
+                    <ui:ScrollViewerEx Grid.Row="2">
+                        <TextBlock TextWrapping="Wrap">
+                            <Run Text="做自己喜欢的事，希望你的选项得到尊重。" />
+                            <LineBreak />
+                            <LineBreak />
+
+                            <Run Text="登录账户即代表您准守以下协议:" />
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://www.openfrp.net">用户条约</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://www.openfrp.net">隐私政策</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://www.openfrp.net">使用时需准守</Hyperlink>
+                            <LineBreak />
+                            <LineBreak />
+
+                            <Run Text="因未阅读网站公告导致的业务损失或奇葩问题，或者没带眼镜提出的问题一律不予回复，多次询问将直接拉黑" />
+                            <LineBreak />
+                            <Run Text="CFU统一识别码编码:" />
+                            <Hyperlink NavigateUri="https://cfu.openfrp.net/">DLPYU2N4</Hyperlink>
+                        </TextBlock>
+                    </ui:ScrollViewerEx>
+                </Grid>
+
+                <Grid
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3">
+                    <ui:InfoBar
+                        x:Name="OfApp_Output_InfoBar"
+                        Title="登录失败"
+                        IsClosable="False"
+                        Message="密码错误"
+                        Severity="Error">
+                        <ui:InfoBar.ActionButton>
+                            <Button
+                                HorizontalAlignment="Right"
+                                Content="查看栈错误"
+                                Visibility="Collapsed" />
+                        </ui:InfoBar.ActionButton>
+                    </ui:InfoBar>
+                </Grid>
             </Grid>
         </local:ElementLoader>
     </Grid>

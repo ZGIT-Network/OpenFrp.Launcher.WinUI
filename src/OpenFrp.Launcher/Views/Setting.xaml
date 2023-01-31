@@ -66,8 +66,21 @@
                     </ofc:SettingItem.Icon>
                     <Button
                         Command="{Binding AccountInfoCommand}"
-                        Content="Log In"
-                        Style="{StaticResource AccentButtonStyle}" />
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        IsEnabled="{Binding MainPageModel.HasDeamonProcess}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource AccentButtonStyle}" TargetType="Button">
+                                <Setter Property="Content" Value="登入" />
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding HasAccount,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
+                                        Value="True">
+                                        <Setter Property="Content" Value="个人信息" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>
@@ -82,7 +95,11 @@
                     <ofc:SettingItem.Icon>
                         <ui:FontIcon FontSize="24" Glyph="&#xE7F2;" />
                     </ofc:SettingItem.Icon>
-                    <ui:ToggleSwitch FocusVisualMargin="-10,-4,0,-4" Margin="4,0,-8,0" Style="{StaticResource LeftLabelToggleSwitchStyle}" />
+                    <ui:ToggleSwitch
+                        Margin="4,0,-8,0"
+                        FocusVisualMargin="-10,-4,0,-4"
+                        IsOn="{Binding BypassProxy}"
+                        Style="{StaticResource LeftLabelToggleSwitchStyle}" />
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>

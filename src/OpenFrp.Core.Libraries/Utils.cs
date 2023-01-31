@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,7 +27,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// 管道的名称
         /// </summary>
-        public static string PipesName { get => $"{ApplicatioDataPath.GetMD5()}_OfApp2023_rl".GetMD5(); }
+        public static string PipesName { get => $"{ApplicatioDataPath.GetMD5()}_Of2023_rel.app".GetMD5().ToUpper(); }
         /// <summary>
         /// 是否以系统服务模式运行
         /// </summary>
@@ -48,6 +50,8 @@ namespace OpenFrp.Core
             catch { return; }
             Debug.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
         }
+
+
 
     }
 }

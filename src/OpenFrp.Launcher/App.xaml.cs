@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using Google.Protobuf;
 using ModernWpf.Controls.Primitives;
 using Newtonsoft.Json;
@@ -124,6 +126,19 @@ namespace OpenFrp.Launcher
         protected override async void OnExit(ExitEventArgs e)
         {
             await ConfigHelper.Instance.WriteConfig();
+        }
+        /// <summary>
+        /// 链接被点击时
+        /// </summary>
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            var h = (Hyperlink)sender;
+            if (h.NavigateUri is not null &&
+                h.Parent.GetType() != typeof(HyperlinkButton))
+            {
+                Process.Start(h!.NavigateUri.ToString());
+            }
         }
     }
 }

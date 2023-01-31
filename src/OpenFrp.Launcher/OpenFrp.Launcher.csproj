@@ -11,7 +11,11 @@
 		<Authors>AYue</Authors>
 		<ApplicationManifest>.\Properties\App.manifest</ApplicationManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>main.ico</ApplicationIcon>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Content Include="main.ico" />
+	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />

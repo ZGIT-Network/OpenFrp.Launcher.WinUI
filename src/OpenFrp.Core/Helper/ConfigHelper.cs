@@ -11,11 +11,6 @@ namespace OpenFrp.Core.Helper
 {
     public class ConfigHelper
     {
-        public ConfigHelper()
-        {
-            
-        }
-
         /// <summary>
         /// 实例
         /// </summary>
@@ -24,7 +19,7 @@ namespace OpenFrp.Core.Helper
         private ModernWpf.ElementTheme _themeSet { get; set; }
 
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        [JsonProperty("theme")]
+        [JsonProperty("themeSet")]
         public ModernWpf.ElementTheme ThemeSet
         {
             get => _themeSet;
@@ -39,6 +34,7 @@ namespace OpenFrp.Core.Helper
 
         private ModernWpf.Controls.Primitives.BackdropType _backdropSet { get; set; }
 
+        [JsonProperty("backdropSet")]
         public ModernWpf.Controls.Primitives.BackdropType BackdropSet
         {
             get => _backdropSet;
@@ -50,6 +46,9 @@ namespace OpenFrp.Core.Helper
                 _backdropSet = value;
             }
         }
+
+        [JsonProperty("bypassProxy")]
+        public bool BypassProxy { get; set; }
         /// <summary>
         /// 读取配置
         /// </summary>

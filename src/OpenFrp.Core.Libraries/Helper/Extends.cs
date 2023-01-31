@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,5 +77,11 @@ namespace OpenFrp.Core.Helper
             }
             return builder.ToString();
         }
+        /// <summary>
+        /// 将 <see cref="object"/> 转为 <see cref="StringBuilder"/>
+        /// </summary>
+        public static StringContent ToJSONBody(this object obj) => new(obj.JSON(), Encoding.UTF8, "application/json");
+
+
     }
 }

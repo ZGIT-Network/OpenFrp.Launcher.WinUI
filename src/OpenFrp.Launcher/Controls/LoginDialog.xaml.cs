@@ -1,8 +1,14 @@
 ﻿using Google.Protobuf;
+using Google.Protobuf.Reflection;
+using Google.Protobuf.WellKnownTypes;
+using ModernWpf.Controls.Primitives;
+using OpenFrp.Core.Helper;
+using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Launcher.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,38 +35,97 @@ namespace OpenFrp.Launcher.Controls
             
         }
 
+        private CancellationTokenSource _cancellationTokenSource = new();
+
+        private RoutedEventHandler handle = delegate { };
+
+        /// <summary>
+        /// 点击了登录按钮
+        /// </summary>
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            OfApp_Output_InfoBar.ActionButton.Click -= handle;
             args.Cancel = true;
             sender.IsPrimaryButtonEnabled = false;
             _of_LoginLoader.ShowLoader();
+            OfApp_Output_InfoBar.ActionButton.Visibility = Visibility.Collapsed;
+
+
 
             // 模拟操作
-            await Task.Delay(750);
-
-            if (bool.TrueString == "True")
+            var loginResult = await ApiRequest.Login(OfApp_Input_UserName.Text, OfApp_Input_Password.Password);
+            // 如果 API 返回成功,那么接下去发给服务端。
+            if (loginResult.Success)
             {
-                AppShareHelper.HasDialog = false;
-                sender.Hide();
-
-                var request = new OpenFrp.Core.Libraries.Protobuf.RequestBase()
+                // 如果取消了 那么清除后返回
+                if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    Action = Core.Libraries.Protobuf.RequestType.ClientTest
+                    ApiRequest.ClearAuth();
+                    AppShareHelper.HasDialog = false;
+                    sender.Hide();
+                    return;
+                }
+
+                var request = new Core.Libraries.Protobuf.RequestBase()
+                {
+                    Action = Core.Libraries.Protobuf.RequestType.ClientPushLoginstate,
+                    LoginRequest = new()
+                    {
+                        Authorization = ApiRequest.Authorization,
+                        SessionId = ApiRequest.SessionId
+                    },
                 };
-                
-
                 var response = await AppShareHelper.PipeClient.Request(request);
-                MessageBox.Show(response.Message);
 
-                return;
+
+                // 服务端反馈成功了
+                if (response.Success)
+                {
+                    AppShareHelper.HasDialog = false;
+                    sender.Hide();
+                    return;
+                }
+                else
+                {
+                    // 如果有报错  给个按钮查看
+                    if (response.HasException)
+                    {
+                        handle = (sender, args) => MessageBox.Show(response.Exception);
+                        OfApp_Output_InfoBar.ActionButton.Click += handle;
+                        OfApp_Output_InfoBar.ActionButton.Visibility = Visibility.Visible;
+                    }
+                    ApiRequest.ClearAuth();
+                    ShowException(response.Message);
+                    return;
+                }
+            }
+            // 失败的情况
+
+            if (loginResult.Exception is not null)
+            {
+                handle = (sender, args) => MessageBox.Show(loginResult.Exception.ToString());
+                OfApp_Output_InfoBar.ActionButton.Click += handle;
+                OfApp_Output_InfoBar.ActionButton.Visibility = Visibility.Visible;
+            }
+            ShowException(loginResult.Message);
+
+            // 显示弹窗
+
+            void ShowException(string reason)
+            {
+                OfApp_Output_InfoBar.IsOpen = true;
+                OfApp_Output_InfoBar.Message = reason;
+                _of_LoginLoader.ShowContent();
+                sender.IsPrimaryButtonEnabled = true;
             }
 
-            
-            _of_LoginLoader.ShowContent();
-            sender.IsPrimaryButtonEnabled = false;
-
-
-
         }
+
+        /// <summary>
+        /// 点击了取消按钮
+        /// </summary>
+        private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) => _cancellationTokenSource.Cancel();
+
+
     }
 }
