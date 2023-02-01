@@ -1,9 +1,12 @@
-﻿using OpenFrp.Core.Libraries.Pipe;
+﻿using OpenFrp.Core.Helper;
+using OpenFrp.Core.Libraries.Api;
+using OpenFrp.Core.Libraries.Pipe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Capture;
 
 namespace OpenFrp.Launcher.Helper
 {
@@ -20,10 +23,63 @@ namespace OpenFrp.Launcher.Helper
         /// </summary>
         public static PipeClient PipeClient { get; set; } = new();
 
+        /// <summary>
+        /// 守护进程是否正在运行
+        /// </summary>
         public static bool HasDeamonProcess
         {
             get => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess;
             set => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess = value;
+        }
+
+        /// <summary>
+        /// 登录且获得用户个人信息 
+        /// </summary>
+        public static async ValueTask<Core.Libraries.Api.Models.ResponseBody.BaseResponse> LoginAndGetUserInfo(string username,string password,CancellationToken token = default)
+        {
+            var loginResult = await ApiRequest.Login(username, password,token);
+            if (loginResult.Success)
+            {
+                var userinfoResult = await ApiRequest.GetUserInfo().WithCancalToken(token);
+                if (userinfoResult is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
+                else if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
+                else
+                {
+                    var request = new Core.Libraries.Protobuf.RequestBase()
+                    {
+                        Action = Core.Libraries.Protobuf.RequestType.ClientPushLoginstate,
+                        LoginRequest = new()
+                        {
+                            Authorization = ApiRequest.Authorization,
+                            SessionId = ApiRequest.SessionId,
+                            UserInfoJson = userinfoResult.JSON()
+                        },
+                    };
+                    var response = await PipeClient.Request(request).WithCancalToken(token);
+
+                    if (response is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
+                    else if (!response.Success)
+                    {
+                        ApiRequest.ClearAuth();
+                        return new()
+                        {
+                            Exception = new Exception(response.Exception),
+                            Message = response.Message
+                        };
+                    }
+                    else
+                    {
+
+                        ApiRequest.UserInfo = userinfoResult.Data;
+                        ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
+                        return new()
+                        {
+                            Success = true,
+                        };
+                    }
+                }
+            }
+            return loginResult;
         }
     }
 }

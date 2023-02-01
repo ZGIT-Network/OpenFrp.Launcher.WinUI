@@ -121,8 +121,15 @@
                             Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
                             HorizontalContentAlignment="Left"
                             Background="Transparent"
-                            BorderThickness="0">
-
+                            BorderThickness="0"
+                            Command="{Binding AccountInfoCommand}">
+                            <Button.ToolTip>
+                                <TextBlock>
+                                    <Run Text="{Binding UserInfo.UserName}" />
+                                    <LineBreak />
+                                    <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="{Binding UserInfo.Email}" />
+                                </TextBlock>
+                            </Button.ToolTip>
                             <Button.Style>
                                 <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
                                     <Setter Property="RenderTransform">
@@ -363,7 +370,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <ui:PersonPicture Height="40" ProfilePicture="E:\Win10\Desktop\Pictures\QQ图片20221204212958.jpg" />
+                                    <ui:PersonPicture Height="40" ProfilePicture="E:\Win10\Desktop\Pictures\IMG_1550.PNG" />
                                 </Grid>
                                 <Grid Grid.Column="2">
                                     <TextBlock
@@ -371,9 +378,9 @@
                                         VerticalAlignment="Center"
                                         FontSize="12"
                                         TextTrimming="CharacterEllipsis">
-                                        <Run Text="测试文段？" />
+                                        <Run Text="{Binding UserInfo.UserName}" />
                                         <LineBreak />
-                                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="TestEMail@OpenFrp.net" />
+                                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="{Binding UserInfo.Email}" />
                                     </TextBlock>
                                 </Grid>
                             </Grid>

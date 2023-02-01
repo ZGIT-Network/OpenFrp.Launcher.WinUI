@@ -11,7 +11,6 @@ option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
 
 message RequestBase{
 	RequestType action = 1;
-	optional string  message = 2;
 	optional LoginRequest loginRequest = 3;
 
 }
@@ -19,12 +18,13 @@ message RequestBase{
 message LoginRequest{
 	string authorization = 1;
 	string sessionId = 2;
+	string userInfoJson = 3;
 
 }
 
 message ResponseBase{
 	bool success = 1;
-	string message = 2;
+	optional string message = 2;
 	optional string exception = 3;
 }
 

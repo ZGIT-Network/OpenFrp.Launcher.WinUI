@@ -53,7 +53,7 @@ namespace OpenFrp.Launcher.Controls
 
 
             // 模拟操作
-            var loginResult = await ApiRequest.Login(OfApp_Input_UserName.Text, OfApp_Input_Password.Password);
+            var loginResult = await AppShareHelper.LoginAndGetUserInfo(OfApp_Input_UserName.Text, OfApp_Input_Password.Password,_cancellationTokenSource.Token);
             // 如果 API 返回成功,那么接下去发给服务端。
             if (loginResult.Success)
             {
@@ -61,43 +61,10 @@ namespace OpenFrp.Launcher.Controls
                 if (_cancellationTokenSource.IsCancellationRequested)
                 {
                     ApiRequest.ClearAuth();
-                    AppShareHelper.HasDialog = false;
-                    sender.Hide();
-                    return;
                 }
-
-                var request = new Core.Libraries.Protobuf.RequestBase()
-                {
-                    Action = Core.Libraries.Protobuf.RequestType.ClientPushLoginstate,
-                    LoginRequest = new()
-                    {
-                        Authorization = ApiRequest.Authorization,
-                        SessionId = ApiRequest.SessionId
-                    },
-                };
-                var response = await AppShareHelper.PipeClient.Request(request);
-
-
-                // 服务端反馈成功了
-                if (response.Success)
-                {
-                    AppShareHelper.HasDialog = false;
-                    sender.Hide();
-                    return;
-                }
-                else
-                {
-                    // 如果有报错  给个按钮查看
-                    if (response.HasException)
-                    {
-                        handle = (sender, args) => MessageBox.Show(response.Exception);
-                        OfApp_Output_InfoBar.ActionButton.Click += handle;
-                        OfApp_Output_InfoBar.ActionButton.Visibility = Visibility.Visible;
-                    }
-                    ApiRequest.ClearAuth();
-                    ShowException(response.Message);
-                    return;
-                }
+                sender.Hide();
+                AppShareHelper.HasDialog = false;
+                return;
             }
             // 失败的情况
 

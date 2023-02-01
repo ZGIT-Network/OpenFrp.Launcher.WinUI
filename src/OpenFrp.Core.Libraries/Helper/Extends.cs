@@ -17,7 +17,7 @@ namespace OpenFrp.Core.Helper
      *  便于使用。
      *  Author: AYue
      */
-    public static class Extends
+    public static partial class Extends
     {
         /// <summary>
         /// 序列化
@@ -82,6 +82,23 @@ namespace OpenFrp.Core.Helper
         /// </summary>
         public static StringContent ToJSONBody(this object obj) => new(obj.JSON(), Encoding.UTF8, "application/json");
 
-
+        public static async ValueTask<T?> WithCancalToken<T>(this Task<T> task,CancellationToken _token)
+        {
+            var result = await task;
+            if (_token.IsCancellationRequested)
+            {
+                return default;
+            }
+            return result;
+        }
+        public static async ValueTask<T?> WithCancalToken<T>(this ValueTask<T> task, CancellationToken _token)
+        {
+            var result = await task;
+            if (_token.IsCancellationRequested)
+            {
+                return default;
+            }
+            return result;
+        }
     }
 }

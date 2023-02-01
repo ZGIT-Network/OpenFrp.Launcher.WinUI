@@ -23,21 +23,29 @@ namespace OpenFrp.Launcher.ViewModels
             {
                 OnPropertyChanging("MainPageModel");
             };
+
+            HasAccount = ApiRequest.HasAccount;
         }
 
-
+        /// <summary>
+        /// 主题
+        /// </summary>
         public int ThemeSet
         {
             get => (int)Core.Helper.ConfigHelper.Instance.ThemeSet;
             set => Core.Helper.ConfigHelper.Instance.ThemeSet = (ElementTheme)value;
         }
-
+        /// <summary>
+        /// 背景
+        /// </summary>
         public int BackdropSet
         {
             get => (int)Core.Helper.ConfigHelper.Instance.BackdropSet - 1;
             set => Core.Helper.ConfigHelper.Instance.BackdropSet = (BackdropType)value + 1;
         }
-
+        /// <summary>
+        /// 绕过代理
+        /// </summary>
         public bool BypassProxy
         {
             get => Core.Helper.ConfigHelper.Instance.BypassProxy;
@@ -61,31 +69,28 @@ namespace OpenFrp.Launcher.ViewModels
             // 如果未登录
             if (!HasAccount)
             {
-                if (!AppShareHelper.HasDialog)
-                {
-                    AppShareHelper.HasDialog = true;
-
-                    var dialog = new Controls.LoginDialog();
-                    await dialog.ShowAsync();
-
-                    HasAccount = ApiRequest.HasAccount;
-
-                    AppShareHelper.HasDialog = false;
-                }
+                var dialog = new Controls.LoginDialog();
+                await dialog.ShowDialogFixed();
             }
             else
             {
-                var flyout = new Flyout()
+                var request = new Core.Libraries.Protobuf.RequestBase()
                 {
-                    Placement = FlyoutPlacementMode.Left,
-                    Content = new SimpleStackPanel()
-                    {
-                        Width = 250,
-                        Height = 125,
-                    },
+                    Action = Core.Libraries.Protobuf.RequestType.ClientPushClearlogin,
                 };
-                flyout.ShowAt(element);
+                var response = await AppShareHelper.PipeClient.Request(request);
+
+                if (response.Success)
+                {
+                    ApiRequest.ClearAuth();
+                    ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
+                }
+                else
+                {
+                    MessageBox.Show($"在推送给服务端的时候发生了错误: {(response.HasException ? response.Exception : response.Message)}", "OpenFrp Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
+            HasAccount = ApiRequest.HasAccount;
             OnPropertyChanging(nameof(HasAccount));
             
         }

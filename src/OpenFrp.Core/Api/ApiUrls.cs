@@ -20,5 +20,9 @@ namespace OpenFrp.Core.Libraries.Api
         /// 登录
         /// </summary>
         public const string UserLogin = $"{BaseUrl}/user/login";
+        /// <summary>
+        /// 用户信息
+        /// </summary>
+        public const string UserInfo = $"{BaseUrl}/frp/api/getUserInfo";
     }
 }

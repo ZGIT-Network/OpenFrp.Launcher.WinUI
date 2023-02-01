@@ -12,6 +12,7 @@
 	<ItemGroup>
 	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
+	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	  <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 	</ItemGroup>

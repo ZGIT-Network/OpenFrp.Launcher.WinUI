@@ -24,22 +24,22 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     static BaseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpiYXNlLnByb3RvIogBCgtSZXF1ZXN0QmFzZRIcCgZhY3Rpb24YASABKA4y",
-            "DC5SZXF1ZXN0VHlwZRIUCgdtZXNzYWdlGAIgASgJSACIAQESKAoMbG9naW5S",
-            "ZXF1ZXN0GAMgASgLMg0uTG9naW5SZXF1ZXN0SAGIAQFCCgoIX21lc3NhZ2VC",
-            "DwoNX2xvZ2luUmVxdWVzdCI4CgxMb2dpblJlcXVlc3QSFQoNYXV0aG9yaXph",
-            "dGlvbhgBIAEoCRIRCglzZXNzaW9uSWQYAiABKAkiVgoMUmVzcG9uc2VCYXNl",
-            "Eg8KB3N1Y2Nlc3MYASABKAgSDwoHbWVzc2FnZRgCIAEoCRIWCglleGNlcHRp",
-            "b24YAyABKAlIAIgBAUIMCgpfZXhjZXB0aW9uKkUKC1JlcXVlc3RUeXBlEhoK",
-            "FkNMSUVOVF9QVVNIX0xPR0lOU1RBVEUQABIaChZDTElFTlRfUFVTSF9DTEVB",
-            "UkxPR0lOEAFCIqoCH09wZW5GcnAuQ29yZS5MaWJyYXJpZXMuUHJvdG9idWZi",
-            "BnByb3RvMw=="));
+            "CgpiYXNlLnByb3RvImYKC1JlcXVlc3RCYXNlEhwKBmFjdGlvbhgBIAEoDjIM",
+            "LlJlcXVlc3RUeXBlEigKDGxvZ2luUmVxdWVzdBgDIAEoCzINLkxvZ2luUmVx",
+            "dWVzdEgAiAEBQg8KDV9sb2dpblJlcXVlc3QiTgoMTG9naW5SZXF1ZXN0EhUK",
+            "DWF1dGhvcml6YXRpb24YASABKAkSEQoJc2Vzc2lvbklkGAIgASgJEhQKDHVz",
+            "ZXJJbmZvSnNvbhgDIAEoCSJnCgxSZXNwb25zZUJhc2USDwoHc3VjY2VzcxgB",
+            "IAEoCBIUCgdtZXNzYWdlGAIgASgJSACIAQESFgoJZXhjZXB0aW9uGAMgASgJ",
+            "SAGIAQFCCgoIX21lc3NhZ2VCDAoKX2V4Y2VwdGlvbipFCgtSZXF1ZXN0VHlw",
+            "ZRIaChZDTElFTlRfUFVTSF9MT0dJTlNUQVRFEAASGgoWQ0xJRU5UX1BVU0hf",
+            "Q0xFQVJMT0dJThABQiKqAh9PcGVuRnJwLkNvcmUuTGlicmFyaWVzLlByb3Rv",
+            "YnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestBase), global::OpenFrp.Core.Libraries.Protobuf.RequestBase.Parser, new[]{ "Action", "Message", "LoginRequest" }, new[]{ "Message", "LoginRequest" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LoginRequest), global::OpenFrp.Core.Libraries.Protobuf.LoginRequest.Parser, new[]{ "Authorization", "SessionId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.ResponseBase), global::OpenFrp.Core.Libraries.Protobuf.ResponseBase.Parser, new[]{ "Success", "Message", "Exception" }, new[]{ "Exception" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestBase), global::OpenFrp.Core.Libraries.Protobuf.RequestBase.Parser, new[]{ "Action", "LoginRequest" }, new[]{ "LoginRequest" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LoginRequest), global::OpenFrp.Core.Libraries.Protobuf.LoginRequest.Parser, new[]{ "Authorization", "SessionId", "UserInfoJson" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.ResponseBase), global::OpenFrp.Core.Libraries.Protobuf.ResponseBase.Parser, new[]{ "Success", "Message", "Exception" }, new[]{ "Message", "Exception" }, null, null, null)
           }));
     }
     #endregion
@@ -89,7 +89,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public RequestBase(RequestBase other) : this() {
       action_ = other.action_;
-      message_ = other.message_;
       loginRequest_ = other.loginRequest_ != null ? other.loginRequest_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -110,30 +109,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       set {
         action_ = value;
       }
-    }
-
-    /// <summary>Field number for the "message" field.</summary>
-    public const int MessageFieldNumber = 2;
-    private string message_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Message {
-      get { return message_ ?? ""; }
-      set {
-        message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-    /// <summary>Gets whether the "message" field is set</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool HasMessage {
-      get { return message_ != null; }
-    }
-    /// <summary>Clears the value of the "message" field</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void ClearMessage() {
-      message_ = null;
     }
 
     /// <summary>Field number for the "loginRequest" field.</summary>
@@ -164,7 +139,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         return true;
       }
       if (Action != other.Action) return false;
-      if (Message != other.Message) return false;
       if (!object.Equals(LoginRequest, other.LoginRequest)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -174,7 +148,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (Action != global::OpenFrp.Core.Libraries.Protobuf.RequestType.ClientPushLoginstate) hash ^= Action.GetHashCode();
-      if (HasMessage) hash ^= Message.GetHashCode();
       if (loginRequest_ != null) hash ^= LoginRequest.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -198,10 +171,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(8);
         output.WriteEnum((int) Action);
       }
-      if (HasMessage) {
-        output.WriteRawTag(18);
-        output.WriteString(Message);
-      }
       if (loginRequest_ != null) {
         output.WriteRawTag(26);
         output.WriteMessage(LoginRequest);
@@ -220,10 +189,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(8);
         output.WriteEnum((int) Action);
       }
-      if (HasMessage) {
-        output.WriteRawTag(18);
-        output.WriteString(Message);
-      }
       if (loginRequest_ != null) {
         output.WriteRawTag(26);
         output.WriteMessage(LoginRequest);
@@ -240,9 +205,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       int size = 0;
       if (Action != global::OpenFrp.Core.Libraries.Protobuf.RequestType.ClientPushLoginstate) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Action);
-      }
-      if (HasMessage) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
       }
       if (loginRequest_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LoginRequest);
@@ -261,9 +223,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (other.Action != global::OpenFrp.Core.Libraries.Protobuf.RequestType.ClientPushLoginstate) {
         Action = other.Action;
-      }
-      if (other.HasMessage) {
-        Message = other.Message;
       }
       if (other.loginRequest_ != null) {
         if (loginRequest_ == null) {
@@ -290,10 +249,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             Action = (global::OpenFrp.Core.Libraries.Protobuf.RequestType) input.ReadEnum();
             break;
           }
-          case 18: {
-            Message = input.ReadString();
-            break;
-          }
           case 26: {
             if (loginRequest_ == null) {
               LoginRequest = new global::OpenFrp.Core.Libraries.Protobuf.LoginRequest();
@@ -318,10 +273,6 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             break;
           case 8: {
             Action = (global::OpenFrp.Core.Libraries.Protobuf.RequestType) input.ReadEnum();
-            break;
-          }
-          case 18: {
-            Message = input.ReadString();
             break;
           }
           case 26: {
@@ -374,6 +325,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     public LoginRequest(LoginRequest other) : this() {
       authorization_ = other.authorization_;
       sessionId_ = other.sessionId_;
+      userInfoJson_ = other.userInfoJson_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -407,6 +359,18 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "userInfoJson" field.</summary>
+    public const int UserInfoJsonFieldNumber = 3;
+    private string userInfoJson_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string UserInfoJson {
+      get { return userInfoJson_; }
+      set {
+        userInfoJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -424,6 +388,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (Authorization != other.Authorization) return false;
       if (SessionId != other.SessionId) return false;
+      if (UserInfoJson != other.UserInfoJson) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -433,6 +398,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       int hash = 1;
       if (Authorization.Length != 0) hash ^= Authorization.GetHashCode();
       if (SessionId.Length != 0) hash ^= SessionId.GetHashCode();
+      if (UserInfoJson.Length != 0) hash ^= UserInfoJson.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -459,6 +425,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(18);
         output.WriteString(SessionId);
       }
+      if (UserInfoJson.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(UserInfoJson);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -477,6 +447,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(18);
         output.WriteString(SessionId);
       }
+      if (UserInfoJson.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(UserInfoJson);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -492,6 +466,9 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (SessionId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(SessionId);
+      }
+      if (UserInfoJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserInfoJson);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -510,6 +487,9 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (other.SessionId.Length != 0) {
         SessionId = other.SessionId;
+      }
+      if (other.UserInfoJson.Length != 0) {
+        UserInfoJson = other.UserInfoJson;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -534,6 +514,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             SessionId = input.ReadString();
             break;
           }
+          case 26: {
+            UserInfoJson = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -555,6 +539,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
           }
           case 18: {
             SessionId = input.ReadString();
+            break;
+          }
+          case 26: {
+            UserInfoJson = input.ReadString();
             break;
           }
         }
@@ -624,14 +612,26 @@ namespace OpenFrp.Core.Libraries.Protobuf {
 
     /// <summary>Field number for the "message" field.</summary>
     public const int MessageFieldNumber = 2;
-    private string message_ = "";
+    private string message_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Message {
-      get { return message_; }
+      get { return message_ ?? ""; }
       set {
         message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
+    }
+    /// <summary>Gets whether the "message" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMessage {
+      get { return message_ != null; }
+    }
+    /// <summary>Clears the value of the "message" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMessage() {
+      message_ = null;
     }
 
     /// <summary>Field number for the "exception" field.</summary>
@@ -684,7 +684,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (Success != false) hash ^= Success.GetHashCode();
-      if (Message.Length != 0) hash ^= Message.GetHashCode();
+      if (HasMessage) hash ^= Message.GetHashCode();
       if (HasException) hash ^= Exception.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -708,7 +708,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (Message.Length != 0) {
+      if (HasMessage) {
         output.WriteRawTag(18);
         output.WriteString(Message);
       }
@@ -730,7 +730,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (Message.Length != 0) {
+      if (HasMessage) {
         output.WriteRawTag(18);
         output.WriteString(Message);
       }
@@ -751,7 +751,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (Success != false) {
         size += 1 + 1;
       }
-      if (Message.Length != 0) {
+      if (HasMessage) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
       }
       if (HasException) {
@@ -772,7 +772,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (other.Success != false) {
         Success = other.Success;
       }
-      if (other.Message.Length != 0) {
+      if (other.HasMessage) {
         Message = other.Message;
       }
       if (other.HasException) {

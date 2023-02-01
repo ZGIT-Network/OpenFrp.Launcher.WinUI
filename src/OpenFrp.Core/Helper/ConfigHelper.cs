@@ -18,6 +18,9 @@ namespace OpenFrp.Core.Helper
 
         private ModernWpf.ElementTheme _themeSet { get; set; }
 
+        /// <summary>
+        /// 主题设置
+        /// </summary>
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         [JsonProperty("themeSet")]
         public ModernWpf.ElementTheme ThemeSet
@@ -33,7 +36,9 @@ namespace OpenFrp.Core.Helper
         }
 
         private ModernWpf.Controls.Primitives.BackdropType _backdropSet { get; set; }
-
+        /// <summary>
+        /// 背景设置
+        /// </summary>
         [JsonProperty("backdropSet")]
         public ModernWpf.Controls.Primitives.BackdropType BackdropSet
         {
@@ -46,7 +51,9 @@ namespace OpenFrp.Core.Helper
                 _backdropSet = value;
             }
         }
-
+        /// <summary>
+        /// 绕过代理
+        /// </summary>
         [JsonProperty("bypassProxy")]
         public bool BypassProxy { get; set; }
         /// <summary>
@@ -72,7 +79,7 @@ namespace OpenFrp.Core.Helper
             }
             catch (Exception ex)
             {
-
+                Utils.Log(ex, true);
             }
         }
     }

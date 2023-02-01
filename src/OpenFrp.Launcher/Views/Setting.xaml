@@ -72,10 +72,8 @@
                             <Style BasedOn="{StaticResource AccentButtonStyle}" TargetType="Button">
                                 <Setter Property="Content" Value="登入" />
                                 <Style.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding HasAccount,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
-                                        Value="True">
-                                        <Setter Property="Content" Value="个人信息" />
+                                    <DataTrigger Binding="{Binding HasAccount, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="True">
+                                        <Setter Property="Content" Value="登出" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

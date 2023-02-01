@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -138,6 +139,22 @@ namespace OpenFrp.Launcher
                 h.Parent.GetType() != typeof(HyperlinkButton))
             {
                 Process.Start(h!.NavigateUri.ToString());
+            }
+        }
+    }
+
+    public static class ExtendsUI
+    {
+        /// <summary>
+        /// 修复了一个窗口可以弹出两个的问题
+        /// </summary>
+        public async static ValueTask ShowDialogFixed(this ContentDialog dialog)
+        {
+            if (!AppShareHelper.HasDialog)
+            {
+                AppShareHelper.HasDialog = true;
+                await dialog.ShowAsync();
+                AppShareHelper.HasDialog = false;
             }
         }
     }

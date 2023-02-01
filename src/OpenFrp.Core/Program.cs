@@ -60,7 +60,7 @@ namespace OpenFrp.Core
 
         private static void OnDataRecived(PipeWorker worker,RequestBase request)
         {
-            ResponseBase response;
+            ResponseBase response = new() { Success = true };
             try
             {
                 switch (request.Action)
@@ -69,8 +69,14 @@ namespace OpenFrp.Core
                         {
                             ApiRequest.Authorization = request.LoginRequest.Authorization;
                             ApiRequest.SessionId = request.LoginRequest.Authorization;
-                            response = new() { Success = true, Message = "登录成功!" };
-                        };break;
+                            break;
+                            
+                        };
+                    case RequestType.ClientPushClearlogin:
+                        {
+                            ApiRequest.ClearAuth();
+                            break;
+                        }
                     default: { response = new() { Message = "Action not found" }; }; break;
                 }
                 
