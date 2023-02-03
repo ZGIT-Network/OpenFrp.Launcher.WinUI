@@ -27,19 +27,29 @@ namespace OpenFrp.Launcher.ViewModels
         public void UpdateProperty(string name) => OnPropertyChanged(name);
 
         [RelayCommand]
-        async void AccountInfo()
+        internal async void AccountInfo()
         {
             if (!ApiRequest.HasAccount)
             {
                 var frame = ((Views.MainPage)App.Current.MainWindow).Of_nViewFrame;
+                (((Views.MainPage)App.Current.MainWindow).Of_nView.SettingsItem as NavigationViewItem)!.IsSelected = true;
 
                 if (frame.SourcePageType != typeof(Views.Setting))
                 {
                     frame.Navigate(typeof(Views.Setting));
-                    await Task.Delay(750);
+                    await Task.Delay(50);
                 }
                 var dialog = new Controls.LoginDialog();
                 await dialog.ShowDialogFixed();
+
+
+                if (frame.SourcePageType == typeof(Views.Setting))
+                {
+                    var models = ((SettingModel)((Views.Setting)frame.Content).DataContext);
+                    models.HasAccount = ApiRequest.HasAccount;
+                    models.UpdateProperty("HasAccount");
+                }
+
             }
 
         }

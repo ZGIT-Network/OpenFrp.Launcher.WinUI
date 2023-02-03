@@ -15,16 +15,29 @@
                             <RowDefinition Height="4" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <HeaderedContentControl
-                            Grid.Row="0"
-                            IsHitTestVisible="False"
-                            Focusable="False"
-                            Margin="{DynamicResource NavigationViewHeaderMargin}"
-                            Content="{TemplateBinding Title}"
-                            FontSize="28"
-                            FontWeight="SemiBold" />
-                        <ui:ScrollViewerEx Padding="56,0" Grid.Row="2" PanningMode="Both">
-                            <ui:ContentPresenterEx/>
+                        <Border Grid.Row="0" Margin="{DynamicResource NavigationViewHeaderMargin}">
+                            <!--  MinWidth + 55  -->
+                            <HeaderedContentControl
+                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                MaxWidth="1355"
+                                Content="{TemplateBinding Title}"
+                                Focusable="False"
+                                FontSize="28"
+                                FontWeight="SemiBold"
+                                IsHitTestVisible="False" />
+
+                        </Border>
+
+                        <ui:ScrollViewerEx
+                            x:Name="XScroller"
+                            Grid.Row="2"
+                            PanningMode="Both">
+                            <Grid Margin="56,4,56,0">
+                                <ui:ContentPresenterEx
+                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                    MaxWidth="1300"
+                                    HorizontalAlignment="Center" />
+                            </Grid>
                         </ui:ScrollViewerEx>
 
                     </Grid>

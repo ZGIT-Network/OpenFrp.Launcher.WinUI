@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="/ModernWpf;component/ControlsResources.xaml" />
 
                 <ResourceDictionary Source="./Controls/ViewPage.xaml" />
+                <ResourceDictionary Source="./Controls/Card.xaml" />
                 <ResourceDictionary Source="./Controls/SettingItem.xaml" />
                 <ResourceDictionary Source="./Controls/ElementLoader.xaml" />
 
@@ -30,6 +31,37 @@
 
             <Style BasedOn="{StaticResource DefaultHyperlinkStyle}" TargetType="Hyperlink">
                 <EventSetter Event="Click" Handler="Hyperlink_Click" />
+            </Style>
+
+            <Style x:Key="AsrHelper" TargetType="FrameworkElement">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ASRContent}" Value="讲述人专用属性">
+                        <Setter Property="AutomationProperties.Name">
+                            <Setter.Value>
+                                <MultiBinding StringFormat="{}{0}: {1}">
+                                    <MultiBinding.Bindings>
+                                        <Binding Path="Title" />
+                                        <Binding Path="Content" />
+                                    </MultiBinding.Bindings>
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+                <Setter Property="AutomationProperties.Name">
+                    <Setter.Value>
+                        <MultiBinding StringFormat="{}{0}: {1}">
+                            <MultiBinding.Bindings>
+                                <Binding Path="Title" />
+                                <Binding Path="ASRContent" />
+                            </MultiBinding.Bindings>
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="ui:AppBarButton">
+                <Setter Property="AutomationProperties.Name" Value="{Binding Label, RelativeSource={RelativeSource Mode=Self}}" />
             </Style>
 
         </ResourceDictionary>

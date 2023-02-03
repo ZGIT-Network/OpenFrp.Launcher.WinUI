@@ -1,0 +1,32 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:of="clr-namespace:OpenFrp.Launcher.Controls"
+    xmlns:ui="http://schemas.modernwpf.com/2019">
+    <Style x:Key="DefualtCardKeyStyle" TargetType="of:Card">
+        <Setter Property="Background" Value="{DynamicResource ExpanderHeaderBackground}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource ExpanderHeaderBorderThickness}" />
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="ui:ControlHelper.CornerRadius" Value="8" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <SolidColorBrush Color="#1F808080" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="of:Card">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{Binding (ui:ControlHelper.CornerRadius), RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style BasedOn="{StaticResource DefualtCardKeyStyle}" TargetType="of:Card" />
+</ResourceDictionary>

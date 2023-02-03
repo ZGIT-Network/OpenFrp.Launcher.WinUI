@@ -120,9 +120,12 @@
                         <Button
                             Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
                             HorizontalContentAlignment="Left"
+                            AutomationProperties.HelpText="未登录时可以按下空格登录。"
+                            AutomationProperties.Name="{Binding UserInfo.UserName, StringFormat='账户名称: {0}'}"
                             Background="Transparent"
                             BorderThickness="0"
-                            Command="{Binding AccountInfoCommand}">
+                            Command="{Binding AccountInfoCommand}"
+                            IsEnabled="{Binding HasDeamonProcess}">
                             <Button.ToolTip>
                                 <TextBlock>
                                     <Run Text="{Binding UserInfo.UserName}" />
@@ -184,9 +187,7 @@
 
 
                                                     <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter TargetName="Background" Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}" />
-                                                        <Setter TargetName="Background" Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" />
-                                                        <Setter TargetName="ContentPresenter" Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
+                                                        <Setter Property="Opacity" Value="0.5" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -389,8 +390,11 @@
                 </Border>
             </ui:NavigationView.PaneCustomContent>
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Network" Icon="&#xe969;" />
-                <ui:NavigationViewItem Content="Internet" Icon="&#xe9F5;" />
+                <ui:NavigationViewItem
+                    Content="首页"
+                    Icon="Home"
+                    Tag="Home" />
+                <ui:NavigationViewItem  Content="隧道" Icon="&#xe953;" />
                 <ui:NavigationViewItem Content="Market" Icon="&#xe765;" />
             </ui:NavigationView.MenuItems>
             <ui:Frame x:Name="Of_nViewFrame" />

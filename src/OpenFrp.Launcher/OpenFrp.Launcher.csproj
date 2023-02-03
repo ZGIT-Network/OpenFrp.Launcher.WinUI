@@ -11,10 +11,13 @@
 		<Authors>AYue</Authors>
 		<ApplicationManifest>.\Properties\App.manifest</ApplicationManifest>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<ApplicationIcon>main.ico</ApplicationIcon>
+		<ApplicationIcon>.\Resourecs\main.ico</ApplicationIcon>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Content Include="main.ico" />
+	  <None Remove="Resourecs\previewImage.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Resourecs\main.ico" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
@@ -22,6 +25,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Include="Resourecs\previewImage.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Using Include="ModernWpf" />

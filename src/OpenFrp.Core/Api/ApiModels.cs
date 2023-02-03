@@ -37,6 +37,25 @@ namespace OpenFrp.Core.Libraries.Api.Models
     }
     public class ResponseBody
     {
+        public class HomePageResponse
+        {
+            [JsonProperty("title")]
+            public string Title { get; set; } = "剑河风急雪片阔，沙口石冻马蹄脱";
+
+            [JsonProperty("content")]
+            public string Content { get; set; } = "打开官网";
+
+            [JsonProperty("link")]
+            public string Link { get; set; } = "https://www.openfrp.net";
+
+            [JsonProperty("forceImage")]
+            public bool ForceImage { get; set; }
+
+            [JsonProperty("image")]
+            public string? Image { get; set; }
+        }
+
+
         /// <summary>
         /// 基本返回
         /// </summary>

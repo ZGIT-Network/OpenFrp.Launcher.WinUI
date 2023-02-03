@@ -5,6 +5,9 @@
     <Compile Update="Controls\LoginDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Home.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MainPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -13,6 +16,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Controls\Card.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\ElementLoader.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -23,6 +29,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\ViewPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Home.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MainPage.xaml">

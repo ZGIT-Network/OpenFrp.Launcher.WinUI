@@ -36,10 +36,12 @@
                     <TextBox
                         x:Name="OfApp_Input_UserName"
                         ui:ControlHelper.Header="账户"
+                        AutomationProperties.Name="账户"
                         ui:TextBoxHelper.IsDeleteButtonVisible="True" />
                     <PasswordBox
                         x:Name="OfApp_Input_Password"
                         ui:ControlHelper.Header="密码"
+                        AutomationProperties.Name="密码"
                         ui:PasswordBoxHelper.PasswordRevealMode="Peek" />
                 </ui:SimpleStackPanel>
                 <Grid Grid.Row="0" Grid.Column="2">
@@ -54,25 +56,25 @@
                         Text="OpenFrp Launcher"
                         TextWrapping="Wrap" />
                     <ui:ScrollViewerEx Grid.Row="2">
-                        <TextBlock TextWrapping="Wrap">
+                        <TextBlock AutomationProperties.Name=""  TextWrapping="Wrap">
                             <Run Text="做自己喜欢的事，希望你的选项得到尊重。" />
                             <LineBreak />
                             <LineBreak />
 
                             <Run Text="登录账户即代表您准守以下协议:" />
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://www.openfrp.net">用户条约</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="用户跳跃" NavigateUri="https://www.openfrp.net">用户条约</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://www.openfrp.net">隐私政策</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="隐私政策" NavigateUri="https://www.openfrp.net">隐私政策</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://www.openfrp.net">使用时需准守</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="使用时需准守" NavigateUri="https://www.openfrp.net">使用时需准守</Hyperlink>
                             <LineBreak />
                             <LineBreak />
 
                             <Run Text="因未阅读网站公告导致的业务损失或奇葩问题，或者没带眼镜提出的问题一律不予回复，多次询问将直接拉黑" />
                             <LineBreak />
                             <Run Text="CFU统一识别码编码:" />
-                            <Hyperlink NavigateUri="https://cfu.openfrp.net/">DLPYU2N4</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="CFU统一识别码编码" NavigateUri="https://cfu.openfrp.net/">DLPYU2N4</Hyperlink>
                         </TextBlock>
                     </ui:ScrollViewerEx>
                 </Grid>

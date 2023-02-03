@@ -37,15 +37,23 @@ namespace OpenFrp.Launcher.Views
                     {
                         return ((NavigationViewItem)sender.SelectedItem).Tag switch
                         {
+                            "Home" => typeof(Views.Home),
                             _ => null
                         };
                     })(),
                 };
+
                 if (Of_nViewFrame.SourcePageType == pages) return;
                 if (pages is not null) Of_nViewFrame.Navigate(pages);
                 
             };
+            Of_nViewFrame.Navigating += (sender, args) =>
+            {
+                if (args.Uri is not null) args.Cancel = true;
+            };
         }
+        
+
 
 
     }

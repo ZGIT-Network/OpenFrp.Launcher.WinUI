@@ -30,7 +30,11 @@
                     <ofc:SettingItem.Icon>
                         <ui:FontIcon FontSize="24" Glyph="&#xE771;" />
                     </ofc:SettingItem.Icon>
-                    <ComboBox MinWidth="150" SelectedIndex="{Binding ThemeSet}">
+                    <ComboBox
+                        MinWidth="150"
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        SelectedIndex="{Binding ThemeSet}">
                         <ComboBoxItem Content="Defualt" />
                         <ComboBoxItem Content="Light" />
                         <ComboBoxItem Content="Dark" />
@@ -40,12 +44,17 @@
                     <ofc:SettingItem.Icon>
                         <ui:SymbolIcon FontSize="24" Symbol="Caption" />
                     </ofc:SettingItem.Icon>
-                    <ComboBox MinWidth="150" SelectedIndex="{Binding BackdropSet}">
+                    <ComboBox
+                        MinWidth="150"
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        IsEnabled="{Binding IsSupportBackdrop}"
+                        SelectedIndex="{Binding BackdropSet}">
                         <ComboBoxItem Content="关闭" />
                         <ComboBoxItem Content="Mica" />
-                        <ComboBoxItem Content="Acrylic" />
+                        <ComboBoxItem Content="Acrylic" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
 
-                        <ComboBoxItem Content="Mica Alt" />
+                        <ComboBoxItem Content="Mica Alt" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
                     </ComboBox>
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
@@ -65,6 +74,8 @@
                         <ui:SymbolIcon FontSize="24" Symbol="Account" />
                     </ofc:SettingItem.Icon>
                     <Button
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         Command="{Binding AccountInfoCommand}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
                         IsEnabled="{Binding MainPageModel.HasDeamonProcess}">
@@ -95,6 +106,8 @@
                     </ofc:SettingItem.Icon>
                     <ui:ToggleSwitch
                         Margin="4,0,-8,0"
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         FocusVisualMargin="-10,-4,0,-4"
                         IsOn="{Binding BypassProxy}"
                         Style="{StaticResource LeftLabelToggleSwitchStyle}" />

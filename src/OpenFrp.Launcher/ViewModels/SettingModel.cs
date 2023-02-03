@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ModernWpf.Controls.Primitives;
+using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Launcher.Helper;
 using OpenFrp.Launcher.Views;
@@ -60,6 +61,15 @@ namespace OpenFrp.Launcher.ViewModels
         [ObservableProperty]
         public bool hasAccount;
 
+        public bool IsSupportBackdrop
+        {
+            get => OSVersionHelper.OSVersion >= new Version(10, 0, 21996);
+        }
+        public bool IsSupportBackdropMicaAlt
+        {
+            get => OSVersionHelper.OSVersion >= new Version(10, 0, 22523);
+        }
+
         /// <summary>
         /// 登录 / 个人信息
         /// </summary>
@@ -83,7 +93,7 @@ namespace OpenFrp.Launcher.ViewModels
                 if (response.Success)
                 {
                     ApiRequest.ClearAuth();
-                    ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
+                    ConfigHelper.Instance.Account.ClearAccount();
                 }
                 else
                 {
@@ -91,8 +101,9 @@ namespace OpenFrp.Launcher.ViewModels
                 }
             }
             HasAccount = ApiRequest.HasAccount;
-            OnPropertyChanging(nameof(HasAccount));
+            UpdateProperty(nameof(HasAccount));
             
         }
+        public void UpdateProperty(string name) => OnPropertyChanged(name);
     }
 }

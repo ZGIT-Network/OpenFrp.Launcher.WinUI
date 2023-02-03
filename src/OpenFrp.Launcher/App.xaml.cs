@@ -13,6 +13,7 @@ using ModernWpf.Controls.Primitives;
 using Newtonsoft.Json;
 using OpenFrp.Core;
 using OpenFrp.Core.Helper;
+using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Launcher.Helper;
 using OpenFrp.Launcher.Views;
@@ -46,10 +47,12 @@ namespace OpenFrp.Launcher
                 await ConfigHelper.Instance.WriteConfig();
                 e.Cancel = false;
             };
-            
-            CreateWindow();
 
+
+            AutoLogin();
+            CreateWindow();
             PipeIOStart();
+
 
         }
 
@@ -68,8 +71,17 @@ namespace OpenFrp.Launcher
             ThemeManager.SetRequestedTheme(wind, ConfigHelper.Instance.ThemeSet);
             wind.Show();
         }
+        
+        private async void AutoLogin()
+        {
+            if (ConfigHelper.Instance.Account.HasAccount)
+            {
+                await Task.Delay(1500);
+                await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName!, ConfigHelper.Instance.Account.Password!);
+            }
+        }
 
-        private void PipeIOStart()
+        private void PipeIOStart(bool restartup = false)
         {
             AppShareHelper.PipeClient.Start();
             // 服务端推送到客户端
@@ -78,6 +90,10 @@ namespace OpenFrp.Launcher
             pushClient.OnPushStart = async worker =>
             {
                 AppShareHelper.HasDeamonProcess = true;
+                if (ConfigHelper.Instance.Account.HasAccount && restartup)
+                {
+                    var resp =  await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
+                }
                 while (worker.IsConnected && worker.IsPushMode)
                 {
                     int count;
@@ -101,7 +117,13 @@ namespace OpenFrp.Launcher
                         {
                             AppShareHelper.PipeClient.Disconnect();
                             AppShareHelper.HasDeamonProcess = false;
-                            Utils.Log("Service IO was Closed.", true);
+                            ApiRequest.ClearAuth();
+                            ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
+                            if((((Views.MainPage)App.Current.MainWindow)).Of_nViewFrame.Content is Setting setting && setting.DataContext is ViewModels.SettingModel settingModel)
+                            {
+                                settingModel.HasAccount = false;
+                            }
+                            Utils.Log("Service IO Closed.", true);
                             // 在PipeServer被关闭时，会发送一个 长度为 0 的数据包
                             break;
                         }
@@ -116,8 +138,9 @@ namespace OpenFrp.Launcher
                 worker.IsPushMode = false;
                 // 先等待1500秒
                 await Task.Delay(1500);
-                PipeIOStart();
+                PipeIOStart(true);
             };
+
         }
 
 
