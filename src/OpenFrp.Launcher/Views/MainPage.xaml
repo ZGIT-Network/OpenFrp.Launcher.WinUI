@@ -394,7 +394,10 @@
                     Content="首页"
                     Icon="Home"
                     Tag="Home" />
-                <ui:NavigationViewItem  Content="隧道" Icon="&#xe953;" />
+                <ui:NavigationViewItem
+                    Content="隧道"
+                    Icon="&#xe953;"
+                    Tag="Tunnels" />
                 <ui:NavigationViewItem Content="Market" Icon="&#xe765;" />
             </ui:NavigationView.MenuItems>
             <ui:Frame x:Name="Of_nViewFrame" />

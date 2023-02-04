@@ -53,11 +53,11 @@ namespace OpenFrp.Core.Libraries.Api
         /// <summary>
         /// 统一获取
         /// </summary>
-        public static async ValueTask<T> UniversalPOST<T>(string url) where T : Models.ResponseBody.BaseResponse
+        public static async ValueTask<T> UniversalPOST<T>(string url,object? postData = default) where T : Models.ResponseBody.BaseResponse
         {
             if (HasAccount)
             {
-                return (await POST<T>(url, new Models.RequestsBody.BaseRequest().ToJSONBody()))!;
+                return (await POST<T>(url, postData?.ToJSONBody() ?? new Models.RequestsBody.BaseRequest().ToJSONBody()))!;
             }
             else return UnloginMessage<T>();
         }
@@ -89,7 +89,20 @@ namespace OpenFrp.Core.Libraries.Api
             {
                 return (new Models.ResponseBody.UserInfoResponse("用户暂未登录") as T)!;
             }
-            else
+            else if (typeof(T) == typeof(Models.ResponseBody.UserTunnelsResponse))
+            {
+                return (new Models.ResponseBody.UserInfoResponse("用户暂未登录") as T)!;
+            }
+            else if (typeof(T) == typeof(Models.ResponseBody.UserTunnelsResponse))
+            {
+                return (new Models.ResponseBody.UserTunnelsResponse("用户暂未登录") as T)!;
+            }
+            else if (typeof(T) == typeof(Models.ResponseBody.NodeListsResponse))
+            {
+                return (new Models.ResponseBody.NodeListsResponse("用户暂未登录") as T)!;
+            }
+
+            else 
             {
                 throw new NotImplementedException();
             }

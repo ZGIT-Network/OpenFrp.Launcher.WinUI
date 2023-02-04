@@ -38,6 +38,7 @@ namespace OpenFrp.Launcher.Views
                         return ((NavigationViewItem)sender.SelectedItem).Tag switch
                         {
                             "Home" => typeof(Views.Home),
+                            "Tunnels" => typeof(Views.Tunnels),
                             _ => null
                         };
                     })(),

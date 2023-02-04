@@ -114,10 +114,10 @@
                                     <TextBlock
                                         Padding="16,0"
                                         HorizontalAlignment="Center"
-                                        TextAlignment="Center"
                                         FontSize="16"
                                         Style="{StaticResource BodyTextBlockStyle}"
-                                        Text="{TemplateBinding ErrorTitle}" />
+                                        Text="{TemplateBinding ErrorTitle}"
+                                        TextAlignment="Center" />
                                     <Button
                                         HorizontalAlignment="Center"
                                         Command="{Binding RefreshCommand, RelativeSource={RelativeSource Mode=TemplatedParent}}"

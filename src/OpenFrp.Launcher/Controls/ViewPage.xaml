@@ -5,6 +5,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019">
     <Style x:Key="LauncherCustomPageControl" TargetType="ofc:ViewPage">
         <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -31,7 +32,9 @@
                         <ui:ScrollViewerEx
                             x:Name="XScroller"
                             Grid.Row="2"
-                            PanningMode="Both">
+                            PanningMode="Both"
+                            RewriteWheelChange="True"
+                            VerticalScrollBarVisibility="{Binding (ScrollViewer.VerticalScrollBarVisibility), RelativeSource={RelativeSource Mode=TemplatedParent}}">
                             <Grid Margin="56,4,56,0">
                                 <ui:ContentPresenterEx
                                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"

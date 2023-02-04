@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using OpenFrp.Launcher.Helper;
 using System.Diagnostics;
+using OpenFrp.Launcher.Views;
 
 namespace OpenFrp.Launcher.ViewModels
 {
@@ -67,7 +68,7 @@ namespace OpenFrp.Launcher.ViewModels
         public Views.Home? MainPage { get; set; }
 
         [ObservableProperty]
-        public UIElement broadCastContent;
+        public UIElement? broadCastContent;
 
         public class UserInfoListItem
         {
@@ -121,7 +122,7 @@ namespace OpenFrp.Launcher.ViewModels
             if (ApiRequest.HasAccount)
             {
 
-                UserInfoListItems = new()
+                new List<UserInfoListItem>()
                 {
                     new()
                     {
@@ -167,7 +168,13 @@ namespace OpenFrp.Launcher.ViewModels
                         Content = $"{(UserInfo.InputLimit / 1024) * 8} / {(UserInfo.OutputLimit / 1024) * 8}",
                         ASRContent = $"上行 {(UserInfo.InputLimit / 1024) * 8},下行 {(UserInfo.OutputLimit / 1024) * 8}"
                     },
-                };
+                }.ForEach(x=>
+                {
+                    MainPage.OfApp_UserInfoXLoader.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+                    {
+                        UserInfoListItems.Add(x);
+                    });
+                });
                 if (!redownload) await Task.Delay(500);
                 else
                 {
@@ -262,7 +269,10 @@ namespace OpenFrp.Launcher.ViewModels
             if (response.Success)
             {
                 await Task.Delay(250);
-                BroadCastContent = (UIElement)System.Windows.Markup.XamlReader.Parse(response.Data?.ToString().Replace("## 旧版启动器已不受支持,这是当然的",""));
+                MainPage.OfApp_BroadCastXLoader.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+                {
+                    BroadCastContent = (UIElement)System.Windows.Markup.XamlReader.Parse(response.Data?.ToString().Replace("## 旧版启动器已不受支持,这是当然的", ""));
+                }).GetHashCode();
                 MainPage.OfApp_BroadCastXLoader.ShowContent();
             }
             else

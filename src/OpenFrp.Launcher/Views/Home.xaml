@@ -258,6 +258,11 @@
                                 Padding="22,8,22,20"
                                 ItemsSource="{Binding UserInfoListItems}"
                                 PreviewMouseWheel="PreviewMouseWheel">
+                                <ui:GridView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel VirtualizingPanel.IsVirtualizing="True" />
+                                    </ItemsPanelTemplate>
+                                </ui:GridView.ItemsPanel>
                                 <ui:GridView.Style>
                                     <Style TargetType="ui:GridView">
                                         <Setter Property="Visibility" Value="Collapsed" />

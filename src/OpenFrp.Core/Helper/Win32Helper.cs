@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -24,5 +25,60 @@ namespace OpenFrp.Core.Helper
             CTRL_LOGOFF_EVENT = 5,
             CTRL_SHUTDOWN_EVENT = 6
         }
+
+        public static async ValueTask<ProcessNetworkInfo[]> GetAliveNetworkLink()
+        {
+            var process = Process.Start(new ProcessStartInfo("netstat.exe", "-ano")
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            });
+            var dic = new Dictionary<string, string>();
+            var pool = new List<Task<ProcessNetworkInfo>>();
+            foreach (var str in (await process.StandardOutput.ReadToEndAsync()).Split('\n'))
+            {
+                var args = str.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                if (args.Length < 3 || !(args[0] is "TCP" || args[0] is "UDP"))
+                {
+                    continue;
+                }
+                if (args[1][0] is '[') continue;
+
+
+                pool.Add(Task.Run<ProcessNetworkInfo>(() =>
+                {
+                    string pid = args[0] is "UDP" ? args[3] : args[4];
+                    if (!dic.ContainsKey(pid))
+                    {
+                        dic[pid] = "[拒绝访问]";
+                        try
+                        {
+                            dic[pid] = Process.GetProcessById(Convert.ToInt32(pid)).ProcessName;
+                        }
+                        catch { }
+                    }
+                    return new()
+                    {
+                        ProcessName = dic[pid],
+                        Address = args[1].Split(':').First(),
+                        Port = Convert.ToInt32(args[1].Split(':').Last())
+                    };
+                }));
+            }
+
+            return await Task.WhenAll(pool);
+        }
+
+        public class ProcessNetworkInfo
+        {
+            public string? ProcessName { get; set; }
+
+            public string? Address { get; set; }
+
+            public int Port { get; set; }
+        }
+
+
     }
 }

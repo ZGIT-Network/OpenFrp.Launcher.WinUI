@@ -20,8 +20,13 @@
 	  <Content Include="Resourecs\main.ico" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
-	  <PackageReference Include="ModernWpfUI" Version="10.1.78" />
+	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
+	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
+	  <PackageReference Include="ModernWpfUI" Version="10.1.83" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />

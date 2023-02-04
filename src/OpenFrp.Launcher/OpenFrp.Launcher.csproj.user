@@ -5,6 +5,9 @@
     <Compile Update="Controls\LoginDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\CreateTunnel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Home.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -12,6 +15,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Setting.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tunnels.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -22,13 +28,22 @@
     <Page Update="Controls\ElementLoader.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Controls\Expander.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\LoginDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\SettingItem.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Controls\TunnelConfig.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\ViewPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CreateTunnel.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Home.xaml">
@@ -38,6 +53,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Setting.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Tunnels.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

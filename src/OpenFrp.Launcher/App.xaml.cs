@@ -76,7 +76,6 @@ namespace OpenFrp.Launcher
         {
             if (ConfigHelper.Instance.Account.HasAccount)
             {
-                await Task.Delay(1500);
                 await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName!, ConfigHelper.Instance.Account.Password!);
             }
         }

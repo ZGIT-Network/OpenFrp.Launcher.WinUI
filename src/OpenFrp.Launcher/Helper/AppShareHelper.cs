@@ -38,7 +38,7 @@ namespace OpenFrp.Launcher.Helper
         /// </summary>
         public static async ValueTask<ResponseBody.BaseResponse> LoginAndGetUserInfo(string? username,string? password,CancellationToken token = default)
         {
-            if (HasDeamonProcess)
+            if (PipeClient.IsConnected)
             {
                 var loginResult = await ApiRequest.Login(username ?? "", password ?? "", token);
                 if (loginResult.Success)

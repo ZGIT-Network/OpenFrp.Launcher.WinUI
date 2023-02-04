@@ -11,17 +11,20 @@
 
                 <ui:XamlControlsResources />
                 <ui:ThemeResources />
-                <ResourceDictionary Source="/ModernWpf.Controls;component/ToggleSwitch/ToggleSwitch.xaml" />
+
 
 
                 <ResourceDictionary Source="/ModernWpf;component/DesignTime/SystemColors.xaml" />
                 <ResourceDictionary Source="/ModernWpf;component/ThemeResources/Light.xaml" />
                 <ResourceDictionary Source="/ModernWpf;component/ControlsResources.xaml" />
+                <ResourceDictionary Source="/ModernWpf.Controls;component/ToggleSwitch/ToggleSwitch.xaml" />
 
                 <ResourceDictionary Source="./Controls/ViewPage.xaml" />
                 <ResourceDictionary Source="./Controls/Card.xaml" />
                 <ResourceDictionary Source="./Controls/SettingItem.xaml" />
                 <ResourceDictionary Source="./Controls/ElementLoader.xaml" />
+                <ResourceDictionary Source="./Controls/TunnelConfig.xaml" />
+                <ResourceDictionary Source="./Controls/Expander.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -63,6 +66,16 @@
             <Style TargetType="ui:AppBarButton">
                 <Setter Property="AutomationProperties.Name" Value="{Binding Label, RelativeSource={RelativeSource Mode=Self}}" />
             </Style>
+
+            <DataTemplate x:Key="ProcessListTemplate">
+                <Border Padding="0,4,4,4">
+                    <WrapPanel HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding Address}" />
+                        <TextBlock Text="{Binding Port, StringFormat=':{0}'}" />
+                        <TextBlock Text="{Binding ProcessName, StringFormat=' - {0}'}" />
+                    </WrapPanel>
+                </Border>
+            </DataTemplate>
 
         </ResourceDictionary>
     </Application.Resources>

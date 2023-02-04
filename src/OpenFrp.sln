@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Launcher", "OpenFrp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Core", "OpenFrp.Core\OpenFrp.Core.csproj", "{109FB52E-0CE8-4E25-B999-863BB2BF02B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFrp.Core.Libraries", "OpenFrp.Core.Libraries\OpenFrp.Core.Libraries.csproj", "{69266936-1913-4E4C-918B-5B049CCC40A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Core.Libraries", "OpenFrp.Core.Libraries\OpenFrp.Core.Libraries.csproj", "{69266936-1913-4E4C-918B-5B049CCC40A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7DE9A4CA-2F54-4110-81F2-B3689AAB8062}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

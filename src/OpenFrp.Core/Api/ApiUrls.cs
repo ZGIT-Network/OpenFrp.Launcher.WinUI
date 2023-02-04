@@ -34,5 +34,17 @@ namespace OpenFrp.Core.Libraries.Api
         /// 公告
         /// </summary>
         public const string BroadCast = $"{BaseUrl}/commonQuery/get?key=broadcast";
+        /// <summary>
+        /// 用户隧道
+        /// </summary>
+        public const string UserTunnels = $"{BaseUrl}/frp/api/getUserProxies";
+        /// <summary>
+        /// 节点列表
+        /// </summary>
+        public const string NodeList = $"{BaseUrl}/frp/api/getNodeList";
+        /// <summary>
+        /// 创建隧道
+        /// </summary>
+        public const string CreateTunnel = $"{BaseUrl}/frp/api/newProxy";
     }
 }
