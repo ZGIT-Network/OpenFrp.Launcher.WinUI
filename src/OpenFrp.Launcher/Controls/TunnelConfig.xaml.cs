@@ -28,15 +28,15 @@ namespace OpenFrp.Launcher.Controls
 
 
 
-        public Core.Libraries.Api.Models.RequestsBody.EditTunnelData Config
+        public Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest Config
         {
-            get { return (Core.Libraries.Api.Models.RequestsBody.EditTunnelData)GetValue(ConfigProperty); }
+            get { return (Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest)GetValue(ConfigProperty); }
             set { SetValue(ConfigProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ProxyConfig.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConfigProperty =
-            DependencyProperty.Register("Config", typeof(Core.Libraries.Api.Models.RequestsBody.EditTunnelData), typeof(TunnelConfig), new PropertyMetadata(new Core.Libraries.Api.Models.RequestsBody.EditTunnelData() { }));
+            DependencyProperty.Register("Config", typeof(Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest), typeof(TunnelConfig), new PropertyMetadata(new Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest() { }));
 
 
 
@@ -51,7 +51,7 @@ namespace OpenFrp.Launcher.Controls
         public static readonly DependencyProperty NodeInfoProperty =
             DependencyProperty.Register("NodeInfo", typeof(Core.Libraries.Api.Models.ResponseBody.NodeListsResponse.NodeInfo), typeof(TunnelConfig), new PropertyMetadata());
 
-        public Core.Libraries.Api.Models.RequestsBody.EditTunnelData GetConfig(bool isEditMode = false)
+        public Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest GetConfig(bool isEditMode = false)
         {
             if (NodeInfo is not null || isEditMode)
             {
@@ -139,7 +139,7 @@ namespace OpenFrp.Launcher.Controls
             if (bo1x is not null) Config.LocalAddress = str;
         }
 
-        public async void SetConfig(Core.Libraries.Api.Models.RequestsBody.EditTunnelData createProxy)
+        public async void SetConfig(Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest createProxy)
         {
             Config = createProxy;
             var builder = new StringBuilder();
@@ -180,6 +180,28 @@ namespace OpenFrp.Launcher.Controls
                 custom_inp.Text = Config.CustomArgs = builder.ToString();
             }
                 
+        }
+
+        public void SetConfig(Core.Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel tunnel)
+        {
+            SetConfig(new Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest()
+            {
+                BindDomain = tunnel.Domains,
+                TunnelID = tunnel.TunnelId,
+                CustomArgs = tunnel.CustomArgs!,
+                EncryptMode = tunnel.EncryptionMode,
+                GZipMode = tunnel.ComperssionMode,
+                HostRewrite = tunnel.HostRewrite,
+                LocalAddress = tunnel.LocalAddress,
+                LocalPort = tunnel.LocalPort,
+                NodeID = tunnel.NodeID,
+                URLRoute = tunnel.URLRoute,
+                RemotePort = tunnel.RemotePort,
+                RequestFrom = tunnel.RequestFrom,
+                RequestPass = tunnel.RequestPassword,
+                TunnelName = tunnel.TunnelName,
+                TunnelType = tunnel.TunnelType!.ToLower()
+            });
         }
     }
 }

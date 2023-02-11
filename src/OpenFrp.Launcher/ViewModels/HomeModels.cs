@@ -121,7 +121,7 @@ namespace OpenFrp.Launcher.ViewModels
             MainPage.OfApp_UserInfoXLoader.ShowLoader();
             if (ApiRequest.HasAccount)
             {
-
+                UserInfoListItems.Clear();
                 new List<UserInfoListItem>()
                 {
                     new()

@@ -76,6 +76,7 @@ namespace OpenFrp.Launcher
         {
             if (ConfigHelper.Instance.Account.HasAccount)
             {
+                if (/* 系统服务模式 不需要等待 */ !false) await Task.Delay(1500);
                 await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName!, ConfigHelper.Instance.Account.Password!);
             }
         }
@@ -170,13 +171,18 @@ namespace OpenFrp.Launcher
         /// <summary>
         /// 修复了一个窗口可以弹出两个的问题
         /// </summary>
-        public async static ValueTask ShowDialogFixed(this ContentDialog dialog)
+        public async static ValueTask<ContentDialogResult> ShowDialogFixed(this ContentDialog dialog)
         {
             if (!AppShareHelper.HasDialog)
             {
                 AppShareHelper.HasDialog = true;
-                await dialog.ShowAsync();
+                var result =  await dialog.ShowAsync();
                 AppShareHelper.HasDialog = false;
+                return result;
+            }
+            else
+            {
+                return ContentDialogResult.None;
             }
         }
     }

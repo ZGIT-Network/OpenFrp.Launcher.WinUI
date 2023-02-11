@@ -398,7 +398,10 @@
                     Content="隧道"
                     Icon="&#xe953;"
                     Tag="Tunnels" />
-                <ui:NavigationViewItem Content="Market" Icon="&#xe765;" />
+                <ui:NavigationViewItem
+                    Content="Market"
+                    Icon="&#xe765;"
+                    Tag="Logs" />
             </ui:NavigationView.MenuItems>
             <ui:Frame x:Name="Of_nViewFrame" />
         </ui:NavigationView>

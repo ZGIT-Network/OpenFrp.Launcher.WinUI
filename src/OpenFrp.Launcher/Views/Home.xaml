@@ -60,7 +60,7 @@
                         </Style.Triggers>
                     </Style>
                 </ofc:Card.Style>
-                <ofc:ElementLoader x:Name="OfApp_PreviewXLoader" IsLoading="False">
+                <ofc:ElementLoader x:Name="OfApp_PreviewXLoader">
                     <Grid>
                         <ui:ThemeShadowChrome>
                             <ui:ThemeShadowChrome.Style>
@@ -198,7 +198,7 @@
                         </Style.Triggers>
                     </Style>
                 </ofc:Card.Style>
-                <ofc:ElementLoader x:Name="OfApp_UserInfoXLoader" IsLoading="False">
+                <ofc:ElementLoader x:Name="OfApp_UserInfoXLoader" IsLoading="True">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -333,7 +333,7 @@
             </ofc:Card>
         </Grid>
         <ofc:Card MinHeight="200">
-            <ofc:ElementLoader x:Name="OfApp_BroadCastXLoader">
+            <ofc:ElementLoader x:Name="OfApp_BroadCastXLoader" IsLoading="True">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

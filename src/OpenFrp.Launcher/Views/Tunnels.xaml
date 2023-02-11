@@ -37,89 +37,143 @@
                 IsEnabled="{Binding IsToolsEnabled}"
                 Label="创建" />
         </ui:CommandBar>
-        <ofc:ElementLoader x:Name="OfApp_XLoader" Grid.Row="1">
-            <ui:GridView
-                Margin="-56,0"
-                Padding="56,8,56,32"
-                ItemsSource="{Binding UserTunnels}">
-                <ui:GridView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel
-                            VirtualizingPanel.IsContainerVirtualizable="True"
-                            VirtualizingPanel.IsVirtualizing="True"
-                            VirtualizingPanel.VirtualizationMode="Recycling" />
-                    </ItemsPanelTemplate>
-                </ui:GridView.ItemsPanel>
-                <ui:GridView.ItemContainerStyle>
-                    <Style TargetType="ui:GridViewItem">
-                        <Setter Property="Margin" Value="0,0,12,12" />
-                    </Style>
-                </ui:GridView.ItemContainerStyle>
-                <ui:GridView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Width="350" Height="215">
-                            <ui:SimpleStackPanel
-                                Margin="24"
-                                VerticalAlignment="Top"
-                                Spacing="2">
-                                <TextBlock>
-                                    <Run FontSize="20" Text="{Binding TunnelName}" />
 
-
-                                </TextBlock>
-                                <TextBlock FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
-                                    <Run Text="{Binding TunnelType}" />
-                                    <TextBlock Margin="-4,0,0,0" Text=",数据加密">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding EncryptionMode}" Value="False">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Margin="-4,0,0,0" Text=",数据压缩">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ComperssionMode}" Value="False">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <LineBreak />
-                                    <Run Text="{Binding LocalAddress, StringFormat='{}{0}:'}" />
-                                    <TextBlock
-                                        Margin="-4,0,0,0"
-                                        FontSize="14"
-                                        Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                                        Text="{Binding LocalPort}" />
-                                    <Run Text="-&gt;" />
-                                    <Run Text="{Binding RemotePort}" />
-                                </TextBlock>
-                            </ui:SimpleStackPanel>
-                            <ui:ToggleSwitch
-                                Margin="0,20,20,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Style="{StaticResource LeftLabelToggleSwitchStyle}" />
-                            <ui:CommandBar
-                                Margin="18,20"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <ui:AppBarButton Icon="Copy" Label="复制链接" />
-                                <ui:AppBarButton Icon="Edit" Label="编辑" />
-                                <ui:AppBarButton Icon="Remove" Label="移除" />
-                            </ui:CommandBar>
-                        </Grid>
-                    </DataTemplate>
-                </ui:GridView.ItemTemplate>
-
-            </ui:GridView>
-        </ofc:ElementLoader>
     </Grid>
+    <ofc:ViewPage.ContentWithOverflow>
+        <ofc:ElementLoader x:Name="OfApp_XLoader" Margin="0,48,0,0">
+            <ui:ScrollViewerEx PreviewMouseWheel="ScrollViewerEx_PreviewMouseWheel">
+                <ui:GridView
+                    MaxWidth="1410"
+                    Padding="56,8,56,32"
+                    IsEnabled="{Binding MainPageModel.HasDeamonProcess}"
+                    ItemsSource="{Binding UserTunnels}">
+                    <ui:GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                VirtualizingPanel.IsContainerVirtualizable="True"
+                                VirtualizingPanel.IsVirtualizing="True"
+                                VirtualizingPanel.VirtualizationMode="Recycling" />
+                        </ItemsPanelTemplate>
+                    </ui:GridView.ItemsPanel>
+                    <ui:GridView.ItemContainerStyle>
+                        <Style TargetType="ui:GridViewItem">
+                            <Setter Property="Margin" Value="0,0,12,12" />
+                            <Setter Property="AutomationProperties.Name">
+                                <Setter.Value>
+                                    <MultiBinding StringFormat="隧道名称: {0},隧道类型: {1},对应的链接: {2}:{3}">
+                                        <Binding Path="TunnelName" />
+                                        <Binding Path="TunnelType" />
+                                        <Binding Path="LocalAddress" />
+                                        <Binding Path="LocalPort" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+                                    <Setter Property="IsHitTestVisible" Value="False" />
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:GridView.ItemContainerStyle>
+                    <ui:GridView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="350" Height="215">
+                                <ui:SimpleStackPanel
+                                    Margin="24"
+                                    VerticalAlignment="Top"
+                                    Spacing="2">
+                                    <TextBlock FontSize="20" Text="{Binding TunnelName}" />
+                                    <TextBlock FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                        <Run Text="{Binding TunnelType}" />
+                                        <TextBlock Margin="-4,0,0,0" Text=",数据加密">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EncryptionMode}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Margin="-4,0,0,0" Text=",数据压缩">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ComperssionMode}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <LineBreak />
+                                        <Run Text="{Binding LocalAddress, StringFormat='{}{0}:'}" />
+                                        <TextBlock
+                                            Margin="-4,0,0,0"
+                                            FontSize="14"
+                                            Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                            Text="{Binding LocalPort}" />
+                                        <Run Text="-&gt;" />
+                                        <Run Text="{Binding RemotePort}" />
+                                        <LineBreak />
+                                        <TextBlock Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="已禁用">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <LineBreak />
+                                        <TextBlock VerticalAlignment="Bottom">
+                                            <Run Text="{Binding NodeID, StringFormat='#{0}'}" />
+                                            <Run Text="{Binding NodeName}" />
+                                        </TextBlock>
+                                    </TextBlock>
+
+                                </ui:SimpleStackPanel>
+                                <!--  开关钮  -->
+                                <ui:ToggleSwitch
+                                    Margin="0,20,20,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    AutomationProperties.Name="隧道开启状态"
+                                    IsOn="{Binding IsRunning}"
+                                    Style="{StaticResource LeftLabelToggleSwitchStyle}"
+                                    Toggled="ToggleSwitch_Toggled" />
+                                <!--  操控列表  -->
+                                <ui:CommandBar
+                                    Margin="18,20"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <ui:AppBarButton
+                                        Command="{Binding DataContext.CopyTunnelLinkCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
+                                        CommandParameter="{Binding}"
+                                        Icon="Copy"
+                                        Label="复制链接" />
+                                    <ui:AppBarButton
+                                        Command="{Binding DataContext.EditTunnelCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
+                                        CommandParameter="{Binding}"
+                                        Icon="Edit"
+                                        Label="编辑" />
+                                    <ui:AppBarButton
+                                        Command="{Binding DataContext.DeleteTunnelCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
+                                        CommandParameter="{Binding}"
+                                        Icon="Remove"
+                                        Label="移除" />
+                                </ui:CommandBar>
+                            </Grid>
+                        </DataTemplate>
+                    </ui:GridView.ItemTemplate>
+
+                </ui:GridView>
+            </ui:ScrollViewerEx>
+        </ofc:ElementLoader>
+    </ofc:ViewPage.ContentWithOverflow>
 </ofc:ViewPage>

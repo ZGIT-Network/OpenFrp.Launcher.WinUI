@@ -35,13 +35,23 @@
                             PanningMode="Both"
                             RewriteWheelChange="True"
                             VerticalScrollBarVisibility="{Binding (ScrollViewer.VerticalScrollBarVisibility), RelativeSource={RelativeSource Mode=TemplatedParent}}">
-                            <Grid Margin="56,4,56,0">
+                            <Grid>
+                                <Grid Margin="56,4,56,0">
+                                    <ui:ContentPresenterEx
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        MaxWidth="1300"
+                                        HorizontalAlignment="Center" />
+
+                                </Grid>
                                 <ui:ContentPresenterEx
                                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
-                                    MaxWidth="1300"
-                                    HorizontalAlignment="Center" />
+                                    HorizontalAlignment="Center"
+                                    Content="{TemplateBinding ContentWithOverflow}" />
                             </Grid>
+
                         </ui:ScrollViewerEx>
+
+
 
                     </Grid>
                 </ControlTemplate>

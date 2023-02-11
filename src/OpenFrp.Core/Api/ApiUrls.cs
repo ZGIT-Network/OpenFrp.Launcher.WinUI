@@ -46,5 +46,14 @@ namespace OpenFrp.Core.Libraries.Api
         /// 创建隧道
         /// </summary>
         public const string CreateTunnel = $"{BaseUrl}/frp/api/newProxy";
+        /// <summary>
+        /// 移除隧道
+        /// </summary>
+        public const string RemoveTunnel = $"{BaseUrl}/frp/api/removeProxy";
+
+        /// <summary>
+        /// 编辑隧道
+        /// </summary>
+        public const string EditTunnel = $"{BaseUrl}/frp/api/editProxy";
     }
 }

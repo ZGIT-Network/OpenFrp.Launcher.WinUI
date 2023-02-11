@@ -122,49 +122,58 @@ namespace OpenFrp.Launcher.ViewModels
         [RelayCommand]
         public async void SelectPortOfProcess()
         {
-            if (CreateTunnelPage is null)
+            if (((Views.MainPage)App.Current.MainWindow).Of_nViewFrame.Content is Views.CreateTunnel)
             {
-                CreateTunnelPage = ((Views.MainPage)App.Current.MainWindow).Of_nViewFrame.Content as Views.CreateTunnel;
-            }
-            ObservableCollection<Win32Helper.ProcessNetworkInfo> networkLists = new();
-            var loader = new ElementLoader()
-            {
-                IsLoading = true,
-                Content = new ListView()
+                if (CreateTunnelPage is null)
                 {
-                    Width = 450,
-                    MaxHeight = 300,
-                    ItemsSource = networkLists,
-                    ItemTemplate = (DataTemplate)App.Current.Resources["ProcessListTemplate"],
+                    CreateTunnelPage = ((Views.MainPage)App.Current.MainWindow).Of_nViewFrame.Content as Views.CreateTunnel;
                 }
-            };
-            var dialog = new ContentDialog()
-            {
-                Title = "列表 (双击选择)",
-                Content = loader,
-                CloseButtonText = "关闭",
-            };
-            ((ListView)loader.Content).MouseDoubleClick += (sender, args) =>
-            {
-                if (((ListView)loader.Content).SelectedIndex is not -1)
+                ObservableCollection<Win32Helper.ProcessNetworkInfo> networkLists = new();
+                var loader = new ElementLoader()
                 {
-                    var item = networkLists[((ListView)loader.Content).SelectedIndex];
-                    CreateTunnelPage?.Configer.SetLocalPort(item.Port);
-                    dialog.Hide();
-                }
-            };
+                    IsLoading = true,
+                    Content = new ListView()
+                    {
+                        Width = 450,
+                        MaxHeight = 300,
+                        ItemsSource = networkLists,
+                        ItemTemplate = (DataTemplate)App.Current.Resources["ProcessListTemplate"],
+                    }
+                };
+                var dialog = new ContentDialog()
+                {
+                    Title = "列表 (双击选择)",
+                    Content = loader,
+                    CloseButtonText = "关闭",
+                };
+                ((ListView)loader.Content).MouseDoubleClick += (sender, args) =>
+                {
+                    if (((ListView)loader.Content).SelectedIndex is not -1)
+                    {
+                        var item = networkLists[((ListView)loader.Content).SelectedIndex];
+                        CreateTunnelPage?.Configer.SetLocalPort(item.Port);
+                        dialog.Hide();
+                    }
+                };
 
-            dialog.Loaded += async (sender, args) =>
-            {
-                var views = (await Win32Helper.GetAliveNetworkLink()).ToList();
-                await Task.Delay(250);
-                loader.IsLoading = false;
-                views.ForEach(x => App.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,() =>
+                dialog.Loaded += async (sender, args) =>
                 {
-                    networkLists.Add(x);
-                }));
-            };
-            await dialog.ShowDialogFixed();
+                    var views = (await Win32Helper.GetAliveNetworkLink()).ToList();
+                    await Task.Delay(250);
+                    loader.IsLoading = false;
+                    views.ForEach(x => App.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+                    {
+                        networkLists.Add(x);
+                    }));
+                };
+                await dialog.ShowDialogFixed();
+            }
+            else
+            {
+
+            }
+
+            
         }
 
         [RelayCommand]

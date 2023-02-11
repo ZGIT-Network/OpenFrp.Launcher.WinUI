@@ -1,0 +1,32 @@
+syntax = "proto3";
+option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
+
+
+
+
+message RequestBase{
+	RequestType action = 1;
+	optional LoginRequest loginRequest = 2;
+    optional FrpRequest frpRequest = 3;
+    optional LogsReqest logsRequest = 4;
+}
+message LoginRequest{
+	string authorization = 1;
+	string sessionId = 2;
+	string userInfoJson = 3;
+}
+message FrpRequest{
+	string userTunnelJson = 1;
+}
+message LogsReqest{
+    int32 id = 1;
+}
+
+enum RequestType{
+	CLIENT_PUSH_LOGINSTATE = 0;
+	CLIENT_PUSH_CLEARLOGIN = 1;
+	CLIENT_FRPC_START = 2;
+    CLIENT_FRPC_CLOSE = 3;
+    CLIENT_GET_LOGS = 4;
+    CLIENT_GET_RUNNINGTUNNELS = 5;
+}

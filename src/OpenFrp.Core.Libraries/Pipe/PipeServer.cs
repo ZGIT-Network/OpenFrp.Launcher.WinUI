@@ -107,7 +107,7 @@ namespace OpenFrp.Core.Libraries.Pipe
             }
             catch (Exception ex)
             {
-                Utils.Log("(PipeServer.OnConnected) Try => Catch : " + ex,true);
+                Utils.Log("(PipeServer.OnConnected) Try => Catch : " + ex,true,TraceLevel.Error);
             }
             Utils.Log("客户端已断开",true);
             Disponse();
@@ -126,7 +126,7 @@ namespace OpenFrp.Core.Libraries.Pipe
                     if (count > 0)
                     {
                         var obj = RequestBase.Parser.ParseFrom(Buffer, 0, EnsureMessageComplete(count));
-                        Utils.Log("Get Protobuf Content: " + obj, true);
+                        Utils.Log("Get Protobuf Content: " + obj, true, TraceLevel.Verbose);
                         return obj;
                     }
                 }

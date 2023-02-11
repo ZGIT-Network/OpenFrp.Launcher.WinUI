@@ -36,7 +36,7 @@ namespace OpenFrp.Core.Helper
             catch(Exception ex)
             {
                 // Write error to logs
-                Utils.Log(ex, true);
+                Utils.Log(ex, true, System.Diagnostics.TraceLevel.Error);
 
                 return default;
             }

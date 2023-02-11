@@ -36,10 +36,19 @@ namespace OpenFrp.Launcher.Views
 
             Model.MainPage = this;
 
+        }
+
+        protected async override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            await Task.Delay(500);
+
             Model.RefreshPreview();
             Model.RefreshUserInfoView();
             Model.RefreshBroadCast();
         }
+
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {

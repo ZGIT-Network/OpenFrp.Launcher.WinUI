@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+
+
+option csharp_namespace = "OpenFrp.Core.Libraries.Protobuf";
+
+message ResponseBase{
+	bool success = 1;
+	optional string message = 2;
+	optional string exception = 3;
+    repeated string logsJson = 4;
+    repeated int32 runningCount = 5;
+}

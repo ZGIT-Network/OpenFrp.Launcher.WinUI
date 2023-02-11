@@ -35,8 +35,10 @@ namespace OpenFrp.Core.Libraries.Api.Models
             [JsonProperty("password")]
             public string? Password { get; set; }
         }
-
-        public class EditTunnelData : BaseRequest
+        /// <summary>
+        /// 编辑隧道 - Body
+        /// </summary>
+        public class EditTunnelRequest : BaseRequest
         {
             /// <summary>
             /// 隧道名称
@@ -122,6 +124,17 @@ namespace OpenFrp.Core.Libraries.Api.Models
             public int? TunnelID { get; set; }
 
         }
+
+        public class DeleteTunnelRequest : BaseRequest
+        {
+            public DeleteTunnelRequest(int id)
+            {
+                TunnelID = id;
+            }
+
+            [JsonProperty("proxy_id")]
+            public int TunnelID { get; set; }
+        }
     }
 #pragma warning disable IDE0051 // 删除未使用的私有成员
     public class ResponseBody
@@ -132,7 +145,7 @@ namespace OpenFrp.Core.Libraries.Api.Models
         public class HomePageResponse
         {
             [JsonProperty("title")]
-            public string Title { get; set; } = "剑河风急雪片阔，沙口石冻马蹄脱";
+            public string Title { get; set; } = "镜花水月枫叶红，转念不知几春秋";
 
             [JsonProperty("content")]
             public string Content { get; set; } = "打开官网";
@@ -422,6 +435,9 @@ namespace OpenFrp.Core.Libraries.Api.Models
                 /// </summary>
                 [JsonProperty("hostHeaderRewrite")]
                 public string? HostRewrite { get; set; }
+
+                [JsonIgnore]
+                public bool IsRunning { get; set; }
             }
         }
         /// <summary>

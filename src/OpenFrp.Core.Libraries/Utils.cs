@@ -36,20 +36,39 @@ namespace OpenFrp.Core
         /// 应用主窗口
         /// </summary>
         public static Window MainWindow { get => Application.Current.MainWindow;  }
+        /// <summary>
+        /// FRPC 对应平台的名称
+        /// </summary>
+        public static string FrpcPlatform { get => $"frpc_windows_{(Environment.Is64BitOperatingSystem ? "amd64":"386")}"; }
 
-        public static void Log(object message,bool debug = false)
+        public static string Frpc { get => $"{ApplicatioDataPath}\\frpc\\{FrpcPlatform}.exe"; }
+
+
+        public static void Log(object message,bool debug = false,TraceLevel level = TraceLevel.Info)
         {
             try
             {
                 if (Console.WindowWidth is not -1)
                 {
+                    if (level != TraceLevel.Info)
+                    {
+                        Console.ForegroundColor = level switch
+                        {
+                            TraceLevel.Error => ConsoleColor.Red,
+                            TraceLevel.Warning => ConsoleColor.Yellow,
+                            TraceLevel.Verbose => ConsoleColor.Cyan,
+                            _ => ConsoleColor.Gray
+                        };
+                    }
                     Console.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
+                    Console.ResetColor();
                     return;
                 }
             }
-            catch { return; }
+            catch {  }
             Debug.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
         }
+
 
 
 
