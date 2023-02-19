@@ -24,27 +24,35 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     static RequestReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1yZXF1ZXN0LnByb3RvItIBCgtSZXF1ZXN0QmFzZRIcCgZhY3Rpb24YASAB",
+            "Cg1yZXF1ZXN0LnByb3RvIrsCCgtSZXF1ZXN0QmFzZRIcCgZhY3Rpb24YASAB",
             "KA4yDC5SZXF1ZXN0VHlwZRIoCgxsb2dpblJlcXVlc3QYAiABKAsyDS5Mb2dp",
             "blJlcXVlc3RIAIgBARIkCgpmcnBSZXF1ZXN0GAMgASgLMgsuRnJwUmVxdWVz",
             "dEgBiAEBEiUKC2xvZ3NSZXF1ZXN0GAQgASgLMgsuTG9nc1JlcWVzdEgCiAEB",
-            "Qg8KDV9sb2dpblJlcXVlc3RCDQoLX2ZycFJlcXVlc3RCDgoMX2xvZ3NSZXF1",
-            "ZXN0Ik4KDExvZ2luUmVxdWVzdBIVCg1hdXRob3JpemF0aW9uGAEgASgJEhEK",
-            "CXNlc3Npb25JZBgCIAEoCRIUCgx1c2VySW5mb0pzb24YAyABKAkiJAoKRnJw",
-            "UmVxdWVzdBIWCg51c2VyVHVubmVsSnNvbhgBIAEoCSIYCgpMb2dzUmVxZXN0",
-            "EgoKAmlkGAEgASgFKqcBCgtSZXF1ZXN0VHlwZRIaChZDTElFTlRfUFVTSF9M",
-            "T0dJTlNUQVRFEAASGgoWQ0xJRU5UX1BVU0hfQ0xFQVJMT0dJThABEhUKEUNM",
-            "SUVOVF9GUlBDX1NUQVJUEAISFQoRQ0xJRU5UX0ZSUENfQ0xPU0UQAxITCg9D",
-            "TElFTlRfR0VUX0xPR1MQBBIdChlDTElFTlRfR0VUX1JVTk5JTkdUVU5ORUxT",
-            "EAVCIqoCH09wZW5GcnAuQ29yZS5MaWJyYXJpZXMuUHJvdG9idWZiBnByb3Rv",
-            "Mw=="));
+            "EhcKCmNvbmZpZ0pzb24YBSABKAlIA4gBARIsCg5ub3RpZml5UmVxdWVzdBgG",
+            "IAEoCzIPLk5vdGlmbHlSZXF1ZXN0SASIAQFCDwoNX2xvZ2luUmVxdWVzdEIN",
+            "CgtfZnJwUmVxdWVzdEIOCgxfbG9nc1JlcXVlc3RCDQoLX2NvbmZpZ0pzb25C",
+            "EQoPX25vdGlmaXlSZXF1ZXN0ImMKDExvZ2luUmVxdWVzdBIVCg1hdXRob3Jp",
+            "emF0aW9uGAEgASgJEhEKCXNlc3Npb25JZBgCIAEoCRIUCgx1c2VySW5mb0pz",
+            "b24YAyABKAkSEwoLYWNjb3VudEpzb24YBCABKAkiJAoKRnJwUmVxdWVzdBIW",
+            "Cg51c2VyVHVubmVsSnNvbhgBIAEoCSIYCgpMb2dzUmVxZXN0EgoKAmlkGAEg",
+            "ASgFIiUKDk5vdGlmbHlSZXF1ZXN0EhMKC3R1bm5uZWxKc29uGAEgASgJKr8C",
+            "CgtSZXF1ZXN0VHlwZRIaChZDTElFTlRfUFVTSF9MT0dJTlNUQVRFEAASGgoW",
+            "Q0xJRU5UX1BVU0hfQ0xFQVJMT0dJThABEhUKEUNMSUVOVF9GUlBDX1NUQVJU",
+            "EAISFQoRQ0xJRU5UX0ZSUENfQ0xPU0UQAxITCg9DTElFTlRfR0VUX0xPR1MQ",
+            "BBIfChtDTElFTlRfR0VUX1JVTk5JTkdUVU5ORUxTSUQQBRIcChhDTElFTlRf",
+            "R0VUX1JVTk5JTkdUVU5ORUwQBhIVChFDTElFTlRfQ0xFQVJfTE9HUxAHEhYK",
+            "EkNMSUVOVF9QVVNIX0NPTkZJRxAIEhMKD0NMSUVOVF9DTE9TRV9JTxAJEhkK",
+            "FVNFUlZFUl9VUERBVEVfVFVOTkVMUxAKEhcKE1NFUlZFUl9TRU5EX05PVElG",
+            "SVkQC0IiqgIfT3BlbkZycC5Db3JlLkxpYnJhcmllcy5Qcm90b2J1ZmIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestBase), global::OpenFrp.Core.Libraries.Protobuf.RequestBase.Parser, new[]{ "Action", "LoginRequest", "FrpRequest", "LogsRequest" }, new[]{ "LoginRequest", "FrpRequest", "LogsRequest" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LoginRequest), global::OpenFrp.Core.Libraries.Protobuf.LoginRequest.Parser, new[]{ "Authorization", "SessionId", "UserInfoJson" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestBase), global::OpenFrp.Core.Libraries.Protobuf.RequestBase.Parser, new[]{ "Action", "LoginRequest", "FrpRequest", "LogsRequest", "ConfigJson", "NotifiyRequest" }, new[]{ "LoginRequest", "FrpRequest", "LogsRequest", "ConfigJson", "NotifiyRequest" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LoginRequest), global::OpenFrp.Core.Libraries.Protobuf.LoginRequest.Parser, new[]{ "Authorization", "SessionId", "UserInfoJson", "AccountJson" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.FrpRequest), global::OpenFrp.Core.Libraries.Protobuf.FrpRequest.Parser, new[]{ "UserTunnelJson" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LogsReqest), global::OpenFrp.Core.Libraries.Protobuf.LogsReqest.Parser, new[]{ "Id" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LogsReqest), global::OpenFrp.Core.Libraries.Protobuf.LogsReqest.Parser, new[]{ "Id" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest), global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest.Parser, new[]{ "TunnnelJson" }, null, null, null, null)
           }));
     }
     #endregion
@@ -57,7 +65,13 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     [pbr::OriginalName("CLIENT_FRPC_START")] ClientFrpcStart = 2,
     [pbr::OriginalName("CLIENT_FRPC_CLOSE")] ClientFrpcClose = 3,
     [pbr::OriginalName("CLIENT_GET_LOGS")] ClientGetLogs = 4,
-    [pbr::OriginalName("CLIENT_GET_RUNNINGTUNNELS")] ClientGetRunningtunnels = 5,
+    [pbr::OriginalName("CLIENT_GET_RUNNINGTUNNELSID")] ClientGetRunningtunnelsid = 5,
+    [pbr::OriginalName("CLIENT_GET_RUNNINGTUNNEL")] ClientGetRunningtunnel = 6,
+    [pbr::OriginalName("CLIENT_CLEAR_LOGS")] ClientClearLogs = 7,
+    [pbr::OriginalName("CLIENT_PUSH_CONFIG")] ClientPushConfig = 8,
+    [pbr::OriginalName("CLIENT_CLOSE_IO")] ClientCloseIo = 9,
+    [pbr::OriginalName("SERVER_UPDATE_TUNNELS")] ServerUpdateTunnels = 10,
+    [pbr::OriginalName("SERVER_SEND_NOTIFIY")] ServerSendNotifiy = 11,
   }
 
   #endregion
@@ -101,6 +115,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       loginRequest_ = other.loginRequest_ != null ? other.loginRequest_.Clone() : null;
       frpRequest_ = other.frpRequest_ != null ? other.frpRequest_.Clone() : null;
       logsRequest_ = other.logsRequest_ != null ? other.logsRequest_.Clone() : null;
+      configJson_ = other.configJson_;
+      notifiyRequest_ = other.notifiyRequest_ != null ? other.notifiyRequest_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -158,6 +174,42 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "configJson" field.</summary>
+    public const int ConfigJsonFieldNumber = 5;
+    private string configJson_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ConfigJson {
+      get { return configJson_ ?? ""; }
+      set {
+        configJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+    /// <summary>Gets whether the "configJson" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasConfigJson {
+      get { return configJson_ != null; }
+    }
+    /// <summary>Clears the value of the "configJson" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearConfigJson() {
+      configJson_ = null;
+    }
+
+    /// <summary>Field number for the "notifiyRequest" field.</summary>
+    public const int NotifiyRequestFieldNumber = 6;
+    private global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest notifiyRequest_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest NotifiyRequest {
+      get { return notifiyRequest_; }
+      set {
+        notifiyRequest_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -177,6 +229,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (!object.Equals(LoginRequest, other.LoginRequest)) return false;
       if (!object.Equals(FrpRequest, other.FrpRequest)) return false;
       if (!object.Equals(LogsRequest, other.LogsRequest)) return false;
+      if (ConfigJson != other.ConfigJson) return false;
+      if (!object.Equals(NotifiyRequest, other.NotifiyRequest)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -188,6 +242,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (loginRequest_ != null) hash ^= LoginRequest.GetHashCode();
       if (frpRequest_ != null) hash ^= FrpRequest.GetHashCode();
       if (logsRequest_ != null) hash ^= LogsRequest.GetHashCode();
+      if (HasConfigJson) hash ^= ConfigJson.GetHashCode();
+      if (notifiyRequest_ != null) hash ^= NotifiyRequest.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -222,6 +278,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(LogsRequest);
       }
+      if (HasConfigJson) {
+        output.WriteRawTag(42);
+        output.WriteString(ConfigJson);
+      }
+      if (notifiyRequest_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(NotifiyRequest);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -248,6 +312,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(34);
         output.WriteMessage(LogsRequest);
       }
+      if (HasConfigJson) {
+        output.WriteRawTag(42);
+        output.WriteString(ConfigJson);
+      }
+      if (notifiyRequest_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(NotifiyRequest);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -269,6 +341,12 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (logsRequest_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LogsRequest);
+      }
+      if (HasConfigJson) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ConfigJson);
+      }
+      if (notifiyRequest_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NotifiyRequest);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -302,6 +380,15 @@ namespace OpenFrp.Core.Libraries.Protobuf {
           LogsRequest = new global::OpenFrp.Core.Libraries.Protobuf.LogsReqest();
         }
         LogsRequest.MergeFrom(other.LogsRequest);
+      }
+      if (other.HasConfigJson) {
+        ConfigJson = other.ConfigJson;
+      }
+      if (other.notifiyRequest_ != null) {
+        if (notifiyRequest_ == null) {
+          NotifiyRequest = new global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest();
+        }
+        NotifiyRequest.MergeFrom(other.NotifiyRequest);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -341,6 +428,17 @@ namespace OpenFrp.Core.Libraries.Protobuf {
               LogsRequest = new global::OpenFrp.Core.Libraries.Protobuf.LogsReqest();
             }
             input.ReadMessage(LogsRequest);
+            break;
+          }
+          case 42: {
+            ConfigJson = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (notifiyRequest_ == null) {
+              NotifiyRequest = new global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest();
+            }
+            input.ReadMessage(NotifiyRequest);
             break;
           }
         }
@@ -383,6 +481,17 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             input.ReadMessage(LogsRequest);
             break;
           }
+          case 42: {
+            ConfigJson = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (notifiyRequest_ == null) {
+              NotifiyRequest = new global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest();
+            }
+            input.ReadMessage(NotifiyRequest);
+            break;
+          }
         }
       }
     }
@@ -390,6 +499,9 @@ namespace OpenFrp.Core.Libraries.Protobuf {
 
   }
 
+  /// <summary>
+  /// 以下部分为二级子项
+  /// </summary>
   public sealed partial class LoginRequest : pb::IMessage<LoginRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -427,6 +539,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       authorization_ = other.authorization_;
       sessionId_ = other.sessionId_;
       userInfoJson_ = other.userInfoJson_;
+      accountJson_ = other.accountJson_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -472,6 +585,18 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "accountJson" field.</summary>
+    public const int AccountJsonFieldNumber = 4;
+    private string accountJson_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AccountJson {
+      get { return accountJson_; }
+      set {
+        accountJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -490,6 +615,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (Authorization != other.Authorization) return false;
       if (SessionId != other.SessionId) return false;
       if (UserInfoJson != other.UserInfoJson) return false;
+      if (AccountJson != other.AccountJson) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -500,6 +626,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (Authorization.Length != 0) hash ^= Authorization.GetHashCode();
       if (SessionId.Length != 0) hash ^= SessionId.GetHashCode();
       if (UserInfoJson.Length != 0) hash ^= UserInfoJson.GetHashCode();
+      if (AccountJson.Length != 0) hash ^= AccountJson.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -530,6 +657,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(26);
         output.WriteString(UserInfoJson);
       }
+      if (AccountJson.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(AccountJson);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -552,6 +683,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(26);
         output.WriteString(UserInfoJson);
       }
+      if (AccountJson.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(AccountJson);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -570,6 +705,9 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (UserInfoJson.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserInfoJson);
+      }
+      if (AccountJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AccountJson);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -591,6 +729,9 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (other.UserInfoJson.Length != 0) {
         UserInfoJson = other.UserInfoJson;
+      }
+      if (other.AccountJson.Length != 0) {
+        AccountJson = other.AccountJson;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -619,6 +760,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             UserInfoJson = input.ReadString();
             break;
           }
+          case 34: {
+            AccountJson = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -644,6 +789,10 @@ namespace OpenFrp.Core.Libraries.Protobuf {
           }
           case 26: {
             UserInfoJson = input.ReadString();
+            break;
+          }
+          case 34: {
+            AccountJson = input.ReadString();
             break;
           }
         }
@@ -1022,6 +1171,195 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             break;
           case 8: {
             Id = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class NotiflyRequest : pb::IMessage<NotiflyRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<NotiflyRequest> _parser = new pb::MessageParser<NotiflyRequest>(() => new NotiflyRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<NotiflyRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::OpenFrp.Core.Libraries.Protobuf.RequestReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NotiflyRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NotiflyRequest(NotiflyRequest other) : this() {
+      tunnnelJson_ = other.tunnnelJson_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NotiflyRequest Clone() {
+      return new NotiflyRequest(this);
+    }
+
+    /// <summary>Field number for the "tunnnelJson" field.</summary>
+    public const int TunnnelJsonFieldNumber = 1;
+    private string tunnnelJson_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TunnnelJson {
+      get { return tunnnelJson_; }
+      set {
+        tunnnelJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as NotiflyRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(NotiflyRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (TunnnelJson != other.TunnnelJson) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (TunnnelJson.Length != 0) hash ^= TunnnelJson.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (TunnnelJson.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TunnnelJson);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (TunnnelJson.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TunnnelJson);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (TunnnelJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TunnnelJson);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(NotiflyRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.TunnnelJson.Length != 0) {
+        TunnnelJson = other.TunnnelJson;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            TunnnelJson = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            TunnnelJson = input.ReadString();
             break;
           }
         }

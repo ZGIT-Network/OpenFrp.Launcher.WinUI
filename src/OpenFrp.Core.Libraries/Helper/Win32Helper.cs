@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -79,6 +80,25 @@ namespace OpenFrp.Core.Helper
             public int Port { get; set; }
         }
 
+        public static bool IsServiceInstalled()
+        {
+            ServiceController[] services = ServiceController.GetServices();
+            foreach (var service in services)
+            {
+                if (service.ServiceName == "OpenFrp Launcher Service") return true;
+            }
+            return false;
+        }
+
+        public static bool CheckServiceIsRunning()
+        {
+            using var service = new ServiceController("OpenFrp Launcher Service");
+            if (!service.CanStop)
+            {
+                return false;
+            }
+            return true;
+        }
 
     }
 }

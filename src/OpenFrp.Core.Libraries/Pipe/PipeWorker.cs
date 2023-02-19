@@ -24,11 +24,26 @@ namespace OpenFrp.Core.Libraries.Pipe
 
         public void Dispose() => Pipe?.Dispose();
 
-        public void Send(byte[] data) => Pipe?.Write(data,0,data.Length);
+        public void Send(byte[] data)
+        {
+            if (Pipe?.IsConnected is true) Pipe?.Write(data, 0, data.Length);
+        }
 
         public async ValueTask SendAsync(byte[] data) => await Task.Run(() => Send(data));
 
-        public int Read() => Pipe?.Read(Buffer, 0, Buffer.Length) ?? 0;
+        public int Read()
+        {
+            try
+            {
+                if (Pipe?.IsConnected is true) return Pipe?.Read(Buffer, 0, Buffer.Length) ?? 0;
+            }
+            catch
+            {
+
+            }
+            return 0;
+            
+        }
 
         public async ValueTask<int> ReadAsync() => await Task.Run(Read);
         

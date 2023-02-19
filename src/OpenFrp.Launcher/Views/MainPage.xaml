@@ -10,6 +10,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:OpenFrp.Launcher.ViewModels"
@@ -27,6 +28,11 @@
     <Window.DataContext>
         <models:MainPageModel />
     </Window.DataContext>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding WindClosingCommand}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <Grid>
             <Grid.Style>
@@ -124,8 +130,7 @@
                             AutomationProperties.Name="{Binding UserInfo.UserName, StringFormat='账户名称: {0}'}"
                             Background="Transparent"
                             BorderThickness="0"
-                            Command="{Binding AccountInfoCommand}"
-                            IsEnabled="{Binding HasDeamonProcess}">
+                            Command="{Binding AccountInfoCommand}">
                             <Button.ToolTip>
                                 <TextBlock>
                                     <Run Text="{Binding UserInfo.UserName}" />
@@ -399,11 +404,11 @@
                     Icon="&#xe953;"
                     Tag="Tunnels" />
                 <ui:NavigationViewItem
-                    Content="Market"
-                    Icon="&#xe765;"
+                    Content="日志"
+                    Icon="AlignLeft"
                     Tag="Logs" />
             </ui:NavigationView.MenuItems>
-            <ui:Frame x:Name="Of_nViewFrame" />
+            <ui:Frame x:Name="Of_nViewFrame" Source="./Home.xaml" />
         </ui:NavigationView>
         <Grid Height="{Binding CompactPaneLength, ElementName=Of_nView}" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>

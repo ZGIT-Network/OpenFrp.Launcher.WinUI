@@ -14,9 +14,9 @@
 
 
 
-                <ResourceDictionary Source="/ModernWpf;component/DesignTime/SystemColors.xaml" />
+                <!--<ResourceDictionary Source="/ModernWpf;component/DesignTime/SystemColors.xaml" />
                 <ResourceDictionary Source="/ModernWpf;component/ThemeResources/Light.xaml" />
-                <ResourceDictionary Source="/ModernWpf;component/ControlsResources.xaml" />
+                <ResourceDictionary Source="/ModernWpf;component/ControlsResources.xaml" />-->
                 <ResourceDictionary Source="/ModernWpf.Controls;component/ToggleSwitch/ToggleSwitch.xaml" />
 
                 <ResourceDictionary Source="./Controls/ViewPage.xaml" />
@@ -25,6 +25,7 @@
                 <ResourceDictionary Source="./Controls/ElementLoader.xaml" />
                 <ResourceDictionary Source="./Controls/TunnelConfig.xaml" />
                 <ResourceDictionary Source="./Controls/Expander.xaml" />
+                <ResourceDictionary Source="./Controls/SelectableTextBlock.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 

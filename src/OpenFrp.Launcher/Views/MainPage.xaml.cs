@@ -1,6 +1,11 @@
 ﻿using ModernWpf.Controls.Primitives;
+using OpenFrp.Core;
+using OpenFrp.Core.Helper;
+using OpenFrp.Core.Libraries.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +33,8 @@ namespace OpenFrp.Launcher.Views
         {
             base.OnInitialized(e);
 
+            Debug.WriteLine($"OpenFrp Launcher 2023 | Pipe标识符: {Utils.PipesName}");
+
             Of_nView.ItemInvoked += (sender, args) =>
             {
                 Type? pages = args.IsSettingsInvoked switch
@@ -54,8 +61,6 @@ namespace OpenFrp.Launcher.Views
                 if (args.Uri is not null) args.Cancel = true;
             };
         }
-        
-
 
 
     }

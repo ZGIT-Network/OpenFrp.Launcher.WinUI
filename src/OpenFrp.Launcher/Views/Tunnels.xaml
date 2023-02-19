@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:OpenFrp.Launcher.ViewModels"
@@ -29,23 +30,26 @@
             <ui:AppBarButton
                 Command="{Binding RefreshUserProxiesCommand}"
                 Icon="Refresh"
-                IsEnabled="{Binding IsCanRefreshing}"
                 Label="刷新" />
             <ui:AppBarButton
                 Command="{Binding ToCreateTunnelCommand}"
                 Icon="Add"
-                IsEnabled="{Binding IsToolsEnabled}"
                 Label="创建" />
         </ui:CommandBar>
 
     </Grid>
     <ofc:ViewPage.ContentWithOverflow>
         <ofc:ElementLoader x:Name="OfApp_XLoader" Margin="0,48,0,0">
-            <ui:ScrollViewerEx PreviewMouseWheel="ScrollViewerEx_PreviewMouseWheel">
+            <ui:ScrollViewerEx>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseWheel" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=ui:ScrollViewerEx}}">
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerEx_PreviewMouseWheelCommand}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <ui:GridView
                     MaxWidth="1410"
                     Padding="56,8,56,32"
-                    IsEnabled="{Binding MainPageModel.HasDeamonProcess}"
+                    IsEnabled="{Binding HasDeamonProcess}"
                     ItemsSource="{Binding UserTunnels}">
                     <ui:GridView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -145,8 +149,13 @@
                                     VerticalAlignment="Top"
                                     AutomationProperties.Name="隧道开启状态"
                                     IsOn="{Binding IsRunning}"
-                                    Style="{StaticResource LeftLabelToggleSwitchStyle}"
-                                    Toggled="ToggleSwitch_Toggled" />
+                                    Style="{StaticResource LeftLabelToggleSwitchStyle}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Toggled">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.ChangeTunnelSwitchCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}" PassEventArgsToCommand="True" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ui:ToggleSwitch>
                                 <!--  操控列表  -->
                                 <ui:CommandBar
                                     Margin="18,20"
@@ -173,7 +182,9 @@
                     </ui:GridView.ItemTemplate>
 
                 </ui:GridView>
+
             </ui:ScrollViewerEx>
+
         </ofc:ElementLoader>
     </ofc:ViewPage.ContentWithOverflow>
 </ofc:ViewPage>

@@ -12,3 +12,6 @@
 /src/OpenFrp.Core.Libraries/bin/Debug/net462
 /src/OpenFrp.Core.Libraries/Pipe/PipeStream.cs
 /src/OpenFrp.Core.Libraries/obj
+/src/OpenFrp.Core.Libraries/bin/Release/net462
+/src/OpenFrp.Core/bin/Release/net462
+/src/OpenFrp.Launcher/bin/Release/net462

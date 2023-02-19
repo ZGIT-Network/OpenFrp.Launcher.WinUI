@@ -23,27 +23,26 @@ namespace OpenFrp.Launcher.Views
     /// </summary>
     public partial class Logs : Controls.ViewPage
     {
-        public Logs()
+        public ViewModels.LogsModel Model
         {
-            InitializeComponent();
+            get => (ViewModels.LogsModel)DataContext;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var request = new Core.Libraries.Protobuf.RequestBase()
-            {
-                Action = Core.Libraries.Protobuf.RequestType.ClientGetLogs,
-                LogsRequest = new()
-                {
-                    Id = 0
-                }
-            };
-            var response = await Helper.AppShareHelper.PipeClient.Request(request);
 
-            foreach (var item in response.LogsJson)
+        public Logs() => InitializeComponent();
+
+        protected override async void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            do
             {
-                Debug.WriteLine(item.PraseJson<LogHelper.LogContent>().Content);
-            }
+                Model.GetLogs();
+                await Task.Delay(1000);
+            } while (IsInitialized && IsLoaded);
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => Model.GetLogs(true);
+
+        private void ScrollViewerEx_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => ((ScrollViewerEx)sender).ExcuteScroll(e);
     }
 }

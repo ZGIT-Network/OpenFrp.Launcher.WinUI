@@ -9,5 +9,7 @@ message ResponseBase{
 	optional string message = 2;
 	optional string exception = 3;
     repeated string logsJson = 4;
-    repeated int32 runningCount = 5;
+    repeated string logsViewJson = 5;
+    repeated int32 runningCount = 6;
+
 }

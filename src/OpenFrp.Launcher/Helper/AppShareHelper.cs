@@ -1,4 +1,6 @@
-﻿using OpenFrp.Core.Helper;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Api.Models;
 using OpenFrp.Core.Libraries.Pipe;
@@ -6,6 +8,7 @@ using OpenFrp.Launcher.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,20 +20,22 @@ namespace OpenFrp.Launcher.Helper
         /// 是否有 ContentDialog 正在显示
         /// </summary>
         public static bool HasDialog { get; set; }
-
-
         /// <summary>
         /// 管道 - 客户端
         /// </summary>
         public static PipeClient PipeClient { get; set; } = new();
-
+        private static bool hasDeamonProcess;
         /// <summary>
         /// 守护进程是否正在运行
         /// </summary>
         public static bool HasDeamonProcess
         {
-            get => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess;
-            set => (App.Current.MainWindow.DataContext as ViewModels.MainPageModel)!.HasDeamonProcess = value;
+            get => hasDeamonProcess;
+            set
+            {
+                WeakReferenceMessenger.Default.Send(new PropertyChangedMessage<bool>(new object(), nameof(HasDeamonProcess), hasDeamonProcess, value));
+                hasDeamonProcess = value;
+            }
         }
 
         /// <summary>
@@ -55,7 +60,8 @@ namespace OpenFrp.Launcher.Helper
                             {
                                 Authorization = ApiRequest.Authorization,
                                 SessionId = ApiRequest.SessionId,
-                                UserInfoJson = userinfoResult.JSON()
+                                UserInfoJson = userinfoResult.JSON(),
+                                AccountJson = new ConfigHelper.UserAccount(username, password).JSON()
                             },
                         };
                         var response = await PipeClient.Request(request).WithCancalToken(token);
@@ -97,5 +103,7 @@ namespace OpenFrp.Launcher.Helper
             }
             
         }
+
+        public static Hardcodet.Wpf.TaskbarNotification.TaskbarIcon TaskbarIcon { get; } = new();
     }
 }

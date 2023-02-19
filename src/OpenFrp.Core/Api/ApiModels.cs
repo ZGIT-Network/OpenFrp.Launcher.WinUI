@@ -338,7 +338,7 @@ namespace OpenFrp.Core.Libraries.Api.Models
 #pragma warning restore IDE0051 // 删除未使用的私有成员
                 {
                     get => JsonConvert.SerializeObject(Domains);
-                    set => Domains = JsonConvert.DeserializeObject<string[]>(value) ?? new string[0];
+                    set => Domains = (!string.IsNullOrEmpty(value) ? JsonConvert.DeserializeObject<string[]>(value) : new string[0])!;
                 }
 
                 /// <summary>
@@ -404,7 +404,7 @@ namespace OpenFrp.Core.Libraries.Api.Models
                 [JsonProperty("proxyType")]
                 private string? _tunnelType
                 {
-                    get { return ""; }
+                    get { return TunnelType?.ToLower(); }
                     set
                     {
                         TunnelType = value?.ToUpper();

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration.Install;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -11,35 +15,82 @@ using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Core.Libraries.Protobuf;
+using Windows.Media.Devices;
+using Windows.UI.Xaml;
 
 namespace OpenFrp.Core
 {
     internal class Program
     {
-        static void Main(string[] args)
+        public static PipeServer? PushClient { get; set; } 
+
+        static async Task Main(string[] args)
         {
-            // NORMAL 只接收
+            if (args.Length == 1)
+            {
+                switch (args[0])
+                {
+                    case "-ps": PipeService();break;
+                    case "--install":await InstallService();break;
+                    case "--uninstall":await UninstallService();break;
+                    case "--uap":await UninstallAppProgress();break;
+                }
+            }
+            else if (Utils.IsWindowsService)
+            {
+                ServiceBase.Run(new ServiceWorker());
+            }
+        }
+
+        private static async void PipeService()
+        {
             var server = new PipeServer();
             server.Start();
             server.OnDataRecived += OnDataRecived;
 
             // PUSH 只发送
-            var server_push = new PipeServer();
-            server_push.Start(true);
+            PushClient = new PipeServer();
+            PushClient.Start(true);
             server.OnRestart = () =>
             {
-                server_push.Disponse();
-                if (server_push.Pipe?.IsConnected == true)
+                PushClient.Disponse();
+                if (PushClient.Pipe?.IsConnected == true)
                 {
-                    server_push.Disconnect();
+                    PushClient.Disconnect();
                 }
-                server_push.Start(true);
+                PushClient.Start(true);
             };
-            
+            LogHelper.Add(0, $"OpenFrp Launcher 2023 | Pipe标识符: {Utils.PipesName}", TraceLevel.Warning, true);
+
+            Win32Helper.SetConsoleCtrlHandler(o =>
+            {
+                if (ConsoleHelper.Wrappers.Count > 0)
+                {
+                    ConfigHelper.Instance.AutoStartupList = ConsoleHelper.Wrappers.Keys.ToArray();
+                    foreach (var x in ConsoleHelper.Wrappers.Values.ToArray())
+                    {
+                        ConsoleHelper.Kill(x.Tunnel!);
+                    }
+                }
+                else if (ConsoleHelper.Wrappers.Count == 0 && ConfigHelper.Instance.AutoStartupList.Length > 0)
+                {
+                    ConfigHelper.Instance.AutoStartupList = new int[0];
+                }
+
+                File.WriteAllText(Utils.ConfigFile, ConfigHelper.Instance.JSON());
+
+                Environment.Exit(0);
+                return true;
+            }, true);
+#if DEBUG
             string str = Console.ReadLine();
             while (str is not "exit")
             {
-                if (str is "session")
+                if (str is null)
+                {
+                    return;
+                }
+                else if (str is "session")
                 {
                     Utils.Log(ApiRequest.SessionId!);
                     Utils.Log(ApiRequest.Authorization!);
@@ -53,13 +104,23 @@ namespace OpenFrp.Core
                 {
                     foreach (var item in ConsoleHelper.Wrappers.Values)
                     {
-                        Utils.Log(item.Tunnel!, level: TraceLevel.Error);
+                        Utils.Log(item.Tunnel!.TunnelId, level: TraceLevel.Error);
                     }
                 }
+                else if (str.Split(':').First() is "kill")
+                {
+                    ConsoleHelper.Kill(ConsoleHelper.Wrappers[int.Parse(str.Split(':')[1])].Tunnel!);
+                }
+                
 
                 str = Console.ReadLine();
             }
-
+#else
+            while(true)
+            {
+                await Task.Delay(100);
+            }
+#endif
         }
 
         private static void OnDataRecived(PipeWorker worker,RequestBase request)
@@ -69,19 +130,22 @@ namespace OpenFrp.Core
             {
                 switch (request.Action)
                 {
+                    // 客户端上传了登录状态
                     case RequestType.ClientPushLoginstate:
                         {
                             ApiRequest.Authorization = request.LoginRequest.Authorization;
                             ApiRequest.SessionId = request.LoginRequest.SessionId;
                             ApiRequest.UserInfo = request.LoginRequest.UserInfoJson.PraseJson<Libraries.Api.Models.ResponseBody.UserInfoResponse>()?.Data;
+                            ConfigHelper.Instance.Account = request.LoginRequest.AccountJson.PraseJson<ConfigHelper.UserAccount>() ?? new();
                             break;
-                            
                         };
+                    // 客户端请求清除登录
                     case RequestType.ClientPushClearlogin:
                         {
                             ApiRequest.ClearAuth();
                             break;
                         }
+                    // 客户端请求 FRPC 启动
                     case RequestType.ClientFrpcStart:
                         {
                             if (request.FrpRequest is not null)
@@ -98,12 +162,12 @@ namespace OpenFrp.Core
                             break;
 
                         }
+                    // 客户端请求 FRPC 关闭
                     case RequestType.ClientFrpcClose:
                         {
                             if (request.FrpRequest is not null)
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
-                                Debugger.Break();
                                 ConsoleHelper.Kill(tunnel);
                                 Utils.Log($"从客户端收到关闭请求。{tunnel.TunnelName}", true);
                                 break;
@@ -111,24 +175,56 @@ namespace OpenFrp.Core
                             response = new() { Message = "FRP Request 不能为空。" };
                             break;
                         };
+                    // 获取日志
                     case RequestType.ClientGetLogs:
                         {
-                            if (request.LogsRequest is not null)
+                            if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
                             {
-                                if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
-                                {
-                                    LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
-                                }
-                                else
-                                {
-                                    LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
-                                }
+                                LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
+                            }
+                            else
+                            {
+                                LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             break;
                         }
-                    case RequestType.ClientGetRunningtunnels:
+                    // 获取运行中的隧道 ID
+                    case RequestType.ClientGetRunningtunnelsid:
                         {
                             response.RunningCount.AddRange(ConsoleHelper.Wrappers.Keys);
+                            break;
+                        }
+                    // 客户端请求 获取所有正在运行的隧道
+                    case RequestType.ClientGetRunningtunnel:
+                        {
+                            if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
+                            {
+                                LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
+                            }
+                            else
+                            {
+                                LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
+                            }
+                            response.LogsViewJson.Add(new Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel() { TunnelName = "全部日志",TunnelId = 0}.JSON());
+                            response.LogsViewJson.AddRange(ConsoleHelper.Wrappers.Values.Select(x => x.Tunnel?.JSON()));
+                            break;
+                        }
+                    // 清除日志
+                    case RequestType.ClientClearLogs:
+                        {
+                            LogHelper.Logs[request.LogsRequest.Id].Clear();
+                            break;
+                        }
+                    case RequestType.ClientPushConfig:
+                        {
+                            ConfigHelper.Instance = request.ConfigJson.PraseJson<ConfigHelper>() ?? new();
+                            break;
+                        }
+
+                    // 客户端请求关闭 IO
+                    case RequestType.ClientCloseIo:
+                        {
+                            Environment.Exit(0);
                             break;
                         }
                     default: { response = new() { Message = "Action not found" }; }; break;
@@ -144,8 +240,92 @@ namespace OpenFrp.Core
                 };
             }
 
-            Utils.Log("发回客户端 " + response, true);
+            Utils.Log("发回客户端 内容被省略", true);
             worker.Send(response.ToByteArray());
+        }
+
+        private async static ValueTask InstallService()
+        {
+
+            if (IsServiceInstalled()) return;
+
+            WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+            if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
+            {
+                new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath,"OpenFrp.Core.exe"), "--install").RunAsUAC();
+                Environment.Exit(0);
+            }
+            else
+            {
+                await ConfigHelper.ReadConfig();
+                try
+                {
+                    var dir = new DirectoryInfo(Utils.ApplicationExecutePath);
+                    var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
+                    acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                        new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
+                        System.Security.AccessControl.FileSystemRights.FullControl,
+                        System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                        System.Security.AccessControl.PropagationFlags.None,
+                        System.Security.AccessControl.AccessControlType.Allow));
+                    dir.SetAccessControl(acl);
+                    ManagedInstallerClass.InstallHelper(new string[] { Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe") });
+                    Process.Start(new ProcessStartInfo("sc", "start \"OpenFrp Launcher Service\""));
+
+
+                    ConfigHelper.Instance.IsServiceMode = true;
+
+                    await ConfigHelper.Instance.WriteConfig();
+                    await Task.Delay(3250);
+                    Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+                }
+                catch (Exception ex)
+                {
+                    Utils.Log(ex.ToString(),true,TraceLevel.Error);
+                }
+
+            }
+        }
+
+        private async static ValueTask UninstallService(bool saveConfig = true)
+        {
+            if (IsServiceInstalled())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+                if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
+                {
+                    new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--uninstall").RunAsUAC();
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    ManagedInstallerClass.InstallHelper(new string[] { "-u", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe") });
+                }
+            }
+            if (saveConfig)
+            {
+                await ConfigHelper.ReadConfig();
+                ConfigHelper.Instance.IsServiceMode = false;
+                await ConfigHelper.Instance.WriteConfig();
+                Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+            }
+        }
+
+        private async static ValueTask UninstallAppProgress()
+        {
+            await UninstallService(false);
+            new ProcessStartInfo("sc", "delete \"OpenFrp Launcher Service\"").RunAsUAC();
+            Directory.Delete(Utils.ApplicatioDataPath, true);
+        }
+
+        private static bool IsServiceInstalled()
+        {
+            ServiceController[] services = ServiceController.GetServices();
+            foreach (var service in services)
+            {
+                if (service.ServiceName == "OpenFrp Launcher Service") return true;
+            }
+            return false;
         }
     }
 }

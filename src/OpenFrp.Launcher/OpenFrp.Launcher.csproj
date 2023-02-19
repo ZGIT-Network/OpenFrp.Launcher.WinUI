@@ -17,7 +17,18 @@
 	  <None Remove="Resourecs\previewImage.png" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Include="Resourecs\main.ico" />
+	  <COMReference Include="IWshRuntimeLibrary">
+	    <WrapperTool>tlbimp</WrapperTool>
+	    <VersionMinor>0</VersionMinor>
+	    <VersionMajor>1</VersionMajor>
+	    <Guid>f935dc20-1cf0-11d0-adb9-00c04fd58a0b</Guid>
+	    <Lcid>0</Lcid>
+	    <Isolated>false</Isolated>
+	    <EmbedInteropTypes>true</EmbedInteropTypes>
+	  </COMReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Include="Resourecs\main.ico" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Include="..\.editorconfig" Link=".editorconfig" />
@@ -26,10 +37,15 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
+	  <PackageReference Include="Hardcodet.Wpf.TaskbarNotification" Version="1.0.5" />
+	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
 	  <PackageReference Include="ModernWpfUI" Version="10.1.83" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="Resourecs\previewImage.png" />

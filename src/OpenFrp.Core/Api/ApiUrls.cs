@@ -17,7 +17,7 @@ namespace OpenFrp.Core.Libraries.Api
         /// </summary>
         public const string BaseUrl = @"https://of-dev-api.bfsea.xyz";
 
-        public const string LauncherBaseUrl = @"http://192.168.31.62:5223";
+        public const string LauncherBaseUrl = @"https://yueapi.zyghit.cn/";
         /// <summary>
         /// 登录
         /// </summary>

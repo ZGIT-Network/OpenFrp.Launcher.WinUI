@@ -15,6 +15,11 @@ namespace OpenFrp.Core
 {
     public class Utils
     {
+
+        /// <summary>
+        /// 应用的运行目录
+        /// </summary>
+        public static string ApplicationExecutePath { get => AppDomain.CurrentDomain.BaseDirectory; }
         /// <summary>
         /// 应用的数据文件存放处
         /// </summary>
@@ -23,7 +28,6 @@ namespace OpenFrp.Core
         /// 配置文件
         /// </summary>
         public static string ConfigFile { get => ApplicatioDataPath.CombinePath("config.json"); }
-
         /// <summary>
         /// 管道的名称
         /// </summary>
@@ -35,13 +39,17 @@ namespace OpenFrp.Core
         /// <summary>
         /// 应用主窗口
         /// </summary>
-        public static Window MainWindow { get => Application.Current.MainWindow;  }
+        public static Window? MainWindow { get => Application.Current?.MainWindow;  }
         /// <summary>
         /// FRPC 对应平台的名称
         /// </summary>
         public static string FrpcPlatform { get => $"frpc_windows_{(Environment.Is64BitOperatingSystem ? "amd64":"386")}"; }
-
+        /// <summary>
+        /// FRPC
+        /// </summary>
         public static string Frpc { get => $"{ApplicatioDataPath}\\frpc\\{FrpcPlatform}.exe"; }
+
+        public static string AutoLaunchLink { get => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), $"{PipesName}.lnk"); }
 
 
         public static void Log(object message,bool debug = false,TraceLevel level = TraceLevel.Info)

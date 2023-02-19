@@ -1,8 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
+using OpenFrp.Core.Libraries.Protobuf;
+using OpenFrp.Launcher.Helper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +18,21 @@ namespace OpenFrp.Launcher.ViewModels
 {
     public partial class MainPageModel : ObservableObject
     {
+        public MainPageModel()
+        {
+            WeakReferenceMessenger.Default.Register<PropertyChangedMessage<bool>>(this, (obj,message) =>
+            {
+                switch (message.PropertyName)
+                {
+                    case "HasDeamonProcess": HasDeamonProcess = message.NewValue; break;
+                    case "HasAccount": OnPropertyChanged("UserInfo");break;
+                }
+            });
+            HasDeamonProcess = AppShareHelper.HasDeamonProcess;
+        }
+
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor("AccountInfoCommand")]
         public bool hasDeamonProcess;
 
         public Core.Libraries.Api.Models.ResponseBody.UserInfoResponse.UserInfo UserInfo
@@ -26,7 +46,9 @@ namespace OpenFrp.Launcher.ViewModels
 
         public void UpdateProperty(string name) => OnPropertyChanged(name);
 
-        [RelayCommand]
+        bool CanExcuteAccountInfo() => HasDeamonProcess;
+
+        [RelayCommand (CanExecute = nameof(CanExcuteAccountInfo))]
         internal async void AccountInfo()
         {
             if (!ApiRequest.HasAccount)
@@ -52,6 +74,24 @@ namespace OpenFrp.Launcher.ViewModels
 
             }
 
+        }
+
+        [RelayCommand]
+        async void WindClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+
+            App.Current.MainWindow.Visibility = Visibility.Collapsed;
+
+
+            var response = await AppShareHelper.PipeClient.Request(new RequestBase()
+            {
+                Action = RequestType.ClientGetRunningtunnelsid,
+            });
+            if (response.Success)
+            {
+                ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+            }
         }
     }
 }

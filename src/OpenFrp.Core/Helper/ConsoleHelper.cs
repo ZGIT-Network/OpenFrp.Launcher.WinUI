@@ -1,4 +1,8 @@
-﻿using OpenFrp.Core.Libraries.Api;
+﻿using CommunityToolkit.WinUI.Notifications;
+using Google.Protobuf;
+using OpenFrp.Core.Libraries.Api;
+using OpenFrp.Core.Libraries.Pipe;
+using OpenFrp.Core.Libraries.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,22 +42,20 @@ namespace OpenFrp.Core.Helper
                             StandardOutputEncoding = Encoding.UTF8,
                             StandardErrorEncoding = Encoding.UTF8,
                             FileName = Utils.Frpc,
-                            Arguments = $"-u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}",
+                            Arguments = $"-n -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}",
 
                         }
                     };
                     Utils.Log($"传入参数: -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}", level: TraceLevel.Warning);
                     process.OutputDataReceived += (sender, args) => Output(tunnel.TunnelId,args.Data);
-                    process.ErrorDataReceived += (sender, args) => Output(tunnel.TunnelId,args.Data,level: TraceLevel.Error);
+                    process.ErrorDataReceived += (sender, args) => Output(tunnel.TunnelId, args.Data, TraceLevel.Error);
                     process.Start();
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
                     process.Exited += async (sender, args) =>
                     {
                         Output(tunnel.TunnelId,$"[进程已退出,Exit Code: {process.ExitCode},等待 1500ms 后重启。]",TraceLevel.Warning);
-
                         await Task.Delay(1500);
-                         
                         Launch(tunnel);
                     };
                     if (!Wrappers.ContainsKey(tunnel.TunnelId))
@@ -106,10 +108,57 @@ namespace OpenFrp.Core.Helper
         }
 
 
-        static void Output(int id,object data,TraceLevel level = TraceLevel.Info)
+        static async void Output(int id,object data,TraceLevel level = TraceLevel.Info)
         {
-            LogHelper.Add(id, data, TraceLevel.Warning);
-            // Utils.Log(data, level: level);
+            
+            if (data?.ToString().Contains("[E]") is true) level = TraceLevel.Error;
+            else if (data?.ToString().Contains("[W]") is true) level = TraceLevel.Warning;
+            else if (data?.ToString().Contains("面板强制下线") is true)
+            {
+                if (Wrappers.ContainsKey(id))
+                {
+                    Kill(Wrappers[id].Tunnel!);
+                    if (Program.PushClient is not null && Program.PushClient.Pipe?.IsConnected is true)
+                    {
+                        LogHelper.Add(0, $"隧道 {id} 已从面板强制下线，已向客户端发送请求包。",TraceLevel.Warning);
+                        await Program.PushClient.SendAsync(new RequestBase()
+                        {
+                            Action = RequestType.ServerUpdateTunnels
+                        }.ToByteArray());
+                    }
+
+                }
+            }
+            else if (!Utils.IsWindowsService && data?.ToString().Contains("启动成功") is true)
+            {
+                Console.WriteLine(Enum.GetName(typeof(ConfigHelper.TnMode), ConfigHelper.Instance.MessagePullMode));
+
+                if (Program.PushClient is not null)
+                    await Program.PushClient.SendAsync(new RequestBase()
+                    {
+                        Action = RequestType.ServerSendNotifiy,
+                        NotifiyRequest = new()
+                        {
+                            TunnnelJson = Wrappers[id].Tunnel?.JSON()
+                        }
+                    }.ToByteArray());
+                // 逻辑需在客户端处理
+
+                //if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Toast)
+                //{
+                //    new ToastContentBuilder()
+                //        .AddText($"隧道 {Wrappers[id].Tunnel?.TunnelName} 启动成功!")
+                //        .AddText($"点击复制按钮，分享给你的朋友吧!")
+                //        .AddAttributionText($"{Wrappers[id].Tunnel?.TunnelType},{Wrappers[id].Tunnel?.LocalAddress}:{Wrappers[id].Tunnel?.LocalPort}")
+                //        .AddButton("复制连接", ToastActivationType.Foreground, $"--cl {Wrappers[id].Tunnel?.ConnectAddress}")
+                //        .AddButton("确定", ToastActivationType.Foreground, "")
+                //        .Show();
+                //}
+
+            }
+            LogHelper.Add(id, data ?? "", level);
+            LogHelper.Add(0, data ?? "", level);
+            // Utils.Log($"{data},{Enum.GetName(typeof(TraceLevel), level)}",true, level: level);
         }
     }
 }

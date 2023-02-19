@@ -87,8 +87,8 @@
                                 <Grid.Style>
                                     <Style TargetType="Grid">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsCreating,RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="False">
-                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource ButtonDisabledForegroundThemeBrush}"/>
+                                            <DataTrigger Binding="{Binding IsCreating, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="False">
+                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource ButtonDisabledForegroundThemeBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

@@ -66,6 +66,8 @@ namespace OpenFrp.Core.Libraries.Pipe
                 {
                     server.BeginWaitForConnection((callback) =>
                     {
+                        Pipe = server;
+                        Buffer = new byte[server.InBufferSize];
                         server.EndWaitForConnection(callback);
                         Utils.Log($"客户端已连接到PUSH", true);
                     }, server);
@@ -126,7 +128,7 @@ namespace OpenFrp.Core.Libraries.Pipe
                     if (count > 0)
                     {
                         var obj = RequestBase.Parser.ParseFrom(Buffer, 0, EnsureMessageComplete(count));
-                        Utils.Log("Get Protobuf Content: " + obj, true, TraceLevel.Verbose);
+                        Utils.Log("Get Protobuf Content: 内容被省略", true, TraceLevel.Verbose);
                         return obj;
                     }
                 }

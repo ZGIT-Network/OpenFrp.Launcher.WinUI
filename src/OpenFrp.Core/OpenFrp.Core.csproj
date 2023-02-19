@@ -11,10 +11,12 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
 	  <PackageReference Include="ModernWpfUI" Version="10.1.83" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
 	  <PackageReference Include="System.Memory" Version="4.5.5" />
 	  <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="7.0.0-preview.2.22152.2" />
 	  <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="7.0.0" />
@@ -22,5 +24,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenFrp.Core.Libraries\OpenFrp.Core.Libraries.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="System.Configuration.Install" />
+	  <Reference Include="System.ServiceProcess" />
 	</ItemGroup>
 </Project>

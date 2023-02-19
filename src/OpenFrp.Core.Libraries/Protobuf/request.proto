@@ -9,11 +9,15 @@ message RequestBase{
 	optional LoginRequest loginRequest = 2;
     optional FrpRequest frpRequest = 3;
     optional LogsReqest logsRequest = 4;
+    optional string configJson = 5;
+    optional NotiflyRequest notifiyRequest = 6;
 }
+// 以下部分为二级子项
 message LoginRequest{
 	string authorization = 1;
 	string sessionId = 2;
 	string userInfoJson = 3;
+    string accountJson = 4;
 }
 message FrpRequest{
 	string userTunnelJson = 1;
@@ -21,6 +25,11 @@ message FrpRequest{
 message LogsReqest{
     int32 id = 1;
 }
+message NotiflyRequest{
+    string tunnnelJson = 1;
+}
+
+
 
 enum RequestType{
 	CLIENT_PUSH_LOGINSTATE = 0;
@@ -28,5 +37,11 @@ enum RequestType{
 	CLIENT_FRPC_START = 2;
     CLIENT_FRPC_CLOSE = 3;
     CLIENT_GET_LOGS = 4;
-    CLIENT_GET_RUNNINGTUNNELS = 5;
+    CLIENT_GET_RUNNINGTUNNELSID = 5;
+    CLIENT_GET_RUNNINGTUNNEL = 6;
+    CLIENT_CLEAR_LOGS = 7;
+    CLIENT_PUSH_CONFIG = 8;
+    CLIENT_CLOSE_IO = 9;
+    SERVER_UPDATE_TUNNELS = 10;
+    SERVER_SEND_NOTIFIY = 11;
 }

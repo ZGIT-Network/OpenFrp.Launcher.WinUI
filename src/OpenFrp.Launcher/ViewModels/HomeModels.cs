@@ -17,20 +17,19 @@ using System.Windows.Media.Imaging;
 using OpenFrp.Launcher.Helper;
 using System.Diagnostics;
 using OpenFrp.Launcher.Views;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace OpenFrp.Launcher.ViewModels
 {
     public partial class HomeModels : ObservableObject
     {
+        
         public HomeModels()
         {
-            if (App.Current?.MainWindow?.DataContext is MainPageModel model)
-                model.PropertyChanging += (sender, args) =>
-                {
-                    OnPropertyChanging("UserInfo");
-                };
 
         }
+
 
         /// <summary>
         /// 用户信息
@@ -121,6 +120,10 @@ namespace OpenFrp.Launcher.ViewModels
             MainPage.OfApp_UserInfoXLoader.ShowLoader();
             if (ApiRequest.HasAccount)
             {
+                while (ApiRequest.UserInfo?.UserName is "未登录" or null)
+                {
+                    await Task.Delay(250);
+                }
                 UserInfoListItems.Clear();
                 new List<UserInfoListItem>()
                 {
@@ -228,13 +231,14 @@ namespace OpenFrp.Launcher.ViewModels
         }
 
         [RelayCommand]
-        public async void RefreshPreview()
+        public async void RefreshPreview() 
         {
             if (MainPage is null) return;
-            MainPage.OfApp_UserInfoXLoader.ShowLoader();
-            var response = await ApiRequest.GETAny<ResponseBody.HomePageResponse>($"{ApiUrls.LauncherBaseUrl}/api/v2/news");
+            MainPage.OfApp_PreviewXLoader.ShowLoader();
+            var response = await ApiRequest.GETAny<ResponseBody.HomePageResponse>($"{ApiUrls.LauncherBaseUrl}api/v2/news");
             if (response != null)
             {
+                PreviewContent = response;
                 if (response.Image != null)
                 {
                     if (response.ForceImage || !false)
@@ -245,7 +249,7 @@ namespace OpenFrp.Launcher.ViewModels
                         {
                             if (!await ApiRequest.DownloadFile($"{response.Image}", fileName))
                             {
-                                MainPage.OfApp_UserInfoXLoader.ShowContent();
+                                MainPage.OfApp_PreviewXLoader.ShowContent();
                                 return;
                             }
                             MainPage.Xbg_.ImageSource = new BitmapImage(new Uri(fileName));
@@ -256,9 +260,9 @@ namespace OpenFrp.Launcher.ViewModels
                         await Task.Delay(500);
                     }
                 }
-                PreviewContent = response;
+                
             }
-            MainPage.OfApp_UserInfoXLoader.ShowContent();
+            MainPage.OfApp_PreviewXLoader.ShowContent();
         }
 
         public async void RefreshBroadCast()

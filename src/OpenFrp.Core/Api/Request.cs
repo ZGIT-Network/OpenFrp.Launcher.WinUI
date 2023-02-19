@@ -1,4 +1,7 @@
-﻿using OpenFrp.Core.Helper;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using Google.Protobuf.WellKnownTypes;
+using OpenFrp.Core.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,19 +10,27 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using System.Windows;
+
 
 namespace OpenFrp.Core.Libraries.Api
 {
     public class ApiRequest
     {
-        public static string? Authorization { get; internal set; }
+        public static string? Authorization { get; set; }
 
-        public static string? SessionId { get; internal set; }
+        public static string? SessionId { get; set; }
 
         public static Models.ResponseBody.UserInfoResponse.UserInfo? UserInfo { get; set; }
 
-        public static void ClearAuth() => UserInfo = (string.IsNullOrEmpty(Authorization = SessionId = default) ? null : null);
+        public static void ClearAuth()
+        {
+            UserInfo = (string.IsNullOrEmpty(Authorization = SessionId = default) ? null : null);
+            if (System.Windows.Application.Current?.Windows is not null && !Utils.IsWindowsService)
+            {
+                WeakReferenceMessenger.Default.Send(new PropertyChangedMessage<bool>(new object(), "HasAccount ", HasAccount,false ));
+            }
+        }
 
         public static bool HasAccount { get => !string.IsNullOrEmpty(Authorization) && !string.IsNullOrEmpty(SessionId); }
 

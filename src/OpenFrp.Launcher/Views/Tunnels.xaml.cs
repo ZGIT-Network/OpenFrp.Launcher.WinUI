@@ -34,74 +34,8 @@ namespace OpenFrp.Launcher.Views
         public Tunnels()
         {
             InitializeComponent();
-
             Model.TunnelsPage = this;
-
             Model.RefreshUserProxies();
-
         }
-
-        private void ScrollViewerEx_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => ((ScrollViewerEx)sender).ExcuteScroll(e);
-
-
-        /// <summary>
-        /// 隧道状态被切换(开启 + 关闭)
-        /// </summary>
-        private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            ToggleSwitch @switch = (ToggleSwitch)sender;
-            if (@switch.DataContext is ResponseBody.UserTunnelsResponse.UserTunnel tunnel && !_bypassToggle)
-            {
-                _bypassToggle = true;
-                if (@switch.IsOn)
-                {
-                    var request = new Core.Libraries.Protobuf.RequestBase()
-                    {
-                        Action = Core.Libraries.Protobuf.RequestType.ClientFrpcStart,
-                        FrpRequest = new()
-                        {
-                            UserTunnelJson = tunnel.JSON()
-                        }
-                    };
-                    var response = await Helper.AppShareHelper.PipeClient.Request(request);
-
-                    if (!response.Success)
-                    {
-                        MessageBox.Show(response.Message);
-                        @switch.IsOn = false;
-                    }
-                    
-                }
-                else
-                {
-                    var request = new Core.Libraries.Protobuf.RequestBase()
-                    {
-                        Action = Core.Libraries.Protobuf.RequestType.ClientFrpcClose,
-                        FrpRequest = new()
-                        {
-                            UserTunnelJson = tunnel.JSON()
-                        }
-                    };
-                    var response = await Helper.AppShareHelper.PipeClient.Request(request);
-
-                    if (!response.Success)
-                    {
-                        MessageBox.Show(response.Message);
-                        @switch.IsOn = true;
-                    }
-                }
-                _bypassToggle = false;
-                return;
-            }
-            else if (!_bypassToggle)
-            {
-                _bypassToggle = true;
-                @switch.IsOn = false;
-                _bypassToggle = false;
-            }
-
-        }
-
-        private bool _bypassToggle { get; set; }
     }
 }

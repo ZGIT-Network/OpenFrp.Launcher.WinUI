@@ -47,7 +47,7 @@
             <!--  大图块  -->
             <ofc:Card Grid.Column="0">
                 <ofc:Card.Style>
-                    <Style TargetType="ofc:Card">
+                    <Style TargetType="ofc:Card" BasedOn="{StaticResource DefualtCardKeyStyle}">
                         <Setter Property="Grid.ColumnSpan" Value="1" />
                         <Setter Property="Grid.RowSpan" Value="2" />
                         <Setter Property="Margin" Value="0,0,4,0" />
@@ -60,7 +60,7 @@
                         </Style.Triggers>
                     </Style>
                 </ofc:Card.Style>
-                <ofc:ElementLoader x:Name="OfApp_PreviewXLoader">
+                <ofc:ElementLoader x:Name="OfApp_PreviewXLoader" IsLoading="True">
                     <Grid>
                         <ui:ThemeShadowChrome>
                             <ui:ThemeShadowChrome.Style>
@@ -324,7 +324,7 @@
                                 Label="签到" />
                             <ui:AppBarButton
                                 Command="{Binding OpenInWebCommand}"
-                                Icon="&#xE162;"
+                                Icon="Globe"
                                 Label="打开官网" />
                         </ui:CommandBar>
 

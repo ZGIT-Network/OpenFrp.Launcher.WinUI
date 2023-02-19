@@ -16,11 +16,12 @@ namespace OpenFrp.Core.Helper
         {
             public LogContent() { }
 
-            public LogContent(string? content,TraceLevel level, bool isDebug)
+            public LogContent(string? content,TraceLevel level, bool isDebug, string? hashContent)
             {
                 Content = content;
                 Level = level;
                 IsDebug = isDebug;
+                HashContent = hashContent;
             }
 
             public string? Content { get; set; } 
@@ -28,21 +29,23 @@ namespace OpenFrp.Core.Helper
             public TraceLevel Level { get; set; }
 
             public bool IsDebug { get; set; }
+
+            public string? HashContent { get; set; }
         }
 
-        public static void Add(int id,string contnet,TraceLevel level = TraceLevel.Info,bool isDebug = false)
+        public static void Add(int id,string content,TraceLevel level = TraceLevel.Info,bool isDebug = false)
         {
-            if (id is not 0) Add(0,contnet,level,isDebug);
+            //if (id is not 0) Add(0,contnet,level,isDebug);
 
             if (Logs.ContainsKey(id))
             {
-                Logs[id].Add(new(contnet, level,isDebug));
+                Logs[id].Add(new(content, level,isDebug, $"{content}_appid_{id}".GetMD5()));
             }
             else
             {
                 Logs.Add(id, new()
                 {
-                    new(contnet, level,isDebug)
+                    new(content, level,isDebug,$"{content}_appid_{id}".GetMD5())
                 });
             }
         }

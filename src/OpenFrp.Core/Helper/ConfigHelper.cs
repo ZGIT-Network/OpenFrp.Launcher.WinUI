@@ -1,10 +1,13 @@
-﻿using ModernWpf.Controls.Primitives;
+﻿using ModernWpf;
+using ModernWpf.Controls.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,7 +50,7 @@ namespace OpenFrp.Core.Helper
             get => _backdropSet;
             set
             {
-                if (Utils.MainWindow is Window wind)
+                if (Utils.MainWindow is Window wind && !Utils.IsWindowsService)
                     try { ModernWpf.Controls.Primitives.WindowHelper.SetSystemBackdropType(wind, value); }
                     catch { }
                 _backdropSet = value;
@@ -59,9 +62,31 @@ namespace OpenFrp.Core.Helper
         [JsonProperty("bypassProxy")]
         public bool BypassProxy { get; set; }
 
+        /// <summary>
+        /// 是否为系统服务模式
+        /// </summary>
+        [JsonProperty("serviceMode")]
+        public bool IsServiceMode { get; set; }
 
+        /// <summary>
+        /// 账户设置
+        /// </summary>
         [JsonProperty("account")]
         public UserAccount Account { get; set; } = new();
+        /// <summary>
+        /// 字体设置
+        /// </summary>
+        [JsonProperty("fontSet")]
+        public FontSetting FontSet { get; set; } = new();
+        /// <summary>
+        /// 自启动隧道列表
+        /// </summary>
+        [JsonProperty("autoStart")]
+        public int[] AutoStartupList { get; set; } = new int[] { };
+
+
+        [JsonProperty("pullMode")]
+        public TnMode MessagePullMode { get; set; }
 
         public class UserAccount
         {
@@ -82,27 +107,43 @@ namespace OpenFrp.Core.Helper
             public string? UserName { get; set; }
 
             [JsonProperty("password")]
-            private List<byte> _Password { get; set; } = new();
+            private string _Password { get; set; } = string.Empty;
 
             [JsonIgnore]
             public string? Password
             {
                 get
                 {
-                    if (_Password.Count <= 0) { return default; }
-                    else return ProtectedData.Unprotect(_Password.ToArray(), Utils.ConfigFile.GetBytes(), DataProtectionScope.CurrentUser).GetString();
+                    try
+                    {
+                        if (_Password.Length <= 0) { return default; }
+                        else return DESCrypto.Descrypt(_Password);//ProtectedData.Unprotect(_Password.ToArray(), Utils.ConfigFile.GetBytes(), DataProtectionScope.CurrentUser).GetString();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.Add(0, $"由于密码解析错误,可能本次登录无法成功。\nException: {ex}", TraceLevel.Error, true);
+                        return default;
+                    }
                 }
                 set
                 {
                     if (value is null)
                     {
-                        _Password.Clear();
+                        _Password = "";
                         return;
                     }
-                    else _Password = ProtectedData.Protect(value.GetBytes(), Utils.ConfigFile.GetBytes(), DataProtectionScope.CurrentUser).ToList();
+                    else _Password = DESCrypto.EncryptString(value);//ProtectedData.Protect(value.GetBytes(), Utils.ConfigFile.GetBytes(), DataProtectionScope.CurrentUser).ToList();
                 }
             }
         }
+
+        public class FontSetting
+        {
+            public string? FontFamily { get; set; }
+
+            public double FontSize { get; set; } = 14;
+        }
+
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -110,12 +151,14 @@ namespace OpenFrp.Core.Helper
         {
             if (File.Exists(Utils.ConfigFile))
             {
-                Instance = (await Utils.ConfigFile.GetStreamReader().ReadToEndAsync())
-                    .PraseJson<ConfigHelper>() ?? new()
-                    {
-                        BackdropSet = GetSupportMax()
-                    };
-            }else Directory.CreateDirectory(Utils.ApplicatioDataPath);
+                Instance = (await Task.Run(() => File.ReadAllText(Utils.ConfigFile)))
+                    .PraseJson<ConfigHelper>() ?? new();
+                if (Instance.BackdropSet is BackdropType.None or 0)
+                    Instance.BackdropSet = GetSupportMax();
+                if (Instance.MessagePullMode is TnMode.None or 0)
+                    Instance.MessagePullMode = GetTnMode();
+            }
+            else Directory.CreateDirectory(Utils.ApplicatioDataPath);
         }
         /// <summary>
         /// 写配置
@@ -125,7 +168,18 @@ namespace OpenFrp.Core.Helper
             try
             {
                 string str = Instance.JSON();
-                await Utils.ConfigFile.GetStreamWriter().WriteLineAsync(str);
+                var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
+                var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
+                acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
+                    System.Security.AccessControl.FileSystemRights.FullControl,
+                    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                    System.Security.AccessControl.PropagationFlags.None,
+                    System.Security.AccessControl.AccessControlType.Allow));
+                dir.SetAccessControl(acl);
+
+
+                await Utils.ConfigFile.GetStreamWriter(autoFlush: true).WriteLineAsync(str);
             }
             catch (Exception ex)
             {
@@ -133,21 +187,36 @@ namespace OpenFrp.Core.Helper
             }
         }
 
+
+
         static BackdropType GetSupportMax()
         {
-            if (MicaHelper.IsSupported(BackdropType.Tabbed))
+            if (!Utils.IsWindowsService)
             {
-                return BackdropType.Tabbed;
-            }
-            else if (MicaHelper.IsSupported(BackdropType.Mica))
-            {
-                return BackdropType.Mica;
-            }
-            else if (AcrylicHelper.IsAcrylicSupported())
-            {
-                return BackdropType.Acrylic;
+                if (MicaHelper.IsSupported(BackdropType.Tabbed))
+                {
+                    return BackdropType.Tabbed;
+                }
+                else if (MicaHelper.IsSupported(BackdropType.Mica))
+                {
+                    return BackdropType.Mica;
+                }
+                else if (AcrylicHelper.IsAcrylicSupported())
+                {
+                    return BackdropType.Acrylic;
+                }
             }
             return BackdropType.None;
+
+        }
+
+        static TnMode GetTnMode() => OSVersionHelper.IsWindows10OrGreater? TnMode.Toast : TnMode.Notifiy;
+
+        public enum TnMode
+        {
+            None,
+            Notifiy,
+            Toast
         }
 
     }

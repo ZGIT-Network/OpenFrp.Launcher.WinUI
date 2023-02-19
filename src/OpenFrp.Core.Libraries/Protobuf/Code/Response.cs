@@ -24,15 +24,16 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     static ResponseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5yZXNwb25zZS5wcm90byKPAQoMUmVzcG9uc2VCYXNlEg8KB3N1Y2Nlc3MY",
+            "Cg5yZXNwb25zZS5wcm90byKlAQoMUmVzcG9uc2VCYXNlEg8KB3N1Y2Nlc3MY",
             "ASABKAgSFAoHbWVzc2FnZRgCIAEoCUgAiAEBEhYKCWV4Y2VwdGlvbhgDIAEo",
-            "CUgBiAEBEhAKCGxvZ3NKc29uGAQgAygJEhQKDHJ1bm5pbmdDb3VudBgFIAMo",
-            "BUIKCghfbWVzc2FnZUIMCgpfZXhjZXB0aW9uQiKqAh9PcGVuRnJwLkNvcmUu",
-            "TGlicmFyaWVzLlByb3RvYnVmYgZwcm90bzM="));
+            "CUgBiAEBEhAKCGxvZ3NKc29uGAQgAygJEhQKDGxvZ3NWaWV3SnNvbhgFIAMo",
+            "CRIUCgxydW5uaW5nQ291bnQYBiADKAVCCgoIX21lc3NhZ2VCDAoKX2V4Y2Vw",
+            "dGlvbkIiqgIfT3BlbkZycC5Db3JlLkxpYnJhcmllcy5Qcm90b2J1ZmIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.ResponseBase), global::OpenFrp.Core.Libraries.Protobuf.ResponseBase.Parser, new[]{ "Success", "Message", "Exception", "LogsJson", "RunningCount" }, new[]{ "Message", "Exception" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.ResponseBase), global::OpenFrp.Core.Libraries.Protobuf.ResponseBase.Parser, new[]{ "Success", "Message", "Exception", "LogsJson", "LogsViewJson", "RunningCount" }, new[]{ "Message", "Exception" }, null, null, null)
           }));
     }
     #endregion
@@ -77,6 +78,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       message_ = other.message_;
       exception_ = other.exception_;
       logsJson_ = other.logsJson_.Clone();
+      logsViewJson_ = other.logsViewJson_.Clone();
       runningCount_ = other.runningCount_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -158,10 +160,21 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       get { return logsJson_; }
     }
 
+    /// <summary>Field number for the "logsViewJson" field.</summary>
+    public const int LogsViewJsonFieldNumber = 5;
+    private static readonly pb::FieldCodec<string> _repeated_logsViewJson_codec
+        = pb::FieldCodec.ForString(42);
+    private readonly pbc::RepeatedField<string> logsViewJson_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> LogsViewJson {
+      get { return logsViewJson_; }
+    }
+
     /// <summary>Field number for the "runningCount" field.</summary>
-    public const int RunningCountFieldNumber = 5;
+    public const int RunningCountFieldNumber = 6;
     private static readonly pb::FieldCodec<int> _repeated_runningCount_codec
-        = pb::FieldCodec.ForInt32(42);
+        = pb::FieldCodec.ForInt32(50);
     private readonly pbc::RepeatedField<int> runningCount_ = new pbc::RepeatedField<int>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -188,6 +201,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (Message != other.Message) return false;
       if (Exception != other.Exception) return false;
       if(!logsJson_.Equals(other.logsJson_)) return false;
+      if(!logsViewJson_.Equals(other.logsViewJson_)) return false;
       if(!runningCount_.Equals(other.runningCount_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -200,6 +214,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       if (HasMessage) hash ^= Message.GetHashCode();
       if (HasException) hash ^= Exception.GetHashCode();
       hash ^= logsJson_.GetHashCode();
+      hash ^= logsViewJson_.GetHashCode();
       hash ^= runningCount_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -232,6 +247,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteString(Exception);
       }
       logsJson_.WriteTo(output, _repeated_logsJson_codec);
+      logsViewJson_.WriteTo(output, _repeated_logsViewJson_codec);
       runningCount_.WriteTo(output, _repeated_runningCount_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -256,6 +272,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteString(Exception);
       }
       logsJson_.WriteTo(ref output, _repeated_logsJson_codec);
+      logsViewJson_.WriteTo(ref output, _repeated_logsViewJson_codec);
       runningCount_.WriteTo(ref output, _repeated_runningCount_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -277,6 +294,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Exception);
       }
       size += logsJson_.CalculateSize(_repeated_logsJson_codec);
+      size += logsViewJson_.CalculateSize(_repeated_logsViewJson_codec);
       size += runningCount_.CalculateSize(_repeated_runningCount_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -300,6 +318,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         Exception = other.Exception;
       }
       logsJson_.Add(other.logsJson_);
+      logsViewJson_.Add(other.logsViewJson_);
       runningCount_.Add(other.runningCount_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -332,8 +351,12 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             logsJson_.AddEntriesFrom(input, _repeated_logsJson_codec);
             break;
           }
-          case 42:
-          case 40: {
+          case 42: {
+            logsViewJson_.AddEntriesFrom(input, _repeated_logsViewJson_codec);
+            break;
+          }
+          case 50:
+          case 48: {
             runningCount_.AddEntriesFrom(input, _repeated_runningCount_codec);
             break;
           }
@@ -368,8 +391,12 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             logsJson_.AddEntriesFrom(ref input, _repeated_logsJson_codec);
             break;
           }
-          case 42:
-          case 40: {
+          case 42: {
+            logsViewJson_.AddEntriesFrom(ref input, _repeated_logsViewJson_codec);
+            break;
+          }
+          case 50:
+          case 48: {
             runningCount_.AddEntriesFrom(ref input, _repeated_runningCount_codec);
             break;
           }

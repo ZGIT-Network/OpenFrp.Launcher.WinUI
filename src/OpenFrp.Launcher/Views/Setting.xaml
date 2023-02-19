@@ -3,19 +3,23 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helper="clr-namespace:OpenFrp.Launcher.Helper"
     xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:OpenFrp.Launcher.ViewModels"
     xmlns:ofc="clr-namespace:OpenFrp.Launcher.Controls"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     Title="设置"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="907"
+    d:DesignWidth="790"
     Style="{StaticResource LauncherCustomPageControl}"
     mc:Ignorable="d">
     <ofc:ViewPage.DataContext>
         <models:SettingModel />
     </ofc:ViewPage.DataContext>
+    <ofc:ViewPage.Resources>
+        <helper:EnumToIndexConverter x:Key="EnumToIndexConverter" />
+    </ofc:ViewPage.Resources>
     <ui:SimpleStackPanel Margin="0,0,0,48" Spacing="8">
         <HeaderedContentControl
             Margin="2,0,0,0"
@@ -26,7 +30,7 @@
                 Margin="-2,8,0,0"
                 Spacing="8"
                 TextElement.FontSize="13">
-                <ofc:SettingItem Title="应用主题">
+                <ofc:SettingItem Title="应用主题" Description="使本应用更好的系统融合。">
                     <ofc:SettingItem.Icon>
                         <ui:FontIcon FontSize="24" Glyph="&#xE771;" />
                     </ofc:SettingItem.Icon>
@@ -34,7 +38,7 @@
                         MinWidth="150"
                         AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
-                        SelectedIndex="{Binding ThemeSet}">
+                        SelectedIndex="{Binding SettingInstance.ThemeSet, Converter={StaticResource EnumToIndexConverter}}">
                         <ComboBoxItem Content="Defualt" />
                         <ComboBoxItem Content="Light" />
                         <ComboBoxItem Content="Dark" />
@@ -49,7 +53,7 @@
                         AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         IsEnabled="{Binding IsSupportBackdrop}"
-                        SelectedIndex="{Binding BackdropSet}">
+                        SelectedIndex="{Binding SettingInstance.BackdropSet, Converter={StaticResource EnumToIndexConverter}, ConverterParameter=-1}">
                         <ComboBoxItem Content="关闭" />
                         <ComboBoxItem Content="Mica" />
                         <ComboBoxItem Content="Acrylic" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
@@ -57,6 +61,44 @@
                         <ComboBoxItem Content="Mica Alt" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
                     </ComboBox>
                 </ofc:SettingItem>
+                <ofc:Expander>
+                    <ofc:Expander.Header>
+                        <ui:SimpleStackPanel
+                            Height="66"
+                            Margin="4,0,0,0"
+                            HorizontalAlignment="Left"
+                            Orientation="Horizontal"
+                            Spacing="12">
+                            <ui:SymbolIcon
+                                VerticalAlignment="Center"
+                                FontSize="24"
+                                Symbol="XboxOneConsole" />
+                            <TextBlock VerticalAlignment="Center" FontSize="13">
+                                <Run Text="操控台字体设置" />
+                                <LineBreak />
+                                <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="字体大小,或者字体?" />
+                            </TextBlock>
+                        </ui:SimpleStackPanel>
+                    </ofc:Expander.Header>
+                    <ui:SimpleStackPanel
+                        MinHeight="150"
+                        Margin="40,0,0,0"
+                        Spacing="8">
+                        <ComboBox
+                            Width="250"
+                            ui:ControlHelper.Header="字体"
+                            Loaded="FontFamilys_ComboBox_Loaded" />
+                        <ui:NumberBox
+                            Width="250"
+                            HorizontalAlignment="Left"
+                            Header="字体大小"
+                            Maximum="100"
+                            Minimum="1"
+                            SpinButtonPlacementMode="Inline"
+                            Text="14"
+                            Value="{Binding SettingInstance.FontSet.FontSize}" />
+                    </ui:SimpleStackPanel>
+                </ofc:Expander>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>
 
@@ -78,7 +120,7 @@
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         Command="{Binding AccountInfoCommand}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                        IsEnabled="{Binding MainPageModel.HasDeamonProcess}">
+                        IsEnabled="{Binding HasDeamonProcess}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource AccentButtonStyle}" TargetType="Button">
                                 <Setter Property="Content" Value="登入" />
@@ -109,12 +151,72 @@
                         AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         FocusVisualMargin="-10,-4,0,-4"
-                        IsOn="{Binding BypassProxy}"
+                        IsOn="{Binding SettingInstance.BypassProxy}"
                         Style="{StaticResource LeftLabelToggleSwitchStyle}" />
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>
-
-
+        <HeaderedContentControl
+            Margin="2,8,0,0"
+            Focusable="False"
+            FontSize="16"
+            Header="高级功能">
+            <ui:SimpleStackPanel
+                Margin="-2,8,0,0"
+                Spacing="8"
+                TextElement.FontSize="13">
+                <ofc:SettingItem Title="系统服务模式" Description="如不了解请勿点击安装。">
+                    <ofc:SettingItem.Icon>
+                        <ui:FontIcon FontSize="24" Glyph="&#xE912;" />
+                    </ofc:SettingItem.Icon>
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="4">
+                        <ui:HyperlinkButton NavigateUri="https://docs.openfrp.net/use/desktop-launcher.html#%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E6%A8%A1%E5%BC%8F">
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="4">
+                                <ui:FontIcon VerticalAlignment="Center" Glyph="&#xe71b;" />
+                                <TextBlock VerticalAlignment="Center" Text="详情" />
+                            </ui:SimpleStackPanel>
+                        </ui:HyperlinkButton>
+                        <Button VerticalAlignment="Center" Command="{Binding ControlSerivceModeCommand}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource AccentButtonStyle}" TargetType="Button">
+                                    <Setter Property="Content" Value="安装" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SettingInstance.IsServiceMode}" Value="True">
+                                            <Setter Property="Content" Value="卸载" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </ui:SimpleStackPanel>
+                </ofc:SettingItem>
+                <ofc:SettingItem Title="启动器开机启动" Description="登入桌面后，自动启动启动器 和 FRPC">
+                    <ofc:SettingItem.Icon>
+                        <ui:FontIcon FontSize="24" Glyph="&#xE2B3;" />
+                    </ofc:SettingItem.Icon>
+                    <ui:ToggleSwitch
+                        Margin="4,0,-8,0"
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        FocusVisualMargin="-10,-4,0,-4"
+                        IsOn="{Binding AutoStartupLauncher}"
+                        Style="{StaticResource LeftLabelToggleSwitchStyle}" />
+                </ofc:SettingItem>
+                <ofc:SettingItem Title="推送模式" Description="可以使你更方便的复制连接 / 知道错误。">
+                    <ofc:SettingItem.Icon>
+                        <ui:FontIcon FontSize="24" Glyph="&#xE2B3;" />
+                    </ofc:SettingItem.Icon>
+                    <ComboBox
+                        MinWidth="150"
+                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
+                        SelectedIndex="{Binding SettingInstance.MessagePullMode, Converter={StaticResource EnumToIndexConverter}}">
+                        <ComboBoxItem Content="关闭" />
+                        <ComboBoxItem Content="Notifiy (Win7+)" />
+                        <ComboBoxItem Content="Toast (Win10+)" IsEnabled="{Binding IsSupportToast}" />
+                    </ComboBox>
+                </ofc:SettingItem>
+            </ui:SimpleStackPanel>
+        </HeaderedContentControl>
     </ui:SimpleStackPanel>
 </ofc:ViewPage>
