@@ -26,7 +26,15 @@ namespace OpenFrp.Core.Libraries.Pipe
 
         public void Send(byte[] data)
         {
-            if (Pipe?.IsConnected is true) Pipe?.Write(data, 0, data.Length);
+            try
+            {
+                if (Pipe?.IsConnected is true) Pipe?.Write(data, 0, data.Length);
+            }
+            catch
+            {
+
+            }
+            
         }
 
         public async ValueTask SendAsync(byte[] data) => await Task.Run(() => Send(data));

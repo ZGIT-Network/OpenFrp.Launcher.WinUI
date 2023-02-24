@@ -84,6 +84,9 @@ namespace OpenFrp.Core.Helper
         [JsonProperty("autoStart")]
         public int[] AutoStartupList { get; set; } = new int[] { };
 
+        [JsonProperty("frpc_ver")]
+        public string? FrpcVersion { get; set; }
+
 
         [JsonProperty("pullMode")]
         public TnMode MessagePullMode { get; set; }
@@ -160,26 +163,35 @@ namespace OpenFrp.Core.Helper
             }
             else Directory.CreateDirectory(Utils.ApplicatioDataPath);
         }
+
+
         /// <summary>
         /// 写配置
         /// </summary>
-        public async ValueTask WriteConfig()
+        public async ValueTask WriteConfig(bool fastWrite = false)
         {
             try
             {
-                string str = Instance.JSON();
-                var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
-                var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
-                acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
-                    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
-                    System.Security.AccessControl.FileSystemRights.FullControl,
-                    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
-                    System.Security.AccessControl.PropagationFlags.None,
-                    System.Security.AccessControl.AccessControlType.Allow));
-                dir.SetAccessControl(acl);
+                if (!fastWrite)
+                {
+                    string str = Instance.JSON();
+                    var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
+                    var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
+                    acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                        new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
+                        System.Security.AccessControl.FileSystemRights.FullControl,
+                        System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                        System.Security.AccessControl.PropagationFlags.None,
+                        System.Security.AccessControl.AccessControlType.Allow));
+                    dir.SetAccessControl(acl);
 
+                    var reader = Utils.ConfigFile.GetStreamWriter(autoFlush: true);
+                    await reader.WriteLineAsync(str);
+                    await reader.FlushAsync();
+                    reader.Close();
+                }
+                else File.WriteAllText(Utils.ConfigFile, ConfigHelper.Instance.JSON());
 
-                await Utils.ConfigFile.GetStreamWriter(autoFlush: true).WriteLineAsync(str);
             }
             catch (Exception ex)
             {

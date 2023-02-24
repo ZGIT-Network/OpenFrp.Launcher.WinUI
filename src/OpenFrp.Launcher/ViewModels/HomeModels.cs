@@ -270,7 +270,7 @@ namespace OpenFrp.Launcher.ViewModels
             if (MainPage is null) return;
             MainPage.OfApp_BroadCastXLoader.ShowLoader();
             var response = await ApiRequest.UniversalGET<ResponseBody.BaseResponse>(ApiUrls.BroadCast,false);
-            if (response.Success)
+            if (response?.Success is true)
             {
                 await Task.Delay(250);
                 MainPage.OfApp_BroadCastXLoader.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>

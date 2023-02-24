@@ -160,6 +160,51 @@ namespace OpenFrp.Core.Libraries.Api.Models
             public string? Image { get; set; }
         }
 
+        /// <summary>
+        /// 软件支持返回
+        /// </summary>
+        public class SoftwareResponse : BaseResponse
+        {
+            public SoftwareResponse()
+            {
+            }
+
+            public SoftwareResponse(string message) : base(message)
+            {
+            }
+
+            public SoftwareResponse(Exception ex) : base(ex)
+            {
+            }
+
+            [JsonProperty("data")]
+            public new SoftwareInfo? Data { get; set; }
+
+            public class SoftwareInfo
+            {
+                [JsonProperty("latest_full")]
+                public string? Latest { get; set; }
+
+                [JsonProperty("latest_msg")]
+                public string FrpcCommonDetails { get; set; } = "FRPC可进行更新。";
+
+                [JsonProperty("launcher")]
+                public LauncherSoftwareInfo? Launcher { get; set; }
+
+                public class LauncherSoftwareInfo
+                {
+                    [JsonProperty("latest")]
+                    public string? Latest { get; set; }
+
+                    [JsonProperty("download_url")]
+                    public string? DonwloadUrl { get; set; }
+
+                    [JsonProperty("content")]
+                    public string? Description { get; set; }
+
+                }
+            }
+        }
 
         /// <summary>
         /// 基本返回

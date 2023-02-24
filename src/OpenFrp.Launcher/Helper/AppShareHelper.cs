@@ -104,6 +104,6 @@ namespace OpenFrp.Launcher.Helper
             
         }
 
-        public static Hardcodet.Wpf.TaskbarNotification.TaskbarIcon TaskbarIcon { get; } = new();
+        public static Hardcodet.Wpf.TaskbarNotification.TaskbarIcon? TaskbarIcon { get; set; } 
     }
 }

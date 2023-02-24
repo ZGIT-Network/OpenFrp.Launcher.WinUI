@@ -35,16 +35,16 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             "emF0aW9uGAEgASgJEhEKCXNlc3Npb25JZBgCIAEoCRIUCgx1c2VySW5mb0pz",
             "b24YAyABKAkSEwoLYWNjb3VudEpzb24YBCABKAkiJAoKRnJwUmVxdWVzdBIW",
             "Cg51c2VyVHVubmVsSnNvbhgBIAEoCSIYCgpMb2dzUmVxZXN0EgoKAmlkGAEg",
-            "ASgFIiUKDk5vdGlmbHlSZXF1ZXN0EhMKC3R1bm5uZWxKc29uGAEgASgJKr8C",
-            "CgtSZXF1ZXN0VHlwZRIaChZDTElFTlRfUFVTSF9MT0dJTlNUQVRFEAASGgoW",
-            "Q0xJRU5UX1BVU0hfQ0xFQVJMT0dJThABEhUKEUNMSUVOVF9GUlBDX1NUQVJU",
-            "EAISFQoRQ0xJRU5UX0ZSUENfQ0xPU0UQAxITCg9DTElFTlRfR0VUX0xPR1MQ",
-            "BBIfChtDTElFTlRfR0VUX1JVTk5JTkdUVU5ORUxTSUQQBRIcChhDTElFTlRf",
-            "R0VUX1JVTk5JTkdUVU5ORUwQBhIVChFDTElFTlRfQ0xFQVJfTE9HUxAHEhYK",
-            "EkNMSUVOVF9QVVNIX0NPTkZJRxAIEhMKD0NMSUVOVF9DTE9TRV9JTxAJEhkK",
-            "FVNFUlZFUl9VUERBVEVfVFVOTkVMUxAKEhcKE1NFUlZFUl9TRU5EX05PVElG",
-            "SVkQC0IiqgIfT3BlbkZycC5Db3JlLkxpYnJhcmllcy5Qcm90b2J1ZmIGcHJv",
-            "dG8z"));
+            "ASgFIkQKDk5vdGlmbHlSZXF1ZXN0EhMKC3R1bm5uZWxKc29uGAEgASgJEg8K",
+            "B2NvbnRlbnQYAiABKAkSDAoEZmxhZxgDIAEoCCq/AgoLUmVxdWVzdFR5cGUS",
+            "GgoWQ0xJRU5UX1BVU0hfTE9HSU5TVEFURRAAEhoKFkNMSUVOVF9QVVNIX0NM",
+            "RUFSTE9HSU4QARIVChFDTElFTlRfRlJQQ19TVEFSVBACEhUKEUNMSUVOVF9G",
+            "UlBDX0NMT1NFEAMSEwoPQ0xJRU5UX0dFVF9MT0dTEAQSHwobQ0xJRU5UX0dF",
+            "VF9SVU5OSU5HVFVOTkVMU0lEEAUSHAoYQ0xJRU5UX0dFVF9SVU5OSU5HVFVO",
+            "TkVMEAYSFQoRQ0xJRU5UX0NMRUFSX0xPR1MQBxIWChJDTElFTlRfUFVTSF9D",
+            "T05GSUcQCBITCg9DTElFTlRfQ0xPU0VfSU8QCRIZChVTRVJWRVJfVVBEQVRF",
+            "X1RVTk5FTFMQChIXChNTRVJWRVJfU0VORF9OT1RJRklZEAtCIqoCH09wZW5G",
+            "cnAuQ29yZS5MaWJyYXJpZXMuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::OpenFrp.Core.Libraries.Protobuf.RequestType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -52,7 +52,7 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LoginRequest), global::OpenFrp.Core.Libraries.Protobuf.LoginRequest.Parser, new[]{ "Authorization", "SessionId", "UserInfoJson", "AccountJson" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.FrpRequest), global::OpenFrp.Core.Libraries.Protobuf.FrpRequest.Parser, new[]{ "UserTunnelJson" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.LogsReqest), global::OpenFrp.Core.Libraries.Protobuf.LogsReqest.Parser, new[]{ "Id" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest), global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest.Parser, new[]{ "TunnnelJson" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest), global::OpenFrp.Core.Libraries.Protobuf.NotiflyRequest.Parser, new[]{ "TunnnelJson", "Content", "Flag" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1215,6 +1215,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public NotiflyRequest(NotiflyRequest other) : this() {
       tunnnelJson_ = other.tunnnelJson_;
+      content_ = other.content_;
+      flag_ = other.flag_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1236,6 +1238,30 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "content" field.</summary>
+    public const int ContentFieldNumber = 2;
+    private string content_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Content {
+      get { return content_; }
+      set {
+        content_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "flag" field.</summary>
+    public const int FlagFieldNumber = 3;
+    private bool flag_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Flag {
+      get { return flag_; }
+      set {
+        flag_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1252,6 +1278,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         return true;
       }
       if (TunnnelJson != other.TunnnelJson) return false;
+      if (Content != other.Content) return false;
+      if (Flag != other.Flag) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1260,6 +1288,8 @@ namespace OpenFrp.Core.Libraries.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (TunnnelJson.Length != 0) hash ^= TunnnelJson.GetHashCode();
+      if (Content.Length != 0) hash ^= Content.GetHashCode();
+      if (Flag != false) hash ^= Flag.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1282,6 +1312,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(TunnnelJson);
       }
+      if (Content.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Content);
+      }
+      if (Flag != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Flag);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1296,6 +1334,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
         output.WriteRawTag(10);
         output.WriteString(TunnnelJson);
       }
+      if (Content.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Content);
+      }
+      if (Flag != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Flag);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1308,6 +1354,12 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       int size = 0;
       if (TunnnelJson.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(TunnnelJson);
+      }
+      if (Content.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Content);
+      }
+      if (Flag != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1323,6 +1375,12 @@ namespace OpenFrp.Core.Libraries.Protobuf {
       }
       if (other.TunnnelJson.Length != 0) {
         TunnnelJson = other.TunnnelJson;
+      }
+      if (other.Content.Length != 0) {
+        Content = other.Content;
+      }
+      if (other.Flag != false) {
+        Flag = other.Flag;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1343,6 +1401,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             TunnnelJson = input.ReadString();
             break;
           }
+          case 18: {
+            Content = input.ReadString();
+            break;
+          }
+          case 24: {
+            Flag = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -1360,6 +1426,14 @@ namespace OpenFrp.Core.Libraries.Protobuf {
             break;
           case 10: {
             TunnnelJson = input.ReadString();
+            break;
+          }
+          case 18: {
+            Content = input.ReadString();
+            break;
+          }
+          case 24: {
+            Flag = input.ReadBool();
             break;
           }
         }

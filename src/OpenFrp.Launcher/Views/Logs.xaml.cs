@@ -34,6 +34,7 @@ namespace OpenFrp.Launcher.Views
         protected override async void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+            sbbv.FontFamily = new FontFamily(ConfigHelper.Instance.FontSet.FontFamily);
             do
             {
                 Model.GetLogs();

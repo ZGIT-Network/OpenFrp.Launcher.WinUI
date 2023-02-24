@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using OpenFrp.Core;
 using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Protobuf;
@@ -9,10 +10,13 @@ using OpenFrp.Launcher.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace OpenFrp.Launcher.ViewModels
 {
@@ -35,6 +39,9 @@ namespace OpenFrp.Launcher.ViewModels
         [NotifyCanExecuteChangedFor("AccountInfoCommand")]
         public bool hasDeamonProcess;
 
+        [ObservableProperty]
+        public bool hasFrpcUpdate;
+
         public Core.Libraries.Api.Models.ResponseBody.UserInfoResponse.UserInfo UserInfo
         {
             get => ApiRequest.UserInfo ?? new()
@@ -47,6 +54,8 @@ namespace OpenFrp.Launcher.ViewModels
         public void UpdateProperty(string name) => OnPropertyChanged(name);
 
         bool CanExcuteAccountInfo() => HasDeamonProcess;
+
+        public Core.Helper.UpdateCheckHelper.UpdateInfo? UpdateContent { get; set; }
 
         [RelayCommand (CanExecute = nameof(CanExcuteAccountInfo))]
         internal async void AccountInfo()
@@ -91,6 +100,41 @@ namespace OpenFrp.Launcher.ViewModels
             if (response.Success)
             {
                 ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+            }
+        }
+
+        [RelayCommand]
+        async void UpdateFrpc()
+        {
+            var dialog = new ContentDialog()
+            {
+                Title = "更新 FRPC",
+                PrimaryButtonText = "安装",
+                CloseButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary,
+                Content = new TextBlock()
+                {
+                    Width = 350,
+                    Height = 100,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Text = "FRPC安装包会关闭FRPC进程,请保证您不在使用远程桌面服务!!!",
+
+                }
+            };
+            if (await dialog.ShowDialogFixed() is ContentDialogResult.Primary)
+            {
+
+
+
+                Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {UpdateContent?.JSON()}");
+
+                App.Current?.Shutdown();
+
+                var resp = await AppShareHelper.PipeClient.Request(new()
+                {
+                    Action = Core.Libraries.Protobuf.RequestType.ClientCloseIo
+                });
+
             }
         }
     }

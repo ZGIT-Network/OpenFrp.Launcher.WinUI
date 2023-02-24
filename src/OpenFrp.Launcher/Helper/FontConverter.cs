@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using OpenFrp.Core.Helper;
 
 namespace OpenFrp.Launcher.Helper
 {
@@ -13,16 +14,14 @@ namespace OpenFrp.Launcher.Helper
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string str)
+
+            try
             {
-                try
-                {
-                    return new FontFamily(str);
-                }
-                catch
-                {
-                    return new FontFamily("微软雅黑");
-                }
+                return new FontFamily(ConfigHelper.Instance.FontSet.FontFamily);
+            }
+            catch
+            {
+
             }
             return new FontFamily("微软雅黑");
         }

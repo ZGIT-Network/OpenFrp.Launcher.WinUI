@@ -376,7 +376,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <ui:PersonPicture Height="40" ProfilePicture="E:\Win10\Desktop\Pictures\IMG_1550.PNG" />
+                                    <ui:PersonPicture Height="40" ProfilePicture="..\Resourecs\109951167218053510.jpg" />
                                 </Grid>
                                 <Grid Grid.Column="2">
                                     <TextBlock
@@ -398,16 +398,36 @@
                 <ui:NavigationViewItem
                     Content="首页"
                     Icon="Home"
+                    IsSelected="True"
                     Tag="Home" />
                 <ui:NavigationViewItem
                     Content="隧道"
                     Icon="&#xe953;"
-                    Tag="Tunnels" />
+                    Tag="Tunnels">
+                    <ui:NavigationViewItem.Style>
+                        <Style TargetType="ui:NavigationViewItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasDeamonProcess}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding UserInfo.UserName}" Value="未登录">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:NavigationViewItem.Style>
+                </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="日志"
                     Icon="AlignLeft"
                     Tag="Logs" />
             </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem
+                    Content="关于"
+                    Icon="&#xE946;"
+                    Tag="About" />
+            </ui:NavigationView.FooterMenuItems>
             <ui:Frame x:Name="Of_nViewFrame" Source="./Home.xaml" />
         </ui:NavigationView>
         <Grid Height="{Binding CompactPaneLength, ElementName=Of_nView}" VerticalAlignment="Top">
@@ -464,13 +484,31 @@
                     Padding="4,0,0,0"
                     VerticalAlignment="Center"
                     FontSize="12"
-                    Text="Yue" />
+                    Text="OpenFrp Launcher Re" />
                 <StackPanel Grid.Column="2" VerticalAlignment="Top">
                     <!--  标题栏 操控钮 Addon  -->
                 </StackPanel>
             </Grid>
         </Grid>
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <ui:SimpleStackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Spacing="8">
+            <ui:InfoBar
+                Title="更新"
+                IsClosable="False"
+                IsOpen="{Binding HasFrpcUpdate, Mode=OneWay}"
+                Message="FRPC 有新版本更新。"
+                Severity="Warning">
+
+                <ui:InfoBar.ActionButton>
+                    <Button
+                        HorizontalAlignment="Right"
+                        Command="{Binding UpdateFrpcCommand}"
+                        Content="更新"
+                        Style="{StaticResource AccentButtonStyle}" />
+                </ui:InfoBar.ActionButton>
+            </ui:InfoBar>
             <ui:InfoBar
                 Title="提示"
                 IsClosable="False"
@@ -530,6 +568,8 @@
                     </Style>
                 </ui:InfoBar.Style>
             </ui:InfoBar>
-        </Grid>
+
+
+        </ui:SimpleStackPanel>
     </Grid>
 </Window>

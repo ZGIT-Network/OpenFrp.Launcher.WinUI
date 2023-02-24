@@ -129,36 +129,29 @@ namespace OpenFrp.Core.Helper
 
                 }
             }
-            else if (!Utils.IsWindowsService && data?.ToString().Contains("启动成功") is true)
+            else if (!Utils.IsWindowsService && (data?.ToString().Contains("启动成功") is true || data?.ToString().Contains("启动失败") is true))
             {
                 Console.WriteLine(Enum.GetName(typeof(ConfigHelper.TnMode), ConfigHelper.Instance.MessagePullMode));
 
                 if (Program.PushClient is not null)
-                    await Program.PushClient.SendAsync(new RequestBase()
+                {
+                    var req = new RequestBase()
                     {
                         Action = RequestType.ServerSendNotifiy,
                         NotifiyRequest = new()
                         {
-                            TunnnelJson = Wrappers[id].Tunnel?.JSON()
+                            TunnnelJson = Wrappers[id].Tunnel?.JSON(),
+                            Flag = data?.ToString().Contains("启动成功") ?? false
                         }
-                    }.ToByteArray());
+                    };
+                    if (!req.NotifiyRequest.Flag) { req.NotifiyRequest.Content = data?.ToString() ?? "请前往日志查看。"; }
+                    await Program.PushClient.SendAsync(req.ToByteArray());
+                }
+                    
                 // 逻辑需在客户端处理
-
-                //if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Toast)
-                //{
-                //    new ToastContentBuilder()
-                //        .AddText($"隧道 {Wrappers[id].Tunnel?.TunnelName} 启动成功!")
-                //        .AddText($"点击复制按钮，分享给你的朋友吧!")
-                //        .AddAttributionText($"{Wrappers[id].Tunnel?.TunnelType},{Wrappers[id].Tunnel?.LocalAddress}:{Wrappers[id].Tunnel?.LocalPort}")
-                //        .AddButton("复制连接", ToastActivationType.Foreground, $"--cl {Wrappers[id].Tunnel?.ConnectAddress}")
-                //        .AddButton("确定", ToastActivationType.Foreground, "")
-                //        .Show();
-                //}
-
             }
             LogHelper.Add(id, data ?? "", level);
             LogHelper.Add(0, data ?? "", level);
-            // Utils.Log($"{data},{Enum.GetName(typeof(TraceLevel), level)}",true, level: level);
         }
     }
 }

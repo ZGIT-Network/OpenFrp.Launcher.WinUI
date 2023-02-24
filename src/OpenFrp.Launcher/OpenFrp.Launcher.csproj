@@ -14,7 +14,9 @@
 		<ApplicationIcon>.\Resourecs\main.ico</ApplicationIcon>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Resourecs\109951167218053510.jpg" />
 	  <None Remove="Resourecs\previewImage.png" />
+	  <None Remove="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <COMReference Include="IWshRuntimeLibrary">
@@ -28,6 +30,7 @@
 	  </COMReference>
 	</ItemGroup>
 	<ItemGroup>
+	  <Resource Include="Resourecs\109951167218053510.jpg" />
 	  <Resource Include="Resourecs\main.ico" />
 	</ItemGroup>
 	<ItemGroup>
@@ -49,6 +52,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="Resourecs\previewImage.png" />
+	  <Resource Include="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Using Include="ModernWpf" />

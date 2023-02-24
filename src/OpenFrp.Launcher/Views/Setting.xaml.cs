@@ -50,7 +50,7 @@ namespace OpenFrp.Launcher.Views
                     for (int i = 0; i < list.Length; i++)
                     {
                         string fontName = list[i].FamilyNames.ContainsKey(lang) ? list[i].FamilyNames[lang] : list[i].ToString();
-                        if (list[i].ToString() == Model.SettingInstance.FontSet.FontFamily) count = i;
+                        if (/*list[i].ToString()*/fontName == Model.SettingInstance.FontSet.FontFamily) count = i;
                         items.Add(new ComboBoxItem()
                         {
                             Content = fontName,
@@ -58,6 +58,7 @@ namespace OpenFrp.Launcher.Views
                             IsSelected = (fontName == Model.SettingInstance.FontSet.FontFamily)
                         });
                     }
+
                     box.ItemsSource = items;
                     box.SelectedIndex = count;
                 }
@@ -77,11 +78,6 @@ namespace OpenFrp.Launcher.Views
                     }
                 };
             }
-        }
-
-        private void ToggleSwitch_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

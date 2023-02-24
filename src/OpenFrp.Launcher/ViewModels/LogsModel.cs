@@ -37,14 +37,17 @@ namespace OpenFrp.Launcher.ViewModels
 
         public async void GetLogs(bool reset = false)
         {
+
             var request = new Core.Libraries.Protobuf.RequestBase()
             {
                 Action = Core.Libraries.Protobuf.RequestType.ClientGetRunningtunnel,
-                LogsRequest = new()
-                {
-                    Id = UserTunnels?[SelectLogIndex]?.TunnelId ?? 0
-                }
+                LogsRequest = new() { Id = 0 }
             };
+            if (UserTunnels?.Count() is not 0 && UserTunnels?.Count() >= SelectLogIndex)
+            {
+                request.LogsRequest.Id = UserTunnels?[SelectLogIndex]?.TunnelId ?? 0;
+            }
+
             var response = await Helper.AppShareHelper.PipeClient.Request(request);
 
             if (response.Success)
@@ -53,7 +56,34 @@ namespace OpenFrp.Launcher.ViewModels
                 if (reset) LogContent = default;
                 UserTunnels ??= new();
                 LogContent ??= new();
+
+
+
                 if (response.LogsJson.Count > 0)
+                {
+                    await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
+                    {
+                        response.LogsJson.Select(x => x.PraseJson<LogHelper.LogContent>()).ToList().ForEach(x =>
+                        {
+
+                            if (!LogContent.Select(x => x?.HashContent).Contains(x?.HashContent))
+                            {
+                                LogContent.Add(x);
+                                LogsViewer.Refresh();
+                                OnPropertyChanged(nameof(LogsViewer));
+                            }
+
+                        });
+                    }, System.Windows.Threading.DispatcherPriority.Background);
+                }
+                else
+                {
+                    LogContent?.Clear();
+                    LogsViewer?.Refresh();
+                    OnPropertyChanged(nameof(LogsViewer));
+                }
+
+                if (response.LogsViewJson.Count > 0)
                 {
                     await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
                     {
@@ -88,31 +118,16 @@ namespace OpenFrp.Launcher.ViewModels
 
                         Count = u2serTunnels.Count;
 
-                        response.LogsJson.Select(x => x.PraseJson<LogHelper.LogContent>()).ToList().ForEach(x =>
-                        {
 
-                            if (!LogContent.Select(x => x?.HashContent).Contains(x?.HashContent))
-                            {
-                                LogContent.Add(x);
-                                LogsViewer.Refresh();
-                                OnPropertyChanged(nameof(LogsViewer));
-                            }
-
-                        });
 
 
 
                     }, System.Windows.Threading.DispatcherPriority.Background);
                 }
-                else
-                {
-                    LogContent?.Clear();
-                    LogsViewer?.Refresh();
-                    OnPropertyChanged(nameof(LogsViewer));
-                }
-                
+
                 OnPropertyChanged(nameof(LogsHeaders));
             }
+
 
         }
 

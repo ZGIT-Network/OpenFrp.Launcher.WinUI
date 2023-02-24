@@ -7,6 +7,9 @@
     <Compile Update="Controls\LoginDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\About.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\CreateTunnel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -49,6 +52,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\ViewPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\About.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\CreateTunnel.xaml">

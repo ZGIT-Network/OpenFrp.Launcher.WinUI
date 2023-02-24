@@ -10,6 +10,7 @@ using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Google.Protobuf;
 using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
@@ -26,14 +27,21 @@ namespace OpenFrp.Core
 
         static async Task Main(string[] args)
         {
-            if (args.Length == 1)
+            if (args.Length is 1)
             {
                 switch (args[0])
                 {
-                    case "-ps": PipeService();break;
+                    case "-ps": await PipeService();break;
                     case "--install":await InstallService();break;
                     case "--uninstall":await UninstallService();break;
                     case "--uap":await UninstallAppProgress();break;
+                }
+            }
+            else if (args.Length is 2)
+            {
+                switch (args[0])
+                {
+                    case "--update":ShowUpdater(args[1]); break;
                 }
             }
             else if (Utils.IsWindowsService)
@@ -42,7 +50,11 @@ namespace OpenFrp.Core
             }
         }
 
-        private static async void PipeService()
+        #region Console App
+        /// <summary>
+        /// 本地 管道服务
+        /// </summary>
+        private static async ValueTask PipeService()
         {
             var server = new PipeServer();
             server.Start();
@@ -82,47 +94,16 @@ namespace OpenFrp.Core
                 Environment.Exit(0);
                 return true;
             }, true);
-#if DEBUG
-            string str = Console.ReadLine();
-            while (str is not "exit")
-            {
-                if (str is null)
-                {
-                    return;
-                }
-                else if (str is "session")
-                {
-                    Utils.Log(ApiRequest.SessionId!);
-                    Utils.Log(ApiRequest.Authorization!);
-                    Utils.Log(ApiRequest.UserInfo!.JSON());
-                }
-                else if (str is "debugger")
-                {
-                    Debugger.Launch();
-                }
-                else if (str is "waps")
-                {
-                    foreach (var item in ConsoleHelper.Wrappers.Values)
-                    {
-                        Utils.Log(item.Tunnel!.TunnelId, level: TraceLevel.Error);
-                    }
-                }
-                else if (str.Split(':').First() is "kill")
-                {
-                    ConsoleHelper.Kill(ConsoleHelper.Wrappers[int.Parse(str.Split(':')[1])].Tunnel!);
-                }
-                
 
-                str = Console.ReadLine();
-            }
-#else
-            while(true)
+            while (true)
             {
-                await Task.Delay(100);
+                await Task.Delay(200);
             }
-#endif
         }
 
+        /// <summary>
+        /// 管道收到数据
+        /// </summary>
         private static void OnDataRecived(PipeWorker worker,RequestBase request)
         {
             ResponseBase response = new() { Success = true };
@@ -244,6 +225,9 @@ namespace OpenFrp.Core
             worker.Send(response.ToByteArray());
         }
 
+        /// <summary>
+        /// 安装服务
+        /// </summary>
         private async static ValueTask InstallService()
         {
 
@@ -287,6 +271,10 @@ namespace OpenFrp.Core
             }
         }
 
+        /// <summary>
+        /// 卸载服务
+        /// </summary>
+        /// <param name="saveConfig">是否保存配置 (FALSE 一般用在卸载时候)</param>
         private async static ValueTask UninstallService(bool saveConfig = true)
         {
             if (IsServiceInstalled())
@@ -311,6 +299,10 @@ namespace OpenFrp.Core
             }
         }
 
+        /// <summary>
+        /// 卸载 App 时所执行的
+        /// </summary>
+        /// <returns></returns>
         private async static ValueTask UninstallAppProgress()
         {
             await UninstallService(false);
@@ -318,6 +310,9 @@ namespace OpenFrp.Core
             Directory.Delete(Utils.ApplicatioDataPath, true);
         }
 
+        /// <summary>
+        /// 服务是否已安装
+        /// </summary>
         private static bool IsServiceInstalled()
         {
             ServiceController[] services = ServiceController.GetServices();
@@ -326,6 +321,33 @@ namespace OpenFrp.Core
                 if (service.ServiceName == "OpenFrp Launcher Service") return true;
             }
             return false;
+        }
+        #endregion
+
+
+
+        private static void ShowUpdater(string body)
+        {
+            Win32Helper.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, 0);
+            Thread tr = new Thread(() =>
+            {
+                if (body is "frpcDownload")
+                {
+                    // 直接进行 FRPC 下载操作
+                    new DownloadWnd().ShowDialog();
+                }
+                else
+                {
+                    var info = body.PraseJson<UpdateCheckHelper.UpdateInfo>();
+                    new DownloadWnd()
+                    {
+                        UpdateInfo = info
+                    }.ShowDialog();
+                }
+            });
+            tr.SetApartmentState(ApartmentState.STA);
+            tr.Start();
+
         }
     }
 }

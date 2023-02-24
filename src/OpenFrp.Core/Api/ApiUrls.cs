@@ -35,6 +35,10 @@ namespace OpenFrp.Core.Libraries.Api
         /// </summary>
         public const string BroadCast = $"{BaseUrl}/commonQuery/get?key=broadcast";
         /// <summary>
+        /// 软件列表
+        /// </summary>
+        public const string SoftwareSupport = $"{BaseUrl}/commonQuery/get?key=software";
+        /// <summary>
         /// 用户隧道
         /// </summary>
         public const string UserTunnels = $"{BaseUrl}/frp/api/getUserProxies";

@@ -27,6 +27,8 @@ message LogsReqest{
 }
 message NotiflyRequest{
     string tunnnelJson = 1;
+    string content = 2;
+    bool flag = 3;
 }
 
 

@@ -100,5 +100,8 @@ namespace OpenFrp.Core.Helper
             return true;
         }
 
+        [DllImport("User32.dll",EntryPoint = "ShowWindow")]
+        public static extern bool ShowWindow(IntPtr hWnd, int type);
+
     }
 }

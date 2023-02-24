@@ -60,19 +60,18 @@
         </ui:CommandBar>
     </Grid>
     <ofc:ViewPage.ContentWithOverflow>
-        <Grid Margin="0,50,0,0">
+        <Grid Margin="0,48,0,0">
             <ui:ScrollViewerEx PreviewMouseWheel="ScrollViewerEx_PreviewMouseWheel">
                 <ItemsControl
+                    x:Name="sbbv"
                     MaxWidth="1410"
                     Padding="56,4,56,24"
+                    FontFamily="{Binding Converter={StaticResource FontConverter}, ConverterParameter=logsf, Mode=OneWay}"
                     FontSize="{Binding FontSetting.FontSize}"
-                    FontFamily="{Binding DataContext.FontSetting.FontFamily,RelativeSource={RelativeSource AncestorType=ItemsControl},Converter={StaticResource FontConverter}, Mode=OneWay}"
                     ItemsSource="{Binding LogsViewer}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ofc:SelectableTextBlock
-                                Text="{Binding Content}"
-                                TextWrapping="Wrap">
+                            <ofc:SelectableTextBlock Text="{Binding Content}" TextWrapping="Wrap">
                                 <ofc:SelectableTextBlock.Style>
                                     <Style BasedOn="{StaticResource SelectableTextBlockDefualtStyle}" TargetType="ofc:SelectableTextBlock">
 
