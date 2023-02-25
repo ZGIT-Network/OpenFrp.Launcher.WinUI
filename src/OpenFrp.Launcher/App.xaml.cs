@@ -90,7 +90,7 @@ namespace OpenFrp.Launcher
 
                     if (OSVersionHelper.IsWindows10OrGreater)
                     {
-                        ToastNotificationManagerCompat.History.Clear();
+
                         ToastNotificationManagerCompat.OnActivated += (e) =>
                         {
                             var args = ToastArguments.Parse(e.Argument);
@@ -403,6 +403,7 @@ namespace OpenFrp.Launcher
         protected override async void OnExit(ExitEventArgs e)
         {
             await ConfigHelper.Instance.WriteConfig(true);
+            if (OSVersionHelper.IsWindows10OrGreater) ToastNotificationManagerCompat.History.Clear();
             AppShareHelper.TaskbarIcon?.Dispose();
         }
         /// <summary>
