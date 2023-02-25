@@ -55,7 +55,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// 启动器版本
         /// </summary>
-        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.6.1"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
+        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.6.2"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
 
 
 

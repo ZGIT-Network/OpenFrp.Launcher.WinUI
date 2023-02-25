@@ -83,14 +83,26 @@ namespace OpenFrp.Core
                     string frpcd = Path.Combine(Utils.ApplicatioDataPath, "frpc");
                     try
                     {
+                        foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+                        {
+                            if (process.MainModule.FileName == Utils.Frpc)
+                            {
+                                process.Kill();
+                            }
+                        }
+
                         if (Directory.Exists(frpcd))
                             Directory.Delete(frpcd, true);
+
+
                     }
-                    catch (UnauthorizedAccessException una)
+                    catch (UnauthorizedAccessException)
                     {
-                        new ProcessStartInfo("cmd", $"/c rd /s /q \"{frpcd}\"||echo {una}").RunAsUAC();
+                        new ProcessStartInfo("cmd", $"/c rd /s /q \"{frpcd}\"").RunAsUAC();
                         await Task.Delay(1500);
                     }
+
+
                     Directory.CreateDirectory(frpcd);
 
                     var dir = new DirectoryInfo(frpcd);

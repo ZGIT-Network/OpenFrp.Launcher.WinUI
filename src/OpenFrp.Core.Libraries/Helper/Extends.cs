@@ -105,6 +105,7 @@ namespace OpenFrp.Core.Helper
             try
             {
                 info.Verb = "runas";
+                
                 Process.Start(info);
                 return true;
             }

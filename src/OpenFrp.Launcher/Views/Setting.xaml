@@ -159,6 +159,7 @@
                         <ui:FontIcon FontSize="24" Glyph="&#xE72E;" />
                     </ofc:SettingItem.Icon>
                     <ui:ToggleSwitch
+                        IsEnabled="False"
                         Margin="4,0,-8,0"
                         AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
@@ -228,19 +229,6 @@
                         <ComboBoxItem Content="Notifiy (Win7+)" />
                         <ComboBoxItem Content="Toast (Win10+)" IsEnabled="{Binding IsSupportToast}" />
                     </ComboBox>
-                </ofc:SettingItem>
-
-                <ofc:SettingItem Title="调试" Description="设置后,FRPC将输出调试信息。">
-                    <ofc:SettingItem.Icon>
-                        <ui:FontIcon FontSize="24" Glyph="&#xE943;" />
-                    </ofc:SettingItem.Icon>
-                    <ui:ToggleSwitch
-                        Margin="4,0,-8,0"
-                        AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
-                        AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
-                        FocusVisualMargin="-10,-4,0,-4"
-                        IsOn="{Binding SettingInstance.DebugMode}"
-                        Style="{StaticResource LeftLabelToggleSwitchStyle}" />
                 </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>
