@@ -9,7 +9,7 @@
     xmlns:ofc="clr-namespace:OpenFrp.Launcher.Controls"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:viewmodels="clr-namespace:OpenFrp.Launcher.ViewModels"
-    Title="CreateTunnel"
+    Title="创建隧道"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ScrollViewer.VerticalScrollBarVisibility="Disabled"

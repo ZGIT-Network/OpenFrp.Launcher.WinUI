@@ -36,9 +36,9 @@ namespace OpenFrp.Core.Libraries.Pipe
                     if (IsPushMode = isPush) OnPushStart(this);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Utils.Log(ex, true);
+
             }
             
 
@@ -58,9 +58,9 @@ namespace OpenFrp.Core.Libraries.Pipe
                         return Protobuf.ResponseBase.Parser.ParseFrom(Buffer, 0, EnsureMessageComplete(count));
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Utils.Log(ex, true);
+
                 }
                 return new() { Success = false, Message = "在处理过程中发生了未知的错误。" };
             }

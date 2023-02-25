@@ -42,11 +42,10 @@ namespace OpenFrp.Core.Helper
                             StandardOutputEncoding = Encoding.UTF8,
                             StandardErrorEncoding = Encoding.UTF8,
                             FileName = Utils.Frpc,
-                            Arguments = $"-n -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}",
-
+                            Arguments = $"-n -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}{(ConfigHelper.Instance.ForceTLS ? " --force_tls" : "")}{(ConfigHelper.Instance.DebugMode ? " --debug" : "")}",
                         }
                     };
-                    Utils.Log($"传入参数: -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}", level: TraceLevel.Warning);
+                    LogHelper.Add(0,$"传入参数: -u {ApiRequest.UserInfo!.UserToken} -p {tunnel.TunnelId}", TraceLevel.Info,true);
                     process.OutputDataReceived += (sender, args) => Output(tunnel.TunnelId,args.Data);
                     process.ErrorDataReceived += (sender, args) => Output(tunnel.TunnelId, args.Data, TraceLevel.Error);
                     process.Start();
@@ -73,9 +72,17 @@ namespace OpenFrp.Core.Helper
                     return true;
                     
                 }
+                catch (UnauthorizedAccessException ex)
+                {
+
+                    Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                    LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
+                    LogHelper.Add(0, ex, TraceLevel.Warning, true);
+                    return false;
+                }
                 catch (Exception ex)
                 {
-                    Utils.Log(ex,level: TraceLevel.Warning);
+                    LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                     LogHelper.Add(0, ex, TraceLevel.Warning, true);
                     return false;
                 }
@@ -101,8 +108,7 @@ namespace OpenFrp.Core.Helper
             }
             catch(Exception ex)
             {
-                Utils.Log(ex, level: TraceLevel.Warning);
-                LogHelper.Add(0, ex, TraceLevel.Warning, true);
+                LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                 return false;
             }
         }
@@ -120,7 +126,7 @@ namespace OpenFrp.Core.Helper
                     Kill(Wrappers[id].Tunnel!);
                     if (Program.PushClient is not null && Program.PushClient.Pipe?.IsConnected is true)
                     {
-                        LogHelper.Add(0, $"隧道 {id} 已从面板强制下线，已向客户端发送请求包。",TraceLevel.Warning);
+                        LogHelper.Add(0, $"隧道 {id} 已从面板强制下线，已向客户端发送请求包。",TraceLevel.Warning,true);
                         await Program.PushClient.SendAsync(new RequestBase()
                         {
                             Action = RequestType.ServerUpdateTunnels

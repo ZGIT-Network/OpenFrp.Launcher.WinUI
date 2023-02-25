@@ -60,7 +60,7 @@ namespace OpenFrp.Core.Helper
         /// 绕过代理
         /// </summary>
         [JsonProperty("bypassProxy")]
-        public bool BypassProxy { get; set; }
+        public bool BypassProxy { get; set; } = true;
 
         /// <summary>
         /// 是否为系统服务模式
@@ -90,6 +90,12 @@ namespace OpenFrp.Core.Helper
 
         [JsonProperty("pullMode")]
         public TnMode MessagePullMode { get; set; }
+
+        [JsonProperty("debug")]
+        public bool DebugMode { get; set; } = false;
+
+        [JsonProperty("force_tls")]
+        public bool ForceTLS { get; set; } = false;
 
         public class UserAccount
         {
@@ -195,7 +201,7 @@ namespace OpenFrp.Core.Helper
             }
             catch (Exception ex)
             {
-                Utils.Log(ex, true);
+                LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
             }
         }
 

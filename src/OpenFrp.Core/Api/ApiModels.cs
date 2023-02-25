@@ -153,8 +153,8 @@ namespace OpenFrp.Core.Libraries.Api.Models
             [JsonProperty("link")]
             public string Link { get; set; } = "https://www.openfrp.net";
 
-            [JsonProperty("forceImage")]
-            public bool ForceImage { get; set; }
+//          [JsonProperty("forceImage")]
+//          public bool ForceImage { get; set; }
 
             [JsonProperty("image")]
             public string? Image { get; set; }

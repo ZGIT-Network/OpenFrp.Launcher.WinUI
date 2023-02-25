@@ -34,7 +34,7 @@ namespace OpenFrp.Launcher.Views
         protected override async void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            sbbv.FontFamily = new FontFamily(ConfigHelper.Instance.FontSet.FontFamily);
+            sbbv.FontFamily = new FontFamily(ConfigHelper.Instance.FontSet.FontFamily ?? "Microsoft YaHei UI");
             do
             {
                 Model.GetLogs();

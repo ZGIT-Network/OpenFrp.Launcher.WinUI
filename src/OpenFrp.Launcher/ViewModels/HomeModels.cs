@@ -241,7 +241,7 @@ namespace OpenFrp.Launcher.ViewModels
                 PreviewContent = response;
                 if (response.Image != null)
                 {
-                    if (response.ForceImage || !false)
+                    if (true)
                     {
                         string fileName = $"{Utils.ApplicatioDataPath}\\statics\\{response.Image.GetMD5()}.png";
                         Directory.CreateDirectory($"{Utils.ApplicatioDataPath}\\statics\\");
@@ -283,6 +283,44 @@ namespace OpenFrp.Launcher.ViewModels
             {
                 // MainPage?.OfApp_BroadCastXContent.Children.Add("")
             }
+        }
+
+        [RelayCommand]
+        public async void SavePicture()
+        {
+            try
+            {
+                var dialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "图片文件|*.png"
+                };
+
+                if (dialog.ShowDialog() is true)
+                {
+                    
+
+                    if (PreviewContent.Image is null)
+                    {
+                        using var file = new FileStream(dialog.FileName, FileMode.Create);
+
+                        Stream stream = App.GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.png")).Stream;
+
+                        byte[] buffer = new byte[stream.Length];
+                        int count = await stream.ReadAsync(buffer, 0, buffer.Length);
+                        if (count > 0)
+                        {
+                            await file.WriteAsync(buffer, 0, count);
+                        }
+                    }
+                    else
+                    {
+                        File.Copy($"{Utils.ApplicatioDataPath}\\statics\\{PreviewContent.Image.GetMD5()}.png",dialog.FileName, true);
+                    }
+                    
+                }
+
+            }
+            catch { }
         }
     }
 }

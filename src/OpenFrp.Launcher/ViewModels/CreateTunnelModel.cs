@@ -188,16 +188,16 @@ namespace OpenFrp.Launcher.ViewModels
             };
             dialog.Loaded += async (sender, args) =>
             {
-                
-                var response = await ApiRequest.UniversalPOST<ResponseBody.BaseResponse>(ApiUrls.CreateTunnel, CreateTunnelPage.Configer.GetConfig(false));
+                var req = CreateTunnelPage.Configer.GetConfig(false);
+                if (req is not null)
+                {
+                    var response = await ApiRequest.UniversalPOST<ResponseBody.BaseResponse>(ApiUrls.CreateTunnel, req);
+                    if (response.Success)
+                    {
+                        dialog.Hide();
+                        ToTunnelsPage();
+                    }
 
-                if (response.Success)
-                {
-                    dialog.Hide();
-                    ToTunnelsPage();
-                }
-                else
-                {
                     dialog.CloseButtonText = "关闭";
                     loader.PushMessage(() =>
                     {
@@ -205,7 +205,6 @@ namespace OpenFrp.Launcher.ViewModels
                         dialog.Hide();
                     }, response.Message, "显示错误");
                     loader.ShowError();
-
                 }
             };
             await dialog.ShowDialogFixed();

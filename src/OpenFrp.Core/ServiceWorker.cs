@@ -169,7 +169,7 @@ namespace OpenFrp.Core
                             if (request.FrpRequest is not null)
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
-                                Utils.Log($"从客户端收到了开启请求。{tunnel.TunnelName}", true);
+                                LogHelper.Add(0, $"从客户端收到了开启请求。{tunnel.TunnelName}", System.Diagnostics.TraceLevel.Warning, true);
                                 if (!ConsoleHelper.Launch(tunnel))
                                 {
                                     response = new() { Message = "发生了未知错误." };
@@ -187,7 +187,7 @@ namespace OpenFrp.Core
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<ResponseBody.UserTunnelsResponse.UserTunnel>()!;
                                 ConsoleHelper.Kill(tunnel);
-                                Utils.Log($"从客户端收到关闭请求。{tunnel.TunnelName}", true);
+                                LogHelper.Add(0, $"从客户端收到关闭请求。{tunnel.TunnelName}", System.Diagnostics.TraceLevel.Warning, true);
                                 break;
                             }
                             response = new() { Message = "FRP Request 不能为空。" };
@@ -245,7 +245,6 @@ namespace OpenFrp.Core
                 };
             }
 
-            Utils.Log("发回客户端 内容被省略", true);
             worker.Send(response.ToByteArray());
         }
     }

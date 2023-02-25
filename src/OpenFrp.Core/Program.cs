@@ -56,6 +56,23 @@ namespace OpenFrp.Core
         /// </summary>
         private static async ValueTask PipeService()
         {
+
+            foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+            {
+                if (process.MainModule.FileName == Utils.Frpc)
+                {
+                    process.Kill();
+                }
+            }
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                foreach (var wrapper in ConsoleHelper.Wrappers.Values)
+                {
+                    if (wrapper.Process is not null && wrapper.Process.HasExited is false) wrapper.Process.Kill();
+                }
+            };
+
             var server = new PipeServer();
             server.Start();
             server.OnDataRecived += OnDataRecived;
@@ -72,7 +89,8 @@ namespace OpenFrp.Core
                 }
                 PushClient.Start(true);
             };
-            LogHelper.Add(0, $"OpenFrp Launcher 2023 | Pipe标识符: {Utils.PipesName}", TraceLevel.Warning, true);
+
+            LogHelper.Add(0, $"OpenFrp Launcher 2023 | 系统服务模式: {Utils.IsWindowsService} | 启动器版本 {Utils.LauncherVersion}", TraceLevel.Warning, false);
 
             Win32Helper.SetConsoleCtrlHandler(o =>
             {
@@ -89,7 +107,11 @@ namespace OpenFrp.Core
                     ConfigHelper.Instance.AutoStartupList = new int[0];
                 }
 
-                File.WriteAllText(Utils.ConfigFile, ConfigHelper.Instance.JSON());
+                if (PushClient.IsRunning && PushClient.Pipe?.IsConnected == false)
+                {
+                    File.WriteAllText(Utils.ConfigFile, ConfigHelper.Instance.JSON());
+                }
+
 
                 Environment.Exit(0);
                 return true;
@@ -132,7 +154,7 @@ namespace OpenFrp.Core
                             if (request.FrpRequest is not null)
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
-                                Utils.Log($"从客户端收到了开启请求。{tunnel.TunnelName}", true);
+                                
                                 if (!ConsoleHelper.Launch(tunnel))
                                 {
                                     response = new() { Message = "发生了未知错误." };
@@ -150,7 +172,6 @@ namespace OpenFrp.Core
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
                                 ConsoleHelper.Kill(tunnel);
-                                Utils.Log($"从客户端收到关闭请求。{tunnel.TunnelName}", true);
                                 break;
                             }
                             response = new() { Message = "FRP Request 不能为空。" };
@@ -221,7 +242,6 @@ namespace OpenFrp.Core
                 };
             }
 
-            Utils.Log("发回客户端 内容被省略", true);
             worker.Send(response.ToByteArray());
         }
 
@@ -265,7 +285,7 @@ namespace OpenFrp.Core
                 }
                 catch (Exception ex)
                 {
-                    Utils.Log(ex.ToString(),true,TraceLevel.Error);
+                    LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Error, true);
                 }
 
             }

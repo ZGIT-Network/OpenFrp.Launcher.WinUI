@@ -55,33 +55,9 @@ namespace OpenFrp.Core
         /// <summary>
         /// 启动器版本
         /// </summary>
-        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.5"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
+        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.6.1"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
 
 
-        public static void Log(object message,bool debug = false,TraceLevel level = TraceLevel.Info)
-        {
-            try
-            {
-                if (Console.WindowWidth is not -1)
-                {
-                    if (level != TraceLevel.Info)
-                    {
-                        Console.ForegroundColor = level switch
-                        {
-                            TraceLevel.Error => ConsoleColor.Red,
-                            TraceLevel.Warning => ConsoleColor.Yellow,
-                            TraceLevel.Verbose => ConsoleColor.Cyan,
-                            _ => ConsoleColor.Gray
-                        };
-                    }
-                    Console.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
-                    Console.ResetColor();
-                    return;
-                }
-            }
-            catch {  }
-            Debug.WriteLine($"{(debug ? "[DEBUG] " : "")}{message}");
-        }
 
 
 

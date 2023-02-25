@@ -66,8 +66,8 @@ namespace OpenFrp.Launcher.Helper
                         };
                         var response = await PipeClient.Request(request).WithCancalToken(token);
 
-                        if (response is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
-                        else if (!response.Success)
+                        if (response is null && token.IsCancellationRequested) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
+                        else if (response?.Success is false)
                         {
                             ApiRequest.ClearAuth();
                             return new()

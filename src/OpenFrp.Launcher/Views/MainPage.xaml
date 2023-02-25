@@ -376,7 +376,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <ui:PersonPicture Height="40" ProfilePicture="..\Resourecs\109951167218053510.jpg" />
+                                    <ui:PersonPicture Height="40" ProfilePicture="..\Resourecs\fav2023.jpg" />
                                 </Grid>
                                 <Grid Grid.Column="2">
                                     <TextBlock

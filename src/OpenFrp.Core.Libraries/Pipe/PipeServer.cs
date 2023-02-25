@@ -39,7 +39,6 @@ namespace OpenFrp.Core.Libraries.Pipe
         public override void Start(bool isPush = false)
         {
             Server = CreatePipeServer(OnConnected,isPush);
-            Utils.Log($"PipeWorker ID: {$"{Utils.PipesName}{(isPush ? "_PUSH" : "")}"}",true);
         }
         /// <summary>
         /// 创建服务端
@@ -69,7 +68,7 @@ namespace OpenFrp.Core.Libraries.Pipe
                         Pipe = server;
                         Buffer = new byte[server.InBufferSize];
                         server.EndWaitForConnection(callback);
-                        Utils.Log($"客户端已连接到PUSH", true);
+
                     }, server);
                 }
                 return server;
@@ -88,7 +87,6 @@ namespace OpenFrp.Core.Libraries.Pipe
             {
                 
                 NamedPipeServerStream server = (NamedPipeServerStream)iar.AsyncState;
-                Utils.Log("获得连接!", true);
                 server.EndWaitForConnection(iar);
                 IsRunning = true;
                 Pipe = server;
@@ -107,11 +105,10 @@ namespace OpenFrp.Core.Libraries.Pipe
                     OnDataRecived(this, request);
                 }
             }
-            catch (Exception ex)
-            {
-                Utils.Log("(PipeServer.OnConnected) Try => Catch : " + ex,true,TraceLevel.Error);
+            catch {
+
             }
-            Utils.Log("客户端已断开",true);
+
             Disponse();
             OnRestart();
             Start();
@@ -128,7 +125,7 @@ namespace OpenFrp.Core.Libraries.Pipe
                     if (count > 0)
                     {
                         var obj = RequestBase.Parser.ParseFrom(Buffer, 0, EnsureMessageComplete(count));
-                        Utils.Log("Get Protobuf Content: 内容被省略", true, TraceLevel.Verbose);
+
                         return obj;
                     }
                 }

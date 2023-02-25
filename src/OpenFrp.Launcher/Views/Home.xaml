@@ -47,7 +47,7 @@
             <!--  大图块  -->
             <ofc:Card Grid.Column="0">
                 <ofc:Card.Style>
-                    <Style TargetType="ofc:Card" BasedOn="{StaticResource DefualtCardKeyStyle}">
+                    <Style BasedOn="{StaticResource DefualtCardKeyStyle}" TargetType="ofc:Card">
                         <Setter Property="Grid.ColumnSpan" Value="1" />
                         <Setter Property="Grid.RowSpan" Value="2" />
                         <Setter Property="Margin" Value="0,0,4,0" />
@@ -94,7 +94,7 @@
                                             <ui:SymbolIcon Symbol="Refresh" />
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="保存图片">
+                                    <MenuItem Command="{Binding SavePictureCommand}" Header="保存图片">
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Save" />
                                         </MenuItem.Icon>

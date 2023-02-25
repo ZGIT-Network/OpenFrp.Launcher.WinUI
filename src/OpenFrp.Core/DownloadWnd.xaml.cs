@@ -81,7 +81,16 @@ namespace OpenFrp.Core
                 if (level.Level is UpdateCheckHelper.UpdateLevel.FrpcUpdate)
                 {
                     string frpcd = Path.Combine(Utils.ApplicatioDataPath, "frpc");
-                    Directory.Delete(frpcd, true);
+                    try
+                    {
+                        if (Directory.Exists(frpcd))
+                            Directory.Delete(frpcd, true);
+                    }
+                    catch (UnauthorizedAccessException una)
+                    {
+                        new ProcessStartInfo("cmd", $"/c rd /s /q \"{frpcd}\"||echo {una}").RunAsUAC();
+                        await Task.Delay(1500);
+                    }
                     Directory.CreateDirectory(frpcd);
 
                     var dir = new DirectoryInfo(frpcd);
@@ -119,7 +128,7 @@ namespace OpenFrp.Core
             else
             {
                 AddIntoView("下载失败,请点击\"重新下载\"按钮重试。");
-                Btn_Reload.IsEnabled = true;
+                this.Dispatcher.Invoke(() => Btn_Reload.IsEnabled = true);
             }
         }
 

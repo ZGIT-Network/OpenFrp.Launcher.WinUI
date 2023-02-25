@@ -148,7 +148,7 @@ namespace OpenFrp.Core.Libraries.Api
             }
             catch (Exception ex)
             {
-                Utils.Log(ex, false);
+                LogHelper.Add(0,ex.ToString(),System.Diagnostics.TraceLevel.Warning,true);
                 if (typeof(T) == typeof(Api.Models.ResponseBody.BaseResponse))
                 {
                     return (T)new Models.ResponseBody.BaseResponse()
@@ -188,7 +188,7 @@ namespace OpenFrp.Core.Libraries.Api
             }
             catch (Exception ex)
             {
-                Utils.Log(ex, false);
+                LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                 if (typeof(T) == typeof(Api.Models.ResponseBody.BaseResponse))
                 {
                     return (T)new Models.ResponseBody.BaseResponse()
@@ -228,7 +228,7 @@ namespace OpenFrp.Core.Libraries.Api
             }
             catch (Exception ex)
             {
-                Utils.Log(ex, false);
+                LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
             }
             return default;
         }
@@ -251,7 +251,7 @@ namespace OpenFrp.Core.Libraries.Api
                 {
                     File.Delete(filepath);
                 }
-                Utils.Log(ex);
+                LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                 return false;
             }
 

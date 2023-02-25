@@ -51,24 +51,31 @@ namespace OpenFrp.Launcher.Controls
         public static readonly DependencyProperty NodeInfoProperty =
             DependencyProperty.Register("NodeInfo", typeof(Core.Libraries.Api.Models.ResponseBody.NodeListsResponse.NodeInfo), typeof(TunnelConfig), new PropertyMetadata());
 
-        public Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest GetConfig(bool isEditMode = false)
+        public Core.Libraries.Api.Models.RequestsBody.EditTunnelRequest? GetConfig(bool isEditMode = false)
         {
-            if (NodeInfo is not null || isEditMode)
+            try
             {
-                if (!isEditMode)
+                if (NodeInfo is not null || isEditMode)
                 {
-                    string item = ((ComboBoxItem)((ComboBox)GetTemplateChild("Of_Protocol_ComboBox")).SelectedItem).Content.ToString();
-                    Config.TunnelType = item.ToLower();
-
-
-                    var bo1x = (NumberBox)GetTemplateChild("Of_RemotePort_Box");
-                    if (bo1x.Value is double.NaN or 0)
+                    if (!isEditMode)
                     {
-                        if (NodeInfo is not null)
+                        string item = ((ComboBoxItem)((ComboBox)GetTemplateChild("Of_Protocol_ComboBox")).SelectedItem).Content.ToString();
+                        Config.TunnelType = item.ToLower();
+
+
+                        var bo1x = (NumberBox)GetTemplateChild("Of_RemotePort_Box");
+                        if (bo1x.Value is double.NaN or 0)
                         {
-                            if (NodeInfo.MinimumPort != NodeInfo.MaxumumPort)
+                            if (NodeInfo is not null)
                             {
-                                bo1x.Value = (Config.RemotePort = new Random().Next(NodeInfo.MinimumPort, NodeInfo.MaxumumPort)).Value;
+                                if (NodeInfo.MinimumPort != NodeInfo.MaxumumPort)
+                                {
+                                    bo1x.Value = (Config.RemotePort = new Random().Next(NodeInfo.MinimumPort, NodeInfo.MaxumumPort)).Value;
+                                }
+                                else
+                                {
+                                    bo1x.Value = (Config.RemotePort = new Random().Next(1000, 65535)).Value;
+                                }
                             }
                             else
                             {
@@ -77,47 +84,48 @@ namespace OpenFrp.Launcher.Controls
                         }
                         else
                         {
-                            bo1x.Value = (Config.RemotePort = new Random().Next(1000, 65535)).Value;
+                            bo1x.Value = (Config.RemotePort = (int)Math.Round(bo1x.Value)).Value;
                         }
+                    }
+
+                    var bo2x = (NumberBox)GetTemplateChild("Of_LocalPort_Box");
+                    if (bo2x.Value is double.NaN or 0)
+                    {
+                        bo2x.Value = Config.LocalPort = 25565;
                     }
                     else
                     {
-                        bo1x.Value = (Config.RemotePort = (int)Math.Round(bo1x.Value)).Value;
+                        bo2x.Value = Config.LocalPort = (int)Math.Round(bo2x.Value);
                     }
+
+                    Config.NodeID = NodeInfo?.NodeID ?? 0;
+
+                    var custom = new StringBuilder();
+
+                    if (Config.ProxyProtocolVersion is not 0)
+                    {
+                        custom.Append($"proxy_protocol_version = {(Config.ProxyProtocolVersion is 1 ? "v1" : "v2")} \n");
+                    }
+                    var custom_inp = (TextBox)GetTemplateChild("Of_CustomArgs_Box");
+
+                    custom.Append(custom_inp.Text.Replace("\\r\\n", "\\n"));
+
+                    Config.CustomArgs = custom.ToString();
+
+                    if (string.IsNullOrEmpty(Config.TunnelName))
+                    {
+                        Config.TunnelName = ((TextBox)GetTemplateChild("Of_TunnelName_Box")).Text =
+                        $"OfApp_{new Random().Next(25565, 89889)}";
+                    };
                 }
-
-
-
-                var bo2x = (NumberBox)GetTemplateChild("Of_LocalPort_Box");
-                if (bo2x.Value is double.NaN or 0)
-                {
-                    bo2x.Value = Config.LocalPort = 25565;
-                }
-                else
-                {
-                    bo2x.Value = Config.LocalPort = (int)Math.Round(bo2x.Value);
-                }
-
-                Config.NodeID = NodeInfo?.NodeID ?? 0;
-
-                var custom = new StringBuilder();
-                if (Config.ProxyProtocolVersion is not 0)
-                {
-                    custom.Append($"proxy_protocol_version = {(Config.ProxyProtocolVersion is 1 ? "v1" : "v2")} \n");
-                }
-                var custom_inp = (TextBox)GetTemplateChild("Of_CustomArgs_Box");
-
-                custom.Append(custom_inp.Text.Replace("\\r\\n","\\n"));
-
-                Config.CustomArgs = custom.ToString();
-
-                if (string.IsNullOrEmpty(Config.TunnelName))
-                {
-                    Config.TunnelName = ((TextBox)GetTemplateChild("Of_TunnelName_Box")).Text =
-                    $"OfApp_{new Random().Next(25565, 89889)}";
-                };
+                return Config;
             }
-            return Config;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+
+                return default;
+            }
 
         }
 

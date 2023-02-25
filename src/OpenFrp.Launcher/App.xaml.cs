@@ -60,64 +60,74 @@ namespace OpenFrp.Launcher
 
             if (File.Exists(Utils.Frpc))
             {
-                CheckDeamon();
-
-                if (Process.GetProcessesByName("OpenFrp.Launcher").Length > 1)
+                try
                 {
-                    IntPtr hwnd = WindHelper.FindWindowA(null, "OpenFrp - Worker");
-                    WindHelper.ShowWindow(hwnd, 9);
-                    WindHelper.SetForegroundWindow(hwnd);
-                    Environment.Exit(0);
-                }
-
-                Microsoft.Win32.SystemEvents.SessionEnding += async (sender, e) =>
-                {
-                    // 保存 Config
-                    e.Cancel = true;
-                    await ConfigHelper.Instance.WriteConfig();
-                    e.Cancel = false;
-                };
-
-                if (OSVersionHelper.IsWindows10OrGreater)
-                {
-                    ToastNotificationManagerCompat.History.Clear();
-                    ToastNotificationManagerCompat.OnActivated += (e) =>
+                    Process.Start(new ProcessStartInfo()
                     {
-                        var args = ToastArguments.Parse(e.Argument);
-                        App.Current.RunOnUIThread(() =>
-                        {
-                            try
-                            {
-                                Clipboard.SetText(args["--cl"]);
-                            }
-                            catch
-                            {
+                        FileName = Utils.Frpc,
+                        Arguments = $"-v",
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    });
 
-                            }
-                        });
+                    CheckDeamon();
 
-                    };
-                }
-                AppShareHelper.TaskbarIcon = new()
-                {
-                    Icon =
-                      new System.Drawing.Icon(GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/main.ico")).Stream)
-                };
-                AppShareHelper.TaskbarIcon.TrayLeftMouseUp += (sender, args) =>
-                {
-                    if (App.Current.MainWindow is Window wind)
+                    if (Process.GetProcessesByName("OpenFrp.Launcher").Length > 1)
                     {
-                        wind.Visibility = Visibility.Visible;
-                        wind.Activate();
-                        if (wind.WindowState is WindowState.Minimized)
-                        {
-                            wind.WindowState = WindowState.Normal;
-                        }
+                        IntPtr hwnd = WindHelper.FindWindowA(null, "OpenFrp Launcher");
+                        WindHelper.ShowWindow(hwnd, 9);
+                        WindHelper.SetForegroundWindow(hwnd);
+                        Environment.Exit(0);
                     }
-                };
-                AppShareHelper.TaskbarIcon.ContextMenu = new()
-                {
-                    Items =
+
+                    Microsoft.Win32.SystemEvents.SessionEnding += async (sender, e) =>
+                    {
+                        // 保存 Config
+                        e.Cancel = true;
+                        await ConfigHelper.Instance.WriteConfig();
+                        e.Cancel = false;
+                    };
+
+                    if (OSVersionHelper.IsWindows10OrGreater)
+                    {
+                        ToastNotificationManagerCompat.History.Clear();
+                        ToastNotificationManagerCompat.OnActivated += (e) =>
+                        {
+                            var args = ToastArguments.Parse(e.Argument);
+                            App.Current.RunOnUIThread(() =>
+                            {
+                                try
+                                {
+                                    Clipboard.SetText(args["--cl"]);
+                                }
+                                catch
+                                {
+
+                                }
+                            });
+
+                        };
+                    }
+                    AppShareHelper.TaskbarIcon = new()
+                    {
+                        Icon =
+                          new System.Drawing.Icon(GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/main.ico")).Stream)
+                    };
+                    AppShareHelper.TaskbarIcon.TrayLeftMouseUp += (sender, args) =>
+                    {
+                        if (App.Current.MainWindow is Window wind)
+                        {
+                            wind.Visibility = Visibility.Visible;
+                            wind.Activate();
+                            if (wind.WindowState is WindowState.Minimized)
+                            {
+                                wind.WindowState = WindowState.Normal;
+                            }
+                        }
+                    };
+                    AppShareHelper.TaskbarIcon.ContextMenu = new()
+                    {
+                        Items =
                 {
                     new MenuItem()
                     {
@@ -141,10 +151,20 @@ namespace OpenFrp.Launcher
                     }
 
                 }
-                };
-                AutoLogin();
-                PipeIOStart();
-                CreateWindow();
+                    };
+                    AutoLogin();
+                    PipeIOStart();
+                    CreateWindow();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    ConfigHelper.Instance.FrpcVersion = "unset";
+
+                    Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload");
+
+                    App.Current.Shutdown();
+                }
+                
             }
             else
             {
@@ -166,7 +186,7 @@ namespace OpenFrp.Launcher
             {
                 Width = 1366,
                 Height = 768,
-                Title = $"OpenFrp - Worker"
+                Title = $"OpenFrp Launcher"
             };
             WindowHelper.SetSystemBackdropType(wind, ConfigHelper.Instance.BackdropSet);
             ThemeManager.SetRequestedTheme(wind, ConfigHelper.Instance.ThemeSet);
@@ -321,14 +341,14 @@ namespace OpenFrp.Launcher
                             {
                                 settingModel.HasAccount = false;
                             }
-                            Utils.Log("Service IO Closed.", true);
+                            LogHelper.Add(0, "Service IO Closed.".ToString(), System.Diagnostics.TraceLevel.Warning, true);
                             // 在PipeServer被关闭时，会发送一个 长度为 0 的数据包
                             break;
                         }
                     }
                     catch (Exception ex)
                     {
-                        Utils.Log(ex, true);
+                        LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                         break;
                     }
                 }
@@ -425,6 +445,14 @@ namespace OpenFrp.Launcher
                         {
                             process.Kill();
                         };
+
+                        foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+                        {
+                            if (process.MainModule.FileName == Utils.Frpc)
+                            {
+                                process.Kill();
+                            }
+                        }
                     }
                     catch
                     {

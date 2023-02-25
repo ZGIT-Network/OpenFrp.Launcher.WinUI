@@ -34,11 +34,9 @@ namespace OpenFrp.Core.Helper
             {
                 return JsonConvert.DeserializeObject<T>(str);
             }
-            catch(Exception ex)
+            catch
             {
                 // Write error to logs
-                Utils.Log(ex, true, System.Diagnostics.TraceLevel.Error);
-
                 return default;
             }
         }
