@@ -35,11 +35,12 @@ namespace OpenFrp.Core
 
         private string? FileName { get; set; }
 
-        protected override void OnInitialized(EventArgs e)
+        protected override async void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+            await ConfigHelper.ReadConfig();
             AppDomain.CurrentDomain.UnhandledException += (s, e) => MessageBox.Show(e.ExceptionObject.ToString());
-            Inst();
+            Dispatcher.RunOnUIThread(Inst);
         }
 
         async void Inst()

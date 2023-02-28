@@ -362,11 +362,16 @@ namespace OpenFrp.Core
 
 
 
-        private static async void ShowUpdater(string body)
+        private static void ShowUpdater(string body)
         {
-            
+
+
             Win32Helper.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, 0);
-            await ConfigHelper.ReadConfig();
+
+            
+
+
+
             Thread tr = new Thread(() =>
             {
                 if (body is "frpcDownload")
