@@ -68,7 +68,21 @@ namespace OpenFrp.Core.Libraries.Api
         {
             if (HasAccount)
             {
-                return (await POST<T>(url, postData?.ToJSONBody() ?? new Models.RequestsBody.BaseRequest().ToJSONBody()))!;
+                var response = await POST<T>(url, postData?.ToJSONBody() ?? new Models.RequestsBody.BaseRequest().ToJSONBody());
+                if (response?.Message.Contains("TOKEN") is true)
+                {
+                    var loginr = await Login(ConfigHelper.Instance.Account.UserName!, ConfigHelper.Instance.Account.Password!);
+                    if (loginr.Success) return (await POST<T>(url, postData?.ToJSONBody() ?? new Models.RequestsBody.BaseRequest().ToJSONBody()))!;
+                    else
+                    {
+                        return (T)new Models.ResponseBody.BaseResponse()
+                        {
+                            Success = false,
+                            Message = "Token已过期,请重新打开启动器刷新。"
+                        };
+                    }
+                }
+                else return response!;
             }
             else return UnloginMessage<T>();
         }

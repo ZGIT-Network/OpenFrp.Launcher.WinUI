@@ -74,12 +74,26 @@ namespace OpenFrp.Core
             };
 
             var server = new PipeServer();
+            PushClient = new PipeServer();
+
             server.Start();
+            PushClient.Start(true);
+
             server.OnDataRecived += OnDataRecived;
 
+            server.OnConnectedEvent += async delegate
+            {
+                await Task.Delay(3000);
+
+                if (PushClient?.Pipe?.IsConnected is false)
+                {
+                    server.Disconnect();
+                }
+            };
+
             // PUSH 只发送
-            PushClient = new PipeServer();
-            PushClient.Start(true);
+
+
             server.OnRestart = () =>
             {
                 PushClient.Disponse();
@@ -154,10 +168,12 @@ namespace OpenFrp.Core
                             if (request.FrpRequest is not null)
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
-                                
-                                if (!ConsoleHelper.Launch(tunnel))
+
+
+                                var result = ConsoleHelper.Launch(tunnel);
+                                if (!result.Item1)
                                 {
-                                    response = new() { Message = "发生了未知错误." };
+                                    response = new() { Message = "发生了未知错误.",Exception = result.Item2?.ToString() };
                                 }
                                 break;
                             }
@@ -346,9 +362,11 @@ namespace OpenFrp.Core
 
 
 
-        private static void ShowUpdater(string body)
+        private static async void ShowUpdater(string body)
         {
+            
             Win32Helper.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, 0);
+            await ConfigHelper.ReadConfig();
             Thread tr = new Thread(() =>
             {
                 if (body is "frpcDownload")

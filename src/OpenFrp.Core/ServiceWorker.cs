@@ -170,9 +170,10 @@ namespace OpenFrp.Core
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
                                 LogHelper.Add(0, $"从客户端收到了开启请求。{tunnel.TunnelName}", System.Diagnostics.TraceLevel.Warning, true);
-                                if (!ConsoleHelper.Launch(tunnel))
+                                var result = ConsoleHelper.Launch(tunnel);
+                                if (!result.Item1)
                                 {
-                                    response = new() { Message = "发生了未知错误." };
+                                    response = new() { Message = "发生了未知错误.",Exception = result.Item2?.ToString()};
                                 }
                                 break;
                             }

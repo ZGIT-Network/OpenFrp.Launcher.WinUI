@@ -78,7 +78,7 @@ namespace OpenFrp.Launcher.Views
                         Inlines =
                         {
                             new Run(ur.Content),
-                            new Run($"{Utils.LauncherVersion} => {ur.Version}")
+                            new Run($"{Utils.LauncherVersion} 更新到 {ur.Version}")
                             {
                                 Foreground = (SolidColorBrush)App.Current.Resources["SystemControlForegroundBaseMediumBrush"]
                             }
@@ -92,6 +92,8 @@ namespace OpenFrp.Launcher.Views
                 {
 
                     Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {ur.JSON()}");
+
+                    await ConfigHelper.Instance.WriteConfig();
 
                     App.Current?.Shutdown();
 

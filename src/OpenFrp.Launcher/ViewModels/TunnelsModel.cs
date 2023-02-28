@@ -248,7 +248,7 @@ namespace OpenFrp.Launcher.ViewModels
 
                     if (!response.Success)
                     {
-                        MessageBox.Show(response.Message);
+                        MessageBox.Show($"{response.Message}\n{response.Exception}");
                         @switch.IsOn = false;
                     }
 

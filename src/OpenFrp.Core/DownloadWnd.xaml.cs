@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.IO.Compression;
 using System.Security.Principal;
 using System.Windows.Threading;
+using ModernWpf;
 
 namespace OpenFrp.Core
 {
@@ -76,7 +77,7 @@ namespace OpenFrp.Core
             FileName = filename;
             if (await UpdateCheckHelper.DownloadWithProgress(url, FileName, (sender, ar) => AddIntoView($"Download Progress: {ar.ProgressPercentage}")))
             {
-                await ConfigHelper.ReadConfig();
+
                 // Successful
                 if (level.Level is UpdateCheckHelper.UpdateLevel.FrpcUpdate)
                 {
@@ -123,7 +124,10 @@ namespace OpenFrp.Core
                     if (FileName is not null && File.Exists(FileName)) File.Delete(FileName);
 
                     ConfigHelper.Instance.FrpcVersion = level.Version;
+
                     await ConfigHelper.Instance.WriteConfig(true);
+
+                    await Task.Delay(500);
 
 
                     Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));

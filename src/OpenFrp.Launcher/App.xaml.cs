@@ -35,7 +35,7 @@ namespace OpenFrp.Launcher
     {
 
 
-        private Process? deamon;
+        internal static Process? deamon;
         /// <summary>
         /// 加载事件 - Redo
         /// </summary>
@@ -46,11 +46,6 @@ namespace OpenFrp.Launcher
                 MessageBox.Show(e.ExceptionObject.ToString());
             };
 
-            if (UxThemeHelper.IsSupportDarkMode)
-            {
-                UxThemeHelper.AllowDarkModeForApp(true);
-                UxThemeHelper.ShouldSystemUseDarkMode();
-            }
             JsonConvert.DefaultSettings = () => new()
             {
                 NullValueHandling = NullValueHandling.Ignore
@@ -70,15 +65,37 @@ namespace OpenFrp.Launcher
                         CreateNoWindow = true
                     });
 
-                    CheckDeamon();
-
-                    if (Process.GetProcessesByName("OpenFrp.Launcher").Length > 1)
+                    if (UxThemeHelper.IsSupportDarkMode)
                     {
-                        IntPtr hwnd = WindHelper.FindWindowA(null, "OpenFrp Launcher");
-                        WindHelper.ShowWindow(hwnd, 9);
-                        WindHelper.SetForegroundWindow(hwnd);
-                        Environment.Exit(0);
+                        UxThemeHelper.AllowDarkModeForApp(true);
+                        UxThemeHelper.ShouldSystemUseDarkMode();
                     }
+
+
+
+
+                    var processes = Process.GetProcessesByName("OpenFrp.Launcher");
+                    if (processes.Length > 1)
+                    {
+                        foreach(var process in processes)
+                        {
+                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"))
+                            {
+                                IntPtr hwnd = WindHelper.FindWindowA(null, $"OpenFrp Launcher - {process.MainModule.FileName.GetMD5()}");
+                                if (hwnd != IntPtr.Zero)
+                                {
+                                    WindHelper.ShowWindow(hwnd, 9);
+                                    WindHelper.SetForegroundWindow(hwnd);
+
+                                }
+
+                            }
+                        }
+                        Environment.Exit(0);
+
+                    }
+
+                    CheckDeamon();
 
                     Microsoft.Win32.SystemEvents.SessionEnding += async (sender, e) =>
                     {
@@ -118,11 +135,11 @@ namespace OpenFrp.Launcher
                         if (App.Current.MainWindow is Window wind)
                         {
                             wind.Visibility = Visibility.Visible;
-                            wind.Activate();
-                            if (wind.WindowState is WindowState.Minimized)
+                            if (wind.WindowState is WindowState.Minimized && !wind.IsActive)
                             {
                                 wind.WindowState = WindowState.Normal;
                             }
+                            wind.Activate();
                         }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu = new()
@@ -164,7 +181,11 @@ namespace OpenFrp.Launcher
 
                     App.Current.Shutdown();
                 }
-                
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    MessageBox.Show("可能是因为杀软的原因,FRPC 版本检查失败");
+                    App.Current.Shutdown();
+                }
             }
             else
             {
@@ -184,9 +205,9 @@ namespace OpenFrp.Launcher
         {
             var wind = new MainPage()
             {
-                Width = 1366,
-                Height = 768,
-                Title = $"OpenFrp Launcher"
+                Width = SystemParameters.FullPrimaryScreenWidth <= 1366 ? 1024 : 1366,
+                Height = SystemParameters.FullPrimaryScreenHeight <= 768 ? 576 : 768,
+                Title = $"OpenFrp Launcher - {Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe").GetMD5()}"
             };
             WindowHelper.SetSystemBackdropType(wind, ConfigHelper.Instance.BackdropSet);
             ThemeManager.SetRequestedTheme(wind, ConfigHelper.Instance.ThemeSet);
@@ -352,7 +373,6 @@ namespace OpenFrp.Launcher
                         break;
                     }
                 }
-                worker.Client?.Close();
                 worker.IsPushMode = false;
                 // 先等待1500秒
                 await Task.Delay(1500);
@@ -376,16 +396,33 @@ namespace OpenFrp.Launcher
             {
                 try
                 {
-                    if (Process.GetProcessesByName("OpenFrp.Core").Length is 0)
+                    var processes = Process.GetProcessesByName("OpenFrp.Core");
+                    if (processes.Length is 0)
                     {
-                        deamon = Process.Start(new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "-ps")
+                        bool request = true;
+                        foreach (var process in processes)
                         {
-                            CreateNoWindow = !Debugger.IsAttached,
-                            UseShellExecute = false,
-                            WorkingDirectory = Utils.ApplicationExecutePath,
-                        });
-                        deamon.EnableRaisingEvents = true;
-                        deamon.Exited += (sender, args) => CheckDeamon();
+                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                            {
+                                request = false;
+                            }
+                        }
+                        if (request)
+                        {
+                            deamon = Process.Start(new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "-ps")
+                            {
+                                CreateNoWindow = !Debugger.IsAttached,
+                                UseShellExecute = false,
+                                WorkingDirectory = Utils.ApplicationExecutePath,
+                            });
+                            deamon.EnableRaisingEvents = true;
+                            deamon.Exited += async delegate
+                            {
+                                await Task.Delay(1500);
+                                CheckDeamon();
+                            };
+                        }
+
                     }
                     return;
                 }
@@ -442,9 +479,13 @@ namespace OpenFrp.Launcher
                 {
                     try
                     {
+                        if (deamon is not null) deamon.EnableRaisingEvents = false;
                         foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
                         {
-                            process.Kill();
+                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                            {
+                                process.Kill();
+                            }
                         };
 
                         foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))

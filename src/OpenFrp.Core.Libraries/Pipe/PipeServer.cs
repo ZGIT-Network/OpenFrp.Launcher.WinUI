@@ -21,6 +21,8 @@ namespace OpenFrp.Core.Libraries.Pipe
 
         public Action OnRestart { get; set; } = delegate { };
 
+        public Action OnConnectedEvent { get; set; } = delegate { };
+
         public Action<PipeWorker, RequestBase> OnDataRecived { get; set; } = delegate { };
 
         void IDisposable.Dispose() => Server?.Dispose();
@@ -91,6 +93,8 @@ namespace OpenFrp.Core.Libraries.Pipe
                 IsRunning = true;
                 Pipe = server;
                 Buffer = new byte[server.InBufferSize];
+
+                OnConnectedEvent();
 
                 while (IsRunning)
                 {

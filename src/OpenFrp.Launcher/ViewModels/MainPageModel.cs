@@ -128,6 +128,8 @@ namespace OpenFrp.Launcher.ViewModels
 
                 Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {UpdateContent?.JSON()}");
 
+                await ConfigHelper.Instance.WriteConfig();
+
                 App.Current?.Shutdown();
 
                 var resp = await AppShareHelper.PipeClient.Request(new()

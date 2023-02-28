@@ -24,7 +24,7 @@ namespace OpenFrp.Core.Helper
 
         public static Dictionary<int, ConsoleWrapper> Wrappers = new();
 
-        public static bool Launch(Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel tunnel)
+        public static (bool,Exception?) Launch(Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel tunnel)
         {
             if (ApiRequest.HasAccount)
             {
@@ -69,25 +69,32 @@ namespace OpenFrp.Core.Helper
                     {
                         Wrappers[tunnel.TunnelId].Process = process;
                     }
-                    return true;
+                    return (true,default);
                     
                 }
                 catch (UnauthorizedAccessException ex)
                 {
 
-                    Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                    try
+                    {
+                        Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                    }
+                    catch
+                    {
+
+                    }
                     LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                     LogHelper.Add(0, ex, TraceLevel.Warning, true);
-                    return false;
+                    return (false,ex);
                 }
                 catch (Exception ex)
                 {
                     LogHelper.Add(0, ex.ToString(), System.Diagnostics.TraceLevel.Warning, true);
                     LogHelper.Add(0, ex, TraceLevel.Warning, true);
-                    return false;
+                    return (false,ex);
                 }
             }
-            return false;
+            return (false,new Exception("账户未登录"));
 
         }
 
