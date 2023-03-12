@@ -191,6 +191,9 @@
                             </Setter>
                             <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoading,ElementName=OfApp_UserInfoXLoader}" Value="True">
+                                    <Setter Property="Background" Value="#00000000" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
                                     <Setter Property="Grid.Column" Value="0" />
                                     <Setter Property="BorderThickness" Value="0" />
@@ -207,6 +210,7 @@
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ofc:ViewPage}}" Value="Light" />
                                         <Condition Binding="{Binding SmallDisplayMode}" Value="False" />
+                                        <Condition Binding="{Binding IsLoading,ElementName=OfApp_UserInfoXLoader}" Value="False" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background">
                                         <Setter.Value>

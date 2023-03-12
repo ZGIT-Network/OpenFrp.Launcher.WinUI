@@ -476,7 +476,7 @@ namespace OpenFrp.Launcher
             {
                 if (ConfigHelper.Instance.IsServiceMode)
                 {
-                    new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC()
+                    new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
                 }
             }
             try
@@ -489,7 +489,9 @@ namespace OpenFrp.Launcher
                     }
                 }
 
-                if (deamon is not null) deamon.EnableRaisingEvents = false;
+                if (deamon is not null) { deamon.EnableRaisingEvents = false; }
+                if (deamon?.HasExited is false) { deamon.Kill(); }
+
                 foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
                 {
                     if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))

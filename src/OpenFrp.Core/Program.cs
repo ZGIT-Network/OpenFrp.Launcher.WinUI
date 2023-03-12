@@ -242,6 +242,13 @@ namespace OpenFrp.Core
                     // 客户端请求关闭 IO
                     case RequestType.ClientCloseIo:
                         {
+                            if (ConsoleHelper.Wrappers.Count > 0)
+                            {
+                                foreach (var x in ConsoleHelper.Wrappers.Values.ToArray())
+                                {
+                                    ConsoleHelper.Kill(x.Tunnel!);
+                                }
+                            }
                             Environment.Exit(0);
                             break;
                         }
