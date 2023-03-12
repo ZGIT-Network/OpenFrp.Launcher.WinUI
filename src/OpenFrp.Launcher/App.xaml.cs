@@ -474,34 +474,10 @@ namespace OpenFrp.Launcher
             });
             if (resp.Success)
             {
-                
-                if (!ConfigHelper.Instance.IsServiceMode || !new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC())
+                if (ConfigHelper.Instance.IsServiceMode)
                 {
-                    try
-                    {
-                        if (deamon is not null) deamon.EnableRaisingEvents = false;
-                        foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
-                        {
-                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
-                            {
-                                process.Kill();
-                            }
-                        };
-
-                        foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
-                        {
-                            if (process.MainModule.FileName == Utils.Frpc)
-                            {
-                                process.Kill();
-                            }
-                        }
-                    }
-                    catch
-                    {
-
-                    }
+                    new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC()
                 }
-
             }
             try
             {
@@ -512,6 +488,15 @@ namespace OpenFrp.Launcher
                         frpc.Kill();
                     }
                 }
+
+                if (deamon is not null) deamon.EnableRaisingEvents = false;
+                foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
+                {
+                    if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                    {
+                        process.Kill();
+                    }
+                };
             }
             catch
             {
