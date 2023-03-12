@@ -112,7 +112,7 @@ namespace OpenFrp.Launcher.ViewModels
         }
 
         [RelayCommand]
-        void OpenInWeb() => Process.Start("https://www.openfrp.net");
+        void OpenInWeb() => Process.Start("https://console.openfrp.net");
 
         public async void RefreshUserInfoView(bool redownload = false)
         {

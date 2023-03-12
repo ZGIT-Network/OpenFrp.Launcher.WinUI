@@ -126,7 +126,8 @@ namespace OpenFrp.Core.Helper
             
             if (data?.ToString().Contains("[E]") is true) level = TraceLevel.Error;
             else if (data?.ToString().Contains("[W]") is true) level = TraceLevel.Warning;
-            else if (data?.ToString().Contains("面板强制下线") is true)
+
+            if (data?.ToString().Contains("面板强制下线") ?? false)
             {
                 if (Wrappers.ContainsKey(id))
                 {
@@ -134,6 +135,22 @@ namespace OpenFrp.Core.Helper
                     if (Program.PushClient is not null && Program.PushClient.Pipe?.IsConnected is true)
                     {
                         LogHelper.Add(0, $"隧道 {id} 已从面板强制下线，已向客户端发送请求包。",TraceLevel.Warning,true);
+                        await Program.PushClient.SendAsync(new RequestBase()
+                        {
+                            Action = RequestType.ServerUpdateTunnels
+                        }.ToByteArray());
+                    }
+
+                }
+            }
+            else if (data?.ToString().Contains("OpenFRP API 拒绝请求或响应异常 (状态码: 403, 信息: Proxy disabled)") ?? false)
+            {
+                if (Wrappers.ContainsKey(id))
+                {
+                    Kill(Wrappers[id].Tunnel!);
+                    if (Program.PushClient is not null && Program.PushClient.Pipe?.IsConnected is true)
+                    {
+                        LogHelper.Add(0, $"隧道 {id} 被禁用，已向客户端发送请求包。", TraceLevel.Warning, true);
                         await Program.PushClient.SendAsync(new RequestBase()
                         {
                             Action = RequestType.ServerUpdateTunnels

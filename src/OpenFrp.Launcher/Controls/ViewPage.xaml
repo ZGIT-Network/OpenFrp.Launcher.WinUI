@@ -5,6 +5,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019">
     <Style x:Key="LauncherCustomPageControl" TargetType="ofc:ViewPage">
         <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="56,0,56,0"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
 
         <Setter Property="Template">
@@ -36,7 +37,7 @@
                             RewriteWheelChange="True"
                             VerticalScrollBarVisibility="{Binding (ScrollViewer.VerticalScrollBarVisibility), RelativeSource={RelativeSource Mode=TemplatedParent}}">
                             <Grid>
-                                <Grid Margin="56,4,56,0">
+                                <Grid Margin="{TemplateBinding Padding}">
                                     <ui:ContentPresenterEx
                                         Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
                                         MaxWidth="1300"

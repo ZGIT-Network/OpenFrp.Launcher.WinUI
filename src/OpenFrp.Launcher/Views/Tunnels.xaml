@@ -123,7 +123,7 @@
                                         <Run Text="-&gt;" />
                                         <Run Text="{Binding RemotePort}" />
                                         <LineBreak />
-                                        <TextBlock Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="已禁用">
+                                        <TextBlock Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="已禁用，请在网页面板启用"  TextWrapping="Wrap">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>

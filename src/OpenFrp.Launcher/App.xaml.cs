@@ -101,7 +101,7 @@ namespace OpenFrp.Launcher
                     {
                         // 保存 Config
                         e.Cancel = true;
-                        await ConfigHelper.Instance.WriteConfig();
+                        await ConfigHelper.Instance.WriteConfig(true);
                         e.Cancel = false;
                     };
 
@@ -181,9 +181,9 @@ namespace OpenFrp.Launcher
 
                     App.Current.Shutdown();
                 }
-                catch (System.ComponentModel.Win32Exception)
+                catch (System.ComponentModel.Win32Exception ex)
                 {
-                    MessageBox.Show("可能是因为杀软的原因,FRPC 版本检查失败");
+                    MessageBox.Show($"可能是因为杀软的原因,FRPC 版本检查失败\nException Object:\n{ex}");
                     App.Current.Shutdown();
                 }
             }
@@ -517,6 +517,7 @@ namespace OpenFrp.Launcher
             {
 
             }
+
             await ConfigHelper.Instance.WriteConfig(true);
             App.Current.Shutdown();
         }

@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Resourecs\fav2023.jpg" />
-	  <None Remove="Resourecs\previewImage.png" />
+	  <None Remove="Resourecs\previewImage.jpg" />
 	  <None Remove="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -51,7 +51,7 @@
 	  <Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Resource Include="Resourecs\previewImage.png" />
+	  <Resource Include="Resourecs\previewImage.jpg" />
 	  <Resource Include="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>

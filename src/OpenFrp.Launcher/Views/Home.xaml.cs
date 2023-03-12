@@ -55,17 +55,18 @@ namespace OpenFrp.Launcher.Views
             var grid = (Grid)sender;
             if (Model.SmallDisplayMode = !(grid.ActualWidth > 735))
             {
-                grid.RowDefinitions[0].MaxHeight = double.MaxValue;
+                grid.RowDefinitions[0].MaxHeight = grid.MaxHeight = double.MaxValue;
                 grid.RowDefinitions[0].Height = new GridLength(grid.Height = grid.ActualWidth / 16 * 9);
                 grid.ClearValue(HeightProperty);
             }
             else
             {
+                grid.MaxHeight = 400;
                 grid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
-                grid.Height = grid.ColumnDefinitions[0].ActualWidth / 16 * 9;
+                grid.Height = grid.ColumnDefinitions[0].ActualWidth / 16 * 10;
             }
         }
         
-        private new void PreviewMouseWheel(object sender, MouseWheelEventArgs e) => this.ExecuteScroll(e);
+        private new void PreviewMouseWheel(object sender, MouseWheelEventArgs e) => ((ScrollViewerEx)FindName("XScroller"))?.ExcuteScroll(e);
     }
 }

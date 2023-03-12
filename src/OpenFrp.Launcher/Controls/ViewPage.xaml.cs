@@ -25,6 +25,20 @@ namespace OpenFrp.Launcher.Controls
 
 
 
-        public void ExecuteScroll(MouseWheelEventArgs e) => ((ScrollViewerEx)GetTemplateChild("XScroller")).ExcuteScroll(e);
+
+        public Thickness Padding
+        {
+            get { return (Thickness)GetValue(PaddingProperty); }
+            set { SetValue(PaddingProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PaddingProperty =
+            DependencyProperty.Register("Padding", typeof(Thickness), typeof(ViewPage), new PropertyMetadata());
+
+
+
+
+        public void ExecuteScroll(MouseWheelEventArgs e) => ((ScrollViewerEx)GetTemplateChild("XScroller"))?.ExcuteScroll(e);
     }
 }

@@ -158,16 +158,25 @@ namespace OpenFrp.Core.Helper
         /// </summary>
         public static async ValueTask ReadConfig()
         {
-            if (File.Exists(Utils.ConfigFile))
+            try
             {
-                Instance = (await Task.Run(() => File.ReadAllText(Utils.ConfigFile)))
-                    .PraseJson<ConfigHelper>() ?? new();
-                if (Instance.BackdropSet is BackdropType.None or 0)
-                    Instance.BackdropSet = GetSupportMax();
-                if (Instance.MessagePullMode is TnMode.None or 0)
-                    Instance.MessagePullMode = GetTnMode();
+                if (File.Exists(Utils.ConfigFile))
+                {
+                    
+                    Instance = JsonConvert.DeserializeObject<ConfigHelper>(await Task.Run(() => File.ReadAllText(Utils.ConfigFile)))
+                            ?? throw new Exception("配置文件解析得到 NULL.");
+                    if (Instance.BackdropSet is BackdropType.None or 0)
+                        Instance.BackdropSet = GetSupportMax();
+                    if (Instance.MessagePullMode is TnMode.None or 0)
+                        Instance.MessagePullMode = GetTnMode();
+                }
+                else Directory.CreateDirectory(Utils.ApplicatioDataPath);
             }
-            else Directory.CreateDirectory(Utils.ApplicatioDataPath);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"配置文件解析出错了捏。\nException Object: \n{ex}","OpenFrp.Launcher.UI",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+
         }
 
 

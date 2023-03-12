@@ -66,6 +66,8 @@ namespace OpenFrp.Core
                 {
                     AddIntoView("获取列表失败,请点击\"重新下载\"按钮重试。");
                     Btn_Reload.IsEnabled = true;
+
+                    return;
                 }
                 AddIntoView($"{Enum.GetName(typeof(UpdateCheckHelper.UpdateLevel), resp.Level)} - 下载链接: {resp.DownloadUrl}");
 
