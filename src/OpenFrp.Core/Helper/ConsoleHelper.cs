@@ -20,6 +20,8 @@ namespace OpenFrp.Core.Helper
             public Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel? Tunnel { get; set; }
 
             public Process? Process { get; set; }
+
+            public int RestartCount { get; set; } = 0;
         }
 
         public static Dictionary<int, ConsoleWrapper> Wrappers = new();
@@ -53,9 +55,29 @@ namespace OpenFrp.Core.Helper
                     process.BeginOutputReadLine();
                     process.Exited += async (sender, args) =>
                     {
-                        Output(tunnel.TunnelId,$"[进程已退出,Exit Code: {process.ExitCode},等待 1500ms 后重启。]",TraceLevel.Warning);
-                        await Task.Delay(1500);
-                        Launch(tunnel);
+                        if (Wrappers.ContainsKey(tunnel.TunnelId))
+                        {
+                            if (Wrappers[tunnel.TunnelId].RestartCount > 5)
+                            {
+                                Output(tunnel.TunnelId, $"[进程已重启超过五次,Exit Code: {process.ExitCode}]", TraceLevel.Warning);
+                                if (Program.PushClient is not null && Program.PushClient.Pipe?.IsConnected is true)
+                                {
+                                    LogHelper.Add(0, $"服务端请求刷新客户端隧道列表。", TraceLevel.Warning, true);
+                                    await Program.PushClient.SendAsync(new RequestBase()
+                                    {
+                                        Action = RequestType.ServerUpdateTunnels
+                                    }.ToByteArray());
+                                }
+                            }
+                            else
+                            {
+                                Output(tunnel.TunnelId, $"[进程已退出,Exit Code: {process.ExitCode},等待 1500ms 后重启。]", TraceLevel.Warning);
+                                await Task.Delay(1500);
+                                Launch(tunnel);
+                                Wrappers[tunnel.TunnelId].RestartCount++;
+                            }
+                        }
+
                     };
                     if (!Wrappers.ContainsKey(tunnel.TunnelId))
                     {
@@ -77,7 +99,8 @@ namespace OpenFrp.Core.Helper
 
                     try
                     {
-                        Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                        if (!Utils.IsWindowsService)
+                            Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
                     }
                     catch
                     {

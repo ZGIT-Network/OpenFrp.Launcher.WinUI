@@ -133,7 +133,7 @@ namespace OpenFrp.Core
 
             while (true)
             {
-                await Task.Delay(200);
+                await Task.Delay(1000);
             }
         }
 

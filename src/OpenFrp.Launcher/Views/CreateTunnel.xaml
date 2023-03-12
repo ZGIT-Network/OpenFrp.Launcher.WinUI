@@ -118,10 +118,14 @@
                     </ui:GridView.ItemContainerStyle>
                     <ui:GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="275" MinHeight="170">
-                                <ui:SimpleStackPanel Margin="20,22" VerticalAlignment="Top">
+                            <Grid Width="275" MinHeight="175">
+                                <ui:SimpleStackPanel Margin="20,20" VerticalAlignment="Top">
+                                    <Grid Margin="0,0,0,8" HorizontalAlignment="Left" Height="25" Width="25" Background="#3F000000">
+                                        <TextBlock Foreground="#FFFFFF" FontSize="10" Text="{Binding NodeID,StringFormat='#{0}'}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </Grid>
                                     <!--  VIP节点  -->
                                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="2">
+
                                         <TextBlock VerticalAlignment="Center" Text="[VIP]">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">

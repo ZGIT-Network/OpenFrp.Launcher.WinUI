@@ -55,7 +55,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <!--  大图块  -->
-                <ofc:Card Grid.Column="0" x:Name="Xbg2_">
+                <ofc:Card x:Name="Xbg2_" Grid.Column="0">
                     <ofc:Card.Style>
                         <Style TargetType="ofc:Card">
                             <Setter Property="Grid.ColumnSpan" Value="2" />
@@ -70,7 +70,7 @@
                     </ofc:Card.Style>
                     <ofc:ElementLoader x:Name="OfApp_PreviewXLoader" IsLoading="True">
                         <Grid>
-                            <Border CornerRadius="6" >
+                            <Border CornerRadius="6">
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
@@ -180,6 +180,7 @@
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
                             <Setter Property="Grid.Row" Value="0" />
+                            <Setter Property="TextBlock.Foreground" Value="White" />
                             <Setter Property="Background">
                                 <Setter.Value>
                                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="1.5,1">
@@ -188,6 +189,7 @@
                                     </LinearGradientBrush>
                                 </Setter.Value>
                             </Setter>
+                            <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
                                     <Setter Property="Grid.Column" Value="0" />
@@ -197,8 +199,24 @@
                                     <Setter Property="Padding" Value="0" />
                                     <Setter Property="Grid.ColumnSpan" Value="2" />
                                     <Setter Property="Grid.RowSpan" Value="1" />
+                                    <Setter Property="TextBlock.Foreground" Value="Black" />
                                     <Setter Property="Background" Value="#00000000" />
+                                    <Setter Property="ui:ThemeManager.RequestedTheme" Value="Default" />
                                 </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ofc:ViewPage}}" Value="Light" />
+                                        <Condition Binding="{Binding SmallDisplayMode}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="1.5,1.5">
+                                                <GradientStop Offset="1" Color="Black" />
+                                                <GradientStop Offset="0" Color="#007F7F7F" />
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ofc:Card.Style>
