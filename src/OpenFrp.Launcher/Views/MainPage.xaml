@@ -484,9 +484,16 @@
                     Padding="4,0,0,0"
                     VerticalAlignment="Center"
                     FontSize="12"
-                    Text="OpenFrp Launcher Re" />
+                    Text="OpenFrp Launcher 正式版" />
                 <StackPanel Grid.Column="2" VerticalAlignment="Top">
                     <!--  标题栏 操控钮 Addon  -->
+                    <ui:TitleBarButton
+                        Command="{Binding CheckUpdateCommand}"
+                        CommandParameter="False"
+                        IsActive="{Binding IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                        ToolTip="检查更新">
+                        <ui:SymbolIcon FontSize="12" Symbol="Up" />
+                    </ui:TitleBarButton>
                 </StackPanel>
             </Grid>
         </Grid>

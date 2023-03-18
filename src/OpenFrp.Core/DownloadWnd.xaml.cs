@@ -59,12 +59,12 @@ namespace OpenFrp.Core
                 var resp = await UpdateCheckHelper.CheckUpdate();
                 if (resp.Level is UpdateCheckHelper.UpdateLevel.None)
                 {
-                    Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+                    //Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
                     Environment.Exit(0);
                 }
                 else if (resp.Level is UpdateCheckHelper.UpdateLevel.Unsuccessful)
                 {
-                    AddIntoView("获取列表失败,请点击\"重新下载\"按钮重试。");
+                    AddIntoView("获取列表失败,请点击\"重新下载\"按钮重试。您可能打开了代理软件。");
                     Btn_Reload.IsEnabled = true;
 
                     return;
@@ -84,56 +84,65 @@ namespace OpenFrp.Core
                 // Successful
                 if (level.Level is UpdateCheckHelper.UpdateLevel.FrpcUpdate)
                 {
-                    string frpcd = Path.Combine(Utils.ApplicatioDataPath, "frpc");
                     try
                     {
-                        foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+                        string frpcd = Path.Combine(Utils.ApplicationExecutePath, "frpc");
+                        try
                         {
-                            if (process.MainModule.FileName == Utils.Frpc)
+                            foreach (var process in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
                             {
-                                process.Kill();
+                                if (process.MainModule.FileName == Utils.Frpc)
+                                {
+                                    process.Kill();
+                                }
                             }
+
+                            if (Directory.Exists(frpcd))
+                                Directory.Delete(frpcd, true);
+
+
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            new ProcessStartInfo("cmd", $"/c rd /s /q \"{frpcd}\"").RunAsUAC();
+                            await Task.Delay(1500);
                         }
 
-                        if (Directory.Exists(frpcd))
-                            Directory.Delete(frpcd, true);
 
 
+
+                        Directory.CreateDirectory(frpcd);
+
+                        var dir = new DirectoryInfo(frpcd);
+                        var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
+                        acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                            new SecurityIdentifier(WellKnownSidType.WorldSid, null),
+                            System.Security.AccessControl.FileSystemRights.FullControl,
+                            System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                            System.Security.AccessControl.PropagationFlags.None,
+                            System.Security.AccessControl.AccessControlType.Allow));
+
+
+
+                        using var zip = new ZipArchive(File.OpenRead(filename));
+                        zip.ExtractToDirectory(frpcd);
+                        zip.Dispose();
+
+                        if (FileName is not null && File.Exists(FileName)) File.Delete(FileName);
+
+                        ConfigHelper.Instance.FrpcVersion = level.Version;
+
+                        await ConfigHelper.Instance.WriteConfig(true);
+
+                        await Task.Delay(500);
+
+
+                        Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
                     }
-                    catch (UnauthorizedAccessException)
+                    catch
                     {
-                        new ProcessStartInfo("cmd", $"/c rd /s /q \"{frpcd}\"").RunAsUAC();
-                        await Task.Delay(1500);
+                        new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
                     }
-
-
-                    Directory.CreateDirectory(frpcd);
-
-                    var dir = new DirectoryInfo(frpcd);
-                    var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
-                    acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
-                        new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-                        System.Security.AccessControl.FileSystemRights.FullControl,
-                        System.Security.AccessControl.InheritanceFlags.ObjectInherit,
-                        System.Security.AccessControl.PropagationFlags.None,
-                        System.Security.AccessControl.AccessControlType.Allow));
-
-
-
-                    using var zip = new ZipArchive(File.OpenRead(filename));
-                    zip.ExtractToDirectory(frpcd);
-                    zip.Dispose();
-
-                    if (FileName is not null && File.Exists(FileName)) File.Delete(FileName);
-
-                    ConfigHelper.Instance.FrpcVersion = level.Version;
-
-                    await ConfigHelper.Instance.WriteConfig(true);
-
-                    await Task.Delay(500);
-
-
-                    Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
 
                     Environment.Exit(0);
                 }

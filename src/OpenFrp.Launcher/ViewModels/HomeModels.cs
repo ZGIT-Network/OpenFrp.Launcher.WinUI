@@ -322,5 +322,7 @@ namespace OpenFrp.Launcher.ViewModels
             }
             catch { }
         }
+
+       
     }
 }

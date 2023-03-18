@@ -176,14 +176,22 @@ namespace OpenFrp.Launcher
                 catch (UnauthorizedAccessException)
                 {
                     ConfigHelper.Instance.FrpcVersion = "unset";
-
-                    Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload");
+                    await ConfigHelper.Instance.WriteConfig(true);
+                    await Task.Delay(500);
+                    new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
 
                     App.Current.Shutdown();
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    MessageBox.Show($"可能是因为杀软的原因,FRPC 版本检查失败\nException Object:\n{ex}");
+                    if (ex.Message.Contains("垃圾软件"))
+                    {
+                        Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                    }
+                    else
+                    {
+                        MessageBox.Show($"可能是因为杀软的原因,FRPC 版本检查失败\nException Object:\n{ex}");
+                    }
                     App.Current.Shutdown();
                 }
             }
@@ -191,7 +199,7 @@ namespace OpenFrp.Launcher
             {
                 ConfigHelper.Instance.FrpcVersion = "unset";
 
-                Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload");
+                new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
 
                 App.Current.Shutdown();
             }
@@ -461,11 +469,27 @@ namespace OpenFrp.Launcher
         void ShowWindow() => Current.MainWindow.Visibility = Visibility.Visible;
 
         [RelayCommand]
-        void ExitLauncher() => App.Current.Shutdown();
+        async void ExitLauncher()
+        {
+            await ConfigHelper.Instance.WriteConfig(true);
+            App.Current.Shutdown();
+        }
 
         [RelayCommand]
         async void ExitAll()
         {
+            var request_tun2 = new RequestBase()
+            {
+                Action = RequestType.ClientGetRunningtunnelsid,
+            };
+            var response = await Helper.AppShareHelper.PipeClient.Request(request_tun2);
+
+            if (response.Success)
+            {
+                ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+            }
+            else ConfigHelper.Instance.AutoStartupList = new int[0];
+
             if (deamon is not null)
                 deamon.EnableRaisingEvents = false;
             var resp = await AppShareHelper.PipeClient.Request(new()
@@ -505,8 +529,7 @@ namespace OpenFrp.Launcher
 
             }
 
-            await ConfigHelper.Instance.WriteConfig(true);
-            App.Current.Shutdown();
+            ExitLauncher();
         }
     }
 

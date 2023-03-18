@@ -70,7 +70,7 @@
                     </ofc:Card.Style>
                     <ofc:ElementLoader x:Name="OfApp_PreviewXLoader" IsLoading="True">
                         <Grid>
-                            <Border CornerRadius="6">
+                            <Border CornerRadius="6,0,0,0">
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
@@ -78,7 +78,7 @@
                                         Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
-                            <Border CornerRadius="6">
+                            <Border CornerRadius="6,0,0,0">
                                 <Border.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Command="{Binding RefreshPreviewCommand}" Header="刷新">
@@ -97,7 +97,7 @@
                                     <Style TargetType="Border">
                                         <Setter Property="Background">
                                             <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0,1.5">
+                                                <LinearGradientBrush StartPoint="0.5,0" EndPoint=".6,1">
                                                     <GradientStop Offset="0">
                                                         <GradientStop.Color>
                                                             <Color />
@@ -106,7 +106,7 @@
                                                     <GradientStop Offset="1">
                                                         <GradientStop.Color>
                                                             <Color
-                                                                A="200"
+                                                                A="150"
                                                                 B="0"
                                                                 G="0"
                                                                 R="0" />
@@ -119,9 +119,25 @@
                                             <DataTrigger Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ofc:ViewPage}}" Value="Light">
                                                 <Setter Property="Background">
                                                     <Setter.Value>
-                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1.5">
-                                                            <GradientStop Offset="1" Color="Black" />
-                                                            <GradientStop Offset="0" Color="#007F7F7F" />
+                                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint=".6,1">
+                                                            <GradientStop Offset="0">
+                                                                <GradientStop.Color>
+                                                                    <Color
+                                                                        A="20"
+                                                                        B="0"
+                                                                        G="0"
+                                                                        R="0" />
+                                                                </GradientStop.Color>
+                                                            </GradientStop>
+                                                            <GradientStop Offset="1">
+                                                                <GradientStop.Color>
+                                                                    <Color
+                                                                        A="120"
+                                                                        B="0"
+                                                                        G="0"
+                                                                        R="0" />
+                                                                </GradientStop.Color>
+                                                            </GradientStop>
                                                         </LinearGradientBrush>
                                                     </Setter.Value>
                                                 </Setter>
@@ -180,20 +196,8 @@
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
                             <Setter Property="Grid.Row" Value="0" />
-                            <Setter Property="TextBlock.Foreground" Value="White" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="1.5,1">
-                                        <GradientStop Offset="1" Color="Black" />
-                                        <GradientStop Offset="0" Color="#30000000" />
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
+                            <Setter Property="TextElement.Foreground" Value="White" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsLoading,ElementName=OfApp_UserInfoXLoader}" Value="True">
-                                    <Setter Property="Background" Value="#00000000" />
-                                </DataTrigger>
                                 <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
                                     <Setter Property="Grid.Column" Value="0" />
                                     <Setter Property="BorderThickness" Value="0" />
@@ -202,30 +206,14 @@
                                     <Setter Property="Padding" Value="0" />
                                     <Setter Property="Grid.ColumnSpan" Value="2" />
                                     <Setter Property="Grid.RowSpan" Value="1" />
-                                    <Setter Property="TextBlock.Foreground" Value="Black" />
-                                    <Setter Property="Background" Value="#00000000" />
-                                    <Setter Property="ui:ThemeManager.RequestedTheme" Value="Default" />
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundAltHighBrush}" />
                                 </DataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ofc:ViewPage}}" Value="Light" />
-                                        <Condition Binding="{Binding SmallDisplayMode}" Value="False" />
-                                        <Condition Binding="{Binding IsLoading,ElementName=OfApp_UserInfoXLoader}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="1.5,1.5">
-                                                <GradientStop Offset="1" Color="Black" />
-                                                <GradientStop Offset="0" Color="#007F7F7F" />
-                                            </LinearGradientBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ofc:Card.Style>
                     <ofc:ElementLoader x:Name="OfApp_UserInfoXLoader" IsLoading="True">
                         <Grid>
+
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="6" />
@@ -252,6 +240,16 @@
                                 </TextBlock.Style>
                             </TextBlock>
                             <Grid Grid.Row="2">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
+                                                <Setter Property="ui:ThemeManager.RequestedTheme" Value="Default" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
                                 <ui:ListView Padding="16,0,12,0" ItemsSource="{Binding UserInfoListItems}">
                                     <ui:ListView.Style>
                                         <Style TargetType="ui:ListView">
@@ -340,16 +338,19 @@
                                 </ui:GridView>
                             </Grid>
                             <ui:CommandBar>
+
                                 <ui:CommandBar.Style>
                                     <Style TargetType="ui:CommandBar">
                                         <Setter Property="Grid.Row" Value="3" />
                                         <Setter Property="HorizontalAlignment" Value="Left" />
                                         <Setter Property="Padding" Value="22,0,0,16" />
+                                        <Setter Property="ui:ThemeManager.RequestedTheme" Value="Dark" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
                                                 <Setter Property="Grid.Row" Value="0" />
                                                 <Setter Property="HorizontalAlignment" Value="Right" />
                                                 <Setter Property="Padding" Value="0,10,12,0" />
+                                                <Setter Property="ui:ThemeManager.RequestedTheme" Value="Default" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.IO;
-
+using OpenFrp.Launcher.ViewModels;
 
 namespace OpenFrp.Launcher.Views
 {
@@ -64,55 +64,7 @@ namespace OpenFrp.Launcher.Views
                 if (args.Uri is not null) args.Cancel = true;
             };
 
-            var ur = await Core.Helper.UpdateCheckHelper.CheckUpdate();
-            if (ur.Level is UpdateCheckHelper.UpdateLevel.LauncherUpdate)
-            {
-                var dialog = new ContentDialog()
-                {
-                    Title = "启动器有新更新啦!",
-                    Content = new TextBlock()
-                    {
-                        Width = 370,
-                        MinHeight = 150,
-                        TextWrapping = TextWrapping.Wrap,
-                        Inlines =
-                        {
-                            new Run(ur.Content),
-                            new Run($"{Utils.LauncherVersion} 更新到 {ur.Version}")
-                            {
-                                Foreground = (SolidColorBrush)App.Current.Resources["SystemControlForegroundBaseMediumBrush"]
-                            }
-                        }
-                    },
-                    DefaultButton = ContentDialogButton.Primary,
-                    PrimaryButtonText = "下载并安装",
-                    CloseButtonText = "取消"
-                };
-                if (await dialog.ShowDialogFixed() is ContentDialogResult.Primary)
-                {
-
-                    Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {ur.JSON()}");
-
-                    await ConfigHelper.Instance.WriteConfig();
-
-                    App.Current?.Shutdown();
-
-                    var resp = await AppShareHelper.PipeClient.Request(new()
-                    {
-                        Action = Core.Libraries.Protobuf.RequestType.ClientCloseIo
-                    });
-                }
-            }
-            else if (ur.Level is UpdateCheckHelper.UpdateLevel.FrpcUpdate)
-            {
-                if (DataContext is ViewModels.MainPageModel models)
-                {
-                    models.HasFrpcUpdate = true;
-                    models.UpdateContent = ur;
-
-                    
-                }
-            }
+            (this.DataContext as MainPageModel)?.CheckUpdate(true);
         }
 
         protected override void OnActivated(EventArgs e)

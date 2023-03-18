@@ -122,8 +122,17 @@
                                             Text="{Binding LocalPort}" />
                                         <Run Text="-&gt;" />
                                         <Run Text="{Binding RemotePort}" />
+
                                         <LineBreak />
-                                        <TextBlock Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="已禁用，请在网页面板启用"  TextWrapping="Wrap">
+                                        <TextBlock VerticalAlignment="Bottom">
+                                            <Run Text="{Binding NodeID, StringFormat='#{0}'}" />
+                                            <Run Text="{Binding NodeName}" />
+                                        </TextBlock>
+                                        <LineBreak />
+                                        <TextBlock
+                                            Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}"
+                                            Text="已禁用，请在网页面板启用"
+                                            TextWrapping="Wrap">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
@@ -133,11 +142,6 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
-                                        </TextBlock>
-                                        <LineBreak />
-                                        <TextBlock VerticalAlignment="Bottom">
-                                            <Run Text="{Binding NodeID, StringFormat='#{0}'}" />
-                                            <Run Text="{Binding NodeName}" />
                                         </TextBlock>
                                     </TextBlock>
 
