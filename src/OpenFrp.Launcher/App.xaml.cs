@@ -142,6 +142,7 @@ namespace OpenFrp.Launcher
                             wind.Activate();
                         }
                     };
+
                     AppShareHelper.TaskbarIcon.ContextMenu = new()
                     {
                         Items =
@@ -169,6 +170,7 @@ namespace OpenFrp.Launcher
 
                 }
                     };
+                    AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
                     AutoLogin();
                     PipeIOStart();
                     CreateWindow();

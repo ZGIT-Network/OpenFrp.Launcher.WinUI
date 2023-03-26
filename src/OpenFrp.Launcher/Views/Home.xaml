@@ -74,7 +74,9 @@
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
+                                        AlignmentY="Top"
                                         ImageSource="pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg"
+                                        Opacity="0.95"
                                         Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
@@ -206,7 +208,7 @@
                                     <Setter Property="Padding" Value="0" />
                                     <Setter Property="Grid.ColumnSpan" Value="2" />
                                     <Setter Property="Grid.RowSpan" Value="1" />
-                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundAltHighBrush}" />
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -394,6 +396,13 @@
                     </Grid>
                 </ofc:ElementLoader>
             </Grid>
+            <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                Opacity="0.05">
+                <Run Text="OpenFrp Launcher 启动器 - 2023 - [AYue | 云默安 | @zhou.icu | 魄妖梦]" />
+                <Run Text="本应用开源 - 认准官方软件，避免病毒入侵。" />
+            </TextBlock>
         </ui:SimpleStackPanel>
     </ui:ScrollViewerEx>
 

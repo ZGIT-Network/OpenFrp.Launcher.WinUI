@@ -214,12 +214,7 @@
                 <TextBlock Text="GPL-3 Document" />
             </ui:SimpleStackPanel>
         </ui:HyperlinkButton>
-        <ui:HyperlinkButton Click="HyperlinkButton_Click">
-            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                <ui:SymbolIcon Symbol="Upload" />
-                <TextBlock Text="重启守护进程" />
-            </ui:SimpleStackPanel>
-        </ui:HyperlinkButton>
+
 
 
     </ui:SimpleStackPanel>

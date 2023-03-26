@@ -180,32 +180,58 @@ namespace OpenFrp.Launcher.ViewModels
         async void CreateTunnel()
         {
             if (CreateTunnelPage is null) return;
-            var loader = new ElementLoader() { IsLoading = true };
+            var loader = new ElementLoader() { IsLoading = true,MinWidth = 275,MinHeight = 125 };
             var dialog = new ContentDialog()
             {
                 Title = "创建隧道",
                 Content = loader,
+                PrimaryButtonText = "取消",
+                IsPrimaryButtonEnabled = false,
+
             };
             dialog.Loaded += async (sender, args) =>
             {
-                var req = CreateTunnelPage.Configer.GetConfig(false);
-                if (req is not null)
+                try
                 {
-                    var response = await ApiRequest.UniversalPOST<ResponseBody.BaseResponse>(ApiUrls.CreateTunnel, req);
-                    if (response.Success)
+                    var req = CreateTunnelPage.Configer.GetConfig(false);
+                    if (req is not null)
                     {
-                        dialog.Hide();
-                        ToTunnelsPage();
-                    }
+                        var response = await ApiRequest.UniversalPOST<ResponseBody.BaseResponse>(ApiUrls.CreateTunnel, req);
+                        if (response.Success)
+                        {
+                            dialog.Hide();
+                            ToTunnelsPage();
+                        }
 
-                    dialog.CloseButtonText = "关闭";
+                        dialog.CloseButtonText = "关闭";
+                        dialog.PrimaryButtonText = "";
+                        if (response.Exception is not null)
+                        {
+                            loader.PushMessage(() =>
+                            {
+                                MessageBox.Show(response.ToString());
+                                dialog.Hide();
+                            }, response.Message, "显示错误");
+                            loader.ShowError();
+                        }
+                        else
+                        {
+                            loader.Content = response.Message;
+                            loader.ShowContent();
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
                     loader.PushMessage(() =>
                     {
-                        MessageBox.Show(response.Exception?.ToString());
+                        MessageBox.Show(ex.ToString());
                         dialog.Hide();
-                    }, response.Message, "显示错误");
+                    }, "在获取配置中发生错误垃！请检查是否配置正确。", "显示错误");
                     loader.ShowError();
                 }
+
             };
             await dialog.ShowDialogFixed();
             

@@ -31,7 +31,7 @@ namespace OpenFrp.Launcher.Views
     {
         public MainPage() => InitializeComponent();
 
-        protected override async void OnInitialized(EventArgs e)
+        protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
 

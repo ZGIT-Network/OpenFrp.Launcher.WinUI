@@ -479,12 +479,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="0"
-                    Padding="4,0,0,0"
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Text="OpenFrp Launcher 正式版" />
+                <ui:SimpleStackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock
+                        Padding="4,0,0,0"
+                        FontSize="12"
+                        Text="OpenFrp Launcher 正式版" />
+                </ui:SimpleStackPanel>
+
                 <StackPanel Grid.Column="2" VerticalAlignment="Top">
                     <!--  标题栏 操控钮 Addon  -->
                     <ui:TitleBarButton

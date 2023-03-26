@@ -128,16 +128,49 @@ namespace OpenFrp.Launcher.ViewModels
 
 
 
-                Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {UpdateContent?.JSON()}");
+                new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {UpdateContent?.JSON()}").RunAsUAC();
 
                 await ConfigHelper.Instance.WriteConfig();
 
-                App.Current?.Shutdown();
+
 
                 var resp = await AppShareHelper.PipeClient.Request(new()
                 {
                     Action = Core.Libraries.Protobuf.RequestType.ClientCloseIo
                 });
+                if (resp.Success)
+                {
+                    if (ConfigHelper.Instance.IsServiceMode)
+                    {
+                        new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
+                    }
+                }
+                try
+                {
+                    foreach (var frpc in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+                    {
+                        if (frpc.MainModule.FileName.Equals(Utils.Frpc))
+                        {
+                            frpc.Kill();
+                        }
+                    }
+
+                    if (App.deamon is not null) { App.deamon.EnableRaisingEvents = false; }
+                    if (App.deamon?.HasExited is false) { App.deamon.Kill(); }
+
+                    foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
+                    {
+                        if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                        {
+                            process.Kill();
+                        }
+                    };
+                }
+                catch
+                {
+
+                }
+                App.Current?.Shutdown();
 
             }
         }
@@ -175,13 +208,43 @@ namespace OpenFrp.Launcher.ViewModels
                     Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {ur.JSON()}");
 
                     await ConfigHelper.Instance.WriteConfig();
-
-                    App.Current?.Shutdown();
-
                     var resp = await AppShareHelper.PipeClient.Request(new()
                     {
                         Action = Core.Libraries.Protobuf.RequestType.ClientCloseIo
                     });
+                    if (resp.Success)
+                    {
+                        if (ConfigHelper.Instance.IsServiceMode)
+                        {
+                            new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
+                        }
+                    }
+                    try
+                    {
+                        foreach (var frpc in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
+                        {
+                            if (frpc.MainModule.FileName.Equals(Utils.Frpc))
+                            {
+                                frpc.Kill();
+                            }
+                        }
+
+                        if (App.deamon is not null) { App.deamon.EnableRaisingEvents = false; }
+                        if (App.deamon?.HasExited is false) { App.deamon.Kill(); }
+
+                        foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
+                        {
+                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                            {
+                                process.Kill();
+                            }
+                        };
+                    }
+                    catch
+                    {
+
+                    }
+                    App.Current?.Shutdown();
                 }
             }
             else if (ur.Level is UpdateCheckHelper.UpdateLevel.FrpcUpdate)

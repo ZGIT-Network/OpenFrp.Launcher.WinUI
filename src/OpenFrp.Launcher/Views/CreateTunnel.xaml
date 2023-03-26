@@ -118,67 +118,69 @@
                     </ui:GridView.ItemContainerStyle>
                     <ui:GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="275" MinHeight="175">
+                            <Grid Width="275" MinHeight="150">
                                 <ui:SimpleStackPanel Margin="20,20" VerticalAlignment="Top">
-                                    <Grid Margin="0,0,0,8" HorizontalAlignment="Left" Height="25" Width="25" Background="#3F000000">
-                                        <TextBlock Foreground="#FFFFFF" FontSize="10" Text="{Binding NodeID,StringFormat='#{0}'}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Grid>
-                                    <!--  VIP节点  -->
-                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="2">
+                                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="6">
+                                        <Grid HorizontalAlignment="Left" Height="25" Width="25" Background="#3F000000">
+                                            <TextBlock Foreground="#FFFFFF" FontSize="10" Text="{Binding NodeID,StringFormat='#{0}'}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <!--  VIP节点  -->
+                                        <ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="2">
 
-                                        <TextBlock VerticalAlignment="Center" Text="[VIP]">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsVipNode}" Value="False">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsVipNode}" Value="True" />
-                                                                <Condition Binding="{Binding DataContext.UserInfo.Group, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ui:Page}}" Value="normal" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsFully}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
+                                            <TextBlock VerticalAlignment="Center" Text="[VIP]">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsVipNode}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsVipNode}" Value="True" />
+                                                                    <Condition Binding="{Binding DataContext.UserInfo.Group, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ui:Page}}" Value="normal" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsFully}" Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
                                             <Run Text="[满载]" />
-                                        </TextBlock>
-                                        <TextBlock
+                                            </TextBlock>
+                                            <TextBlock
                                             VerticalAlignment="Center"
                                             Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}"
                                             Text="[离线] ">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Status}" Value="200">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="200">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Text="{Binding NodeName}" />
+                                        </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>
 
                                     <ui:SimpleStackPanel Margin="0,2,0,0" Orientation="Vertical">

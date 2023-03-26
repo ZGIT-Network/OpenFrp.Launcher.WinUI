@@ -59,7 +59,8 @@ namespace OpenFrp.Launcher.Controls
                 {
                     if (!isEditMode)
                     {
-                        string item = ((ComboBoxItem)((ComboBox)GetTemplateChild("Of_Protocol_ComboBox")).SelectedItem).Content.ToString();
+                        string? item = ((GetTemplateChild("Of_Protocol_ComboBox") as ComboBox)?.SelectedItem as ComboBoxItem)?.Content.ToString();
+                        if (item is null) throw new Exception("Awe.App:Object get type of Null");
                         Config.TunnelType = item.ToLower();
 
 
