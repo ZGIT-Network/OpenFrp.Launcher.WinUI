@@ -15,3 +15,5 @@
 /src/OpenFrp.Core.Libraries/bin/Release/net462
 /src/OpenFrp.Core/bin/Release/net462
 /src/OpenFrp.Launcher/bin/Release/net462
+/src/OpenFrp.Launcher/Properties/PublishProfiles/FolderProfile.pubxml.user
+/.gitignore
