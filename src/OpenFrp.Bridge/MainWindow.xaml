@@ -1,0 +1,55 @@
+﻿<Window
+    x:Class="OpenFrp.Bridge.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OpenFrp.Bridge"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="MCS Bridge"
+    Width="325"
+    Height="475"
+    MinWidth="325"
+    MinHeight="475"
+    MaxWidth="325"
+    MaxHeight="475"
+    ui:TitleBar.ExtendViewIntoTitleBar="True"
+    ui:WindowHelper.SystemBackdropType="Tabbed"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    ResizeMode="CanMinimize"
+    mc:Ignorable="d">
+    <ui:SimpleStackPanel Margin="24,48,24,24" Spacing="6">
+        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="MCS Bridge" />
+        <TextBlock Foreground="{StaticResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap">
+            <Run Text="联机方无需正版,只需小工具 填和点。" />
+        </TextBlock>
+        <TextBox
+            x:Name="ipi"
+            Margin="0,8,0,4"
+            ui:ControlHelper.Header="IP 输入框" />
+        <Button
+            Padding="16,8"
+            Click="Button_Click"
+            Content="开始映射"
+            FontSize="16"
+            Style="{StaticResource AccentButtonStyle}" />
+        <ui:HyperlinkButton
+            Margin="-2,0,0,0"
+            Padding="12,10,16,10"
+            NavigateUri="https://github.com/ZGIT-Network/Of-Bridge/blob/publish/Of%20Bridge/Of%20Bridge/MainWindow.xaml.cs">
+            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                <ui:SymbolIcon Symbol="Link" />
+                <TextBlock Padding="0,1,0,0" Text="Github 上的 代码示例" />
+            </ui:SimpleStackPanel>
+        </ui:HyperlinkButton>
+        <ui:HyperlinkButton
+            Margin="-2,0,0,0"
+            Padding="12,10,16,10"
+            NavigateUri="https://support.qq.com/product/349379">
+            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                <ui:SymbolIcon Symbol="Link" />
+                <TextBlock Padding="0,1,0,0" Text="反馈 BUG" />
+            </ui:SimpleStackPanel>
+        </ui:HyperlinkButton>
+    </ui:SimpleStackPanel>
+</Window>

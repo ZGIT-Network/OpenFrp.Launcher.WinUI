@@ -162,19 +162,22 @@ namespace OpenFrp.Core.Helper
             {
                 if (File.Exists(Utils.ConfigFile))
                 {
-                    
+
                     Instance = JsonConvert.DeserializeObject<ConfigHelper>(await Task.Run(() => File.ReadAllText(Utils.ConfigFile)))
                             ?? throw new Exception("配置文件解析得到 NULL.");
+                }
+                else
+                {
                     if (Instance.BackdropSet is BackdropType.None or 0)
                         Instance.BackdropSet = GetSupportMax();
                     if (Instance.MessagePullMode is TnMode.None or 0)
                         Instance.MessagePullMode = GetTnMode();
+                    Directory.CreateDirectory(Utils.ApplicatioDataPath);
                 }
-                else Directory.CreateDirectory(Utils.ApplicatioDataPath);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"配置文件解析出错了捏。\nException Object: \n{ex}","OpenFrp.Launcher.UI",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show($"配置文件解析出错了捏。\nException Object: \n{ex}", "OpenFrp.Launcher.UI", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

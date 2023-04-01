@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<OutputType>WinExe</OutputType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<AssemblyTitle>OpenFrp - Bridge</AssemblyTitle>
+		<Authors>AYue</Authors>
+		<ApplicationManifest>.\Properties\App.manifest</ApplicationManifest>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>AppIcon.ico</ApplicationIcon>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Content Include="AppIcon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Costura.Fody" Version="5.8.0-alpha0098">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="ModernWpfUI" Version="10.1.85" />
+	</ItemGroup>
+</Project>

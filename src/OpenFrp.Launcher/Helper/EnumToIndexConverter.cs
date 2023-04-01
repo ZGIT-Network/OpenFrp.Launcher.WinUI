@@ -26,6 +26,7 @@ namespace OpenFrp.Launcher.Helper
                         return (int)item;
                     }
                 }
+                return 0;
             }
             throw new Exception();
         }
