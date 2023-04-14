@@ -88,11 +88,20 @@ namespace OpenFrp.Bridge
                             try
                             {
                                 chatClient = new UdpClient("224.0.2.60", 4445);
-                                byte[] buffer = Encoding.UTF8.GetBytes($"[MOTD]§eMCS Bridge - 双击进入 | 赞助商: 开放映射,www.openfrp.net[/MOTD][AD]{((IPEndPoint)serverSocket.LocalEndPoint).Port}[/AD]");
+                                byte[] buffer = Encoding.UTF8.GetBytes($"[MOTD]§eOf Bridge - 双击进入[/MOTD][AD]{((IPEndPoint)serverSocket.LocalEndPoint).Port}[/AD]");
                                 while (state)
                                 {
+                                    if (chatClient is not null)
+                                    {
+                                        chatClient.EnableBroadcast = true;
+                                        chatClient.MulticastLoopback = true;
+                                       
+                                        
+                                    }
+
                                     if (state && chatClient is not null && def == processId)
                                     {
+                                        
                                         await chatClient.SendAsync(buffer, buffer.Length);
                                         if (state) { await Task.Delay(1500); }
                                     }

@@ -48,7 +48,7 @@ namespace OpenFrp.Launcher.ViewModels
 
             CreateTunnelPage.OfApp_List1XLoader.ShowLoader();
 
-            var response = await ApiRequest.UniversalGET<ResponseBody.NodeListsResponse>(ApiUrls.NodeList);
+            var response = await ApiRequest.UniversalPOST<ResponseBody.NodeListsResponse>(ApiUrls.NodeList);
             if (response?.Success == true && response.Data is not null)
             {
                 int[] counts = new int[]
@@ -234,6 +234,7 @@ namespace OpenFrp.Launcher.ViewModels
 
             };
             await dialog.ShowDialogFixed();
+
             
         }
     }

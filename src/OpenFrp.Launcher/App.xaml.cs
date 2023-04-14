@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.Notifications;
@@ -43,7 +44,12 @@ namespace OpenFrp.Launcher
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
-                MessageBox.Show(e.ExceptionObject.ToString());
+                Clipboard.SetText(e.ExceptionObject.ToString());
+                if (MessageBox.Show($"错误内容已复制，按下Ctrl+V | 粘贴 来显示内容。点击\"确定\"按钮，会打开到兔小巢反馈问题。", "OpenFrp Launcher Throw Out!!", MessageBoxButton.OKCancel, MessageBoxImage.Error) is MessageBoxResult.OK)
+                {
+                    Process.Start("https://support.qq.com/product/424684#label=show");
+                }
+                Environment.Exit(-1);
             };
 
             JsonConvert.DefaultSettings = () => new()
@@ -71,6 +77,7 @@ namespace OpenFrp.Launcher
                         UxThemeHelper.ShouldSystemUseDarkMode();
                     }
 
+                    
 
 
 
@@ -173,6 +180,7 @@ namespace OpenFrp.Launcher
                     AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
                     AutoLogin();
                     PipeIOStart();
+                    if (e.Args.Contains("-noeffect")) ConfigHelper.Instance.BackdropSet = BackdropType.None;
                     CreateWindow();
                 }
                 catch (UnauthorizedAccessException)
@@ -219,6 +227,7 @@ namespace OpenFrp.Launcher
                 Height = SystemParameters.FullPrimaryScreenHeight <= 768 ? 576 : 768,
                 Title = $"OpenFrp Launcher - {Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe").GetMD5()}"
             };
+            
             WindowHelper.SetSystemBackdropType(wind, ConfigHelper.Instance.BackdropSet);
             ThemeManager.SetRequestedTheme(wind, ConfigHelper.Instance.ThemeSet);
             wind.Show();
@@ -471,14 +480,14 @@ namespace OpenFrp.Launcher
         void ShowWindow() => Current.MainWindow.Visibility = Visibility.Visible;
 
         [RelayCommand]
-        async void ExitLauncher()
+        public static async void ExitLauncher()
         {
             await ConfigHelper.Instance.WriteConfig(true);
             App.Current.Shutdown();
         }
 
         [RelayCommand]
-        async void ExitAll()
+        public static async void ExitAll()
         {
             var request_tun2 = new RequestBase()
             {
@@ -533,6 +542,8 @@ namespace OpenFrp.Launcher
 
             ExitLauncher();
         }
+
+
     }
 
     public static class ExtendsUI
@@ -542,17 +553,17 @@ namespace OpenFrp.Launcher
         /// </summary>
         public async static ValueTask<ContentDialogResult> ShowDialogFixed(this ContentDialog dialog)
         {
-            if (!AppShareHelper.HasDialog)
+            if(App.Current?.MainWindow is Window wind)
             {
-                AppShareHelper.HasDialog = true;
-                var result =  await dialog.ShowAsync();
-                AppShareHelper.HasDialog = false;
-                return result;
+                var dialogWind = ContentDialog.GetOpenDialog(wind);
+
+                if (dialog is not null)
+                {
+                    dialogWind?.Hide();
+                }
+                return await dialog!.ShowAsync();
             }
-            else
-            {
-                return ContentDialogResult.None;
-            }
+            return ContentDialogResult.None;
         }
     }
 }

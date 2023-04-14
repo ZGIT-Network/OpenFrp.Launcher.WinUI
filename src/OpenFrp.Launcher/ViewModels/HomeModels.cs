@@ -303,7 +303,7 @@ namespace OpenFrp.Launcher.ViewModels
                     {
                         using var file = new FileStream(dialog.FileName, FileMode.Create);
 
-                        Stream stream = App.GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.png")).Stream;
+                        Stream stream = App.GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg")).Stream;
 
                         byte[] buffer = new byte[stream.Length];
                         int count = await stream.ReadAsync(buffer, 0, buffer.Length);

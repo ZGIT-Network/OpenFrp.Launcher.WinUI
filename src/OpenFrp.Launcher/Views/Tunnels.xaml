@@ -163,8 +163,18 @@
                                 <!--  操控列表  -->
                                 <ui:CommandBar
                                     Margin="18,20"
+                                    
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Bottom">
+                                    <ui:CommandBar.Style>
+                                        <Style TargetType="ui:CommandBar">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:CommandBar.Style>
                                     <ui:AppBarButton
                                         Command="{Binding DataContext.CopyTunnelLinkCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
                                         CommandParameter="{Binding}"

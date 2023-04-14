@@ -26,6 +26,8 @@ namespace OpenFrp.Launcher.ViewModels
     {
         public MainPageModel()
         {
+
+            startup_dialog();
             WeakReferenceMessenger.Default.Register<PropertyChangedMessage<bool>>(this, (obj,message) =>
             {
                 switch (message.PropertyName)
@@ -35,6 +37,32 @@ namespace OpenFrp.Launcher.ViewModels
                 }
             });
             HasDeamonProcess = AppShareHelper.HasDeamonProcess;
+        }
+
+        private async void startup_dialog()
+        {
+            if (!File.Exists(Utils.ConfigFile))
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "你可能会遇到这个问题",
+                    Content = new TextBlock()
+                    {
+                        Inlines =
+                        {
+                            new Run("打开启动器后，显示未连接到守护进程？"),
+                            new Run("试试在任务栏找到图标，右键 -> 彻底退出"),
+                            new Run("然后你需要重新打开本软件。")
+                        }
+                    },
+                    DefaultButton = ContentDialogButton.Primary,
+                    PrimaryButtonText = "现在就执行",
+                    CloseButtonText = "好的",
+                };
+                dialog.PrimaryButtonClick += delegate { App.ExitAll(); };
+                await Task.Delay(1000);
+                await dialog.ShowDialogFixed();
+            }
         }
 
         [ObservableProperty]
@@ -178,6 +206,7 @@ namespace OpenFrp.Launcher.ViewModels
         [RelayCommand]
         public async void CheckUpdate(object args)
         {
+
             var ur = await Core.Helper.UpdateCheckHelper.CheckUpdate();
             if (ur.Level is UpdateCheckHelper.UpdateLevel.LauncherUpdate)
             {

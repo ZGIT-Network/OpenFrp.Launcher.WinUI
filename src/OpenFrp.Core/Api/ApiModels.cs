@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -201,6 +202,9 @@ namespace OpenFrp.Core.Libraries.Api.Models
 
                     [JsonProperty("content")]
                     public string? Description { get; set; }
+
+                    [JsonProperty("baseUrl")]
+                    public string? BaseUrl { get; set; }
 
                 }
             }

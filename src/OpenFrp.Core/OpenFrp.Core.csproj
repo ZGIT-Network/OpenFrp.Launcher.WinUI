@@ -14,7 +14,7 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
-	  <PackageReference Include="ModernWpfUI" Version="10.1.83" />
+	  <PackageReference Include="ModernWpfUI" Version="10.2.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	  <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
 	  <PackageReference Include="System.Memory" Version="4.5.5" />

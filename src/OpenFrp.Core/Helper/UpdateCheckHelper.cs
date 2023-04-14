@@ -47,7 +47,7 @@ namespace OpenFrp.Core.Helper
                         Level = UpdateLevel.LauncherUpdate,
                         Content = resp.Data.Launcher.Description ?? "启动器有更新啦",
                         Version = resp.Data.Launcher.Latest,
-                        DownloadUrl = resp.Data.Launcher.DonwloadUrl
+                        DownloadUrl = resp.Data.Launcher?.DonwloadUrl
                     };
                 }
                 else if (ConfigHelper.Instance.FrpcVersion != resp.Data.Latest)
@@ -58,7 +58,7 @@ namespace OpenFrp.Core.Helper
                         Level = UpdateLevel.FrpcUpdate,
                         Content = resp.Data.FrpcCommonDetails,
                         Version = resp.Data.Latest,
-                        DownloadUrl = $"https://static.openfrp.net/client/{resp.Data.Latest}/{Utils.FrpcPlatform}.zip"
+                        DownloadUrl = $"{resp.Data.Launcher?.BaseUrl}client/{resp.Data.Latest}/{Utils.FrpcPlatform}.zip"
                     };
                 }
             }

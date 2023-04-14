@@ -43,7 +43,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// FRPC 对应平台的名称
         /// </summary>
-        public static string FrpcPlatform { get => $"frpc_windows_{(Environment.Is64BitOperatingSystem ? "amd64":"386")}"; }
+        public static string FrpcPlatform { get => $"frpc_windows_{Platform()}"; }
         /// <summary>
         /// FRPC
         /// </summary>
@@ -55,9 +55,19 @@ namespace OpenFrp.Core
         /// <summary>
         /// 启动器版本
         /// </summary>
-        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.7.3"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
+        public static string LauncherVersion { get => "OpenFrp.Launcher.Release.Ver+3.8.4"/*OpenFrp.LauncherApp.rel2.ver3.0.5*/; }
 
-
+        private static string Platform()
+        {
+            return RuntimeInformation.ProcessArchitecture switch
+            {
+                Architecture.X64 => "amd64",
+                Architecture.X86 => "386",
+                Architecture.Arm64 => "arm64",
+                _ => throw new NotSupportedException("本软件暂不支持 ARMv7 等其他平台。"),
+            };
+            
+        }
 
 
 

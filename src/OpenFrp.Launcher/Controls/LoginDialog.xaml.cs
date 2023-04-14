@@ -63,7 +63,6 @@ namespace OpenFrp.Launcher.Controls
                     ApiRequest.ClearAuth();
                 }
                 sender.Hide();
-                AppShareHelper.HasDialog = false;
                 return;
             }
             // 失败的情况

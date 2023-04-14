@@ -42,7 +42,7 @@
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
 	  <PackageReference Include="Hardcodet.Wpf.TaskbarNotification" Version="1.0.5" />
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-	  <PackageReference Include="ModernWpfUI" Version="10.1.83" />
+	  <PackageReference Include="ModernWpfUI" Version="10.2.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />

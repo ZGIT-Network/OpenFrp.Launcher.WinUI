@@ -16,8 +16,6 @@ using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Core.Libraries.Protobuf;
-using Windows.Media.Devices;
-using Windows.UI.Xaml;
 
 namespace OpenFrp.Core
 {
