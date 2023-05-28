@@ -34,6 +34,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
+
         <Grid>
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -376,7 +377,8 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <ui:PersonPicture Height="40" ProfilePicture="..\Resourecs\fav2023.jpg" />
+                                    <ui:PersonPicture Height="40" />
+                                    <!--  ProfilePicture="..\Resourecs\fav2023.jpg"  -->
                                 </Grid>
                                 <Grid Grid.Column="2">
                                     <TextBlock

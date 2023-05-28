@@ -141,27 +141,6 @@ namespace OpenFrp.Core.Libraries.Api.Models
     public class ResponseBody
     {
         /// <summary>
-        /// 首页大图返回
-        /// </summary>
-        public class HomePageResponse
-        {
-            [JsonProperty("title")]
-            public string Title { get; set; } = "镜花水月枫叶红，转念不知几春秋";
-
-            [JsonProperty("content")]
-            public string Content { get; set; } = "打开官网";
-
-            [JsonProperty("link")]
-            public string Link { get; set; } = "https://www.openfrp.net";
-
-//          [JsonProperty("forceImage")]
-//          public bool ForceImage { get; set; }
-
-            [JsonProperty("image")]
-            public string? Image { get; set; }
-        }
-
-        /// <summary>
         /// 软件支持返回
         /// </summary>
         public class SoftwareResponse : BaseResponse
@@ -639,8 +618,6 @@ namespace OpenFrp.Core.Libraries.Api.Models
                                 new(){Content = "UDP",IsEnabled = UDP},
                                 new(){Content = "HTTP",IsEnabled = HTTP},
                                 new(){Content = "HTTPS",IsEnabled = HTTPS},
-                                new(){Content = "XTCP",IsEnabled = XTCP},
-                                new(){Content = "STCP",IsEnabled = STCP},
                         };
                     }
                 }
@@ -669,12 +646,6 @@ namespace OpenFrp.Core.Libraries.Api.Models
                 public bool HTTP { get; set; }
                 [JsonProperty("https")]
                 public bool HTTPS { get; set; }
-
-                [JsonProperty("stcp")]
-                public bool STCP { get; set; }
-                [JsonProperty("xtcp")]
-                public bool XTCP { get; set; }
-
             }
         }
 

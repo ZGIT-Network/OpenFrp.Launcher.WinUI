@@ -248,6 +248,7 @@ namespace OpenFrp.Launcher
                     });
                     var request = await ApiRequest.UniversalPOST<ResponseBody.UserTunnelsResponse>(ApiUrls.UserTunnels);
 
+                    if (request is not null)
                     if (request.Success && response.Success)
                     {
                         if (ConfigHelper.Instance.AutoStartupList.Length > 0)
@@ -339,8 +340,9 @@ namespace OpenFrp.Launcher
                                                 new ToastContentBuilder()
                                                         .AddText($"隧道 {tunnel?.TunnelName} 启动失败")
                                                         .AddText(request.NotifiyRequest.Content)
-                                                        .AddAttributionText($"{tunnel?.TunnelType},远程端口{tunnel?.RemotePort}")
+                                                        .AddAttributionText($"远程端口: {tunnel?.RemotePort}")
                                                         .AddButton("确定", ToastActivationType.Foreground, "")
+                                                        
                                                         .Show();
                                             }
                                         }

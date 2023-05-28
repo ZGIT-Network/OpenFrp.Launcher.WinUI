@@ -39,10 +39,13 @@ namespace OpenFrp.Launcher.Views
             {
                 Model.GetLogs();
                 await Task.Delay(1000);
-            } while (IsInitialized && IsLoaded);
+            } while (IsInitialized && IsLoaded );
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => Model.GetLogs(true);
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsInitialized && IsLoaded && sender is not null) Model.GetLogs(true);
+        }
 
         private void ScrollViewerEx_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => ((ScrollViewerEx)sender).ExcuteScroll(e);
     }

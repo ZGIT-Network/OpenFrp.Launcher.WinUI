@@ -19,6 +19,7 @@ using System.Diagnostics;
 using OpenFrp.Launcher.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Windows.UI.WebUI;
 
 namespace OpenFrp.Launcher.ViewModels
 {
@@ -56,7 +57,7 @@ namespace OpenFrp.Launcher.ViewModels
         /// 大图版内容
         /// </summary>
         [ObservableProperty]
-        public Core.Libraries.Api.Models.ResponseBody.HomePageResponse previewContent = new();
+        public Awe.AppModel.AppNews previewContent = new();
 
         public MainPageModel MainPageModel
         {
@@ -235,19 +236,19 @@ namespace OpenFrp.Launcher.ViewModels
         {
             if (MainPage is null) return;
             MainPage.OfApp_PreviewXLoader.ShowLoader();
-            var response = await ApiRequest.GETAny<ResponseBody.HomePageResponse>($"{ApiUrls.LauncherBaseUrl}api/v2/news");
-            if (response != null)
+            var response = await ApiRequest.GETAny<Awe.AppModel.Response.BaseResponse<Awe.AppModel.AppNews>>($"{ApiUrls.LauncherBaseUrl}api/news?query=openfrpLauncher");
+            if (response != null && response.Success && response.Data != null)
             {
-                PreviewContent = response;
-                if (response.Image != null)
+
+                if (response.Data.Content?.Data != null)
                 {
                     if (true)
                     {
-                        string fileName = $"{Utils.ApplicatioDataPath}\\statics\\{response.Image.GetMD5()}.png";
+                        string fileName = $"{Utils.ApplicatioDataPath}\\statics\\{response.Data.Content.Data!.GetMD5()}.png";
                         Directory.CreateDirectory($"{Utils.ApplicatioDataPath}\\statics\\");
                         if (!File.Exists(fileName))
                         {
-                            if (!await ApiRequest.DownloadFile($"{response.Image}", fileName))
+                            if (!await ApiRequest.DownloadFile($"{response.Data.Content.Data}", fileName))
                             {
                                 MainPage.OfApp_PreviewXLoader.ShowContent();
                                 return;
@@ -260,9 +261,14 @@ namespace OpenFrp.Launcher.ViewModels
                         await Task.Delay(500);
                     }
                 }
-                
+                else if (PreviewContent.Content != null)
+                {
+                    MainPage.Xbg_.ImageSource = new BitmapImage(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg"));
+                }
+                PreviewContent = response.Data;
             }
             MainPage.OfApp_PreviewXLoader.ShowContent();
+
         }
 
         public async void RefreshBroadCast()
@@ -275,7 +281,7 @@ namespace OpenFrp.Launcher.ViewModels
                 await Task.Delay(250);
                 MainPage.OfApp_BroadCastXLoader.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
                 {
-                    BroadCastContent = (UIElement)System.Windows.Markup.XamlReader.Parse(response.Data?.ToString().Replace("## 旧版启动器已不受支持,这是当然的", ""));
+                    BroadCastContent = (UIElement)System.Windows.Markup.XamlReader.Parse(response.Data?.ToString() ?? "<TextBlock>空</TextBlock>");
                 }).GetHashCode();
                 MainPage.OfApp_BroadCastXLoader.ShowContent();
             }
@@ -299,7 +305,7 @@ namespace OpenFrp.Launcher.ViewModels
                 {
                     
 
-                    if (PreviewContent.Image is null)
+                    if (PreviewContent.Content?.Data is null)
                     {
                         using var file = new FileStream(dialog.FileName, FileMode.Create);
 
@@ -314,7 +320,7 @@ namespace OpenFrp.Launcher.ViewModels
                     }
                     else
                     {
-                        File.Copy($"{Utils.ApplicatioDataPath}\\statics\\{PreviewContent.Image.GetMD5()}.png",dialog.FileName, true);
+                        File.Copy($"{Utils.ApplicatioDataPath}\\statics\\{PreviewContent.Content.Data.GetMD5()}.png",dialog.FileName, true);
                     }
                     
                 }

@@ -103,7 +103,7 @@ namespace OpenFrp.Launcher.ViewModels
                     {
                         RefreshUserProxies();
                         TunnelsPage.OfApp_XLoader.ShowLoader();
-                    }, request?.Message ?? "未知错误", "重试");
+                    }, request?.Message ?? "请求 API 时发生了错误", "重试");
                     TunnelsPage.OfApp_XLoader.ShowError();
                 }
             }

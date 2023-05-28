@@ -21,6 +21,8 @@
         <helper:EnumToIndexConverter x:Key="EnumToIndexConverter" />
     </ofc:ViewPage.Resources>
     <ui:SimpleStackPanel Margin="0,0,0,48" Spacing="8">
+
+
         <HeaderedContentControl
             Margin="2,0,0,0"
             Focusable="False"
@@ -39,9 +41,9 @@
                         AutomationProperties.HelpText="{Binding Description, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource AncestorType=ofc:SettingItem}}"
                         SelectedIndex="{Binding SettingInstance.ThemeSet, Converter={StaticResource EnumToIndexConverter}}">
-                        <ComboBoxItem Content="Defualt" />
-                        <ComboBoxItem Content="Light" />
-                        <ComboBoxItem Content="Dark" />
+                        <ComboBoxItem Content="默认(跟随系统)" />
+                        <ComboBoxItem Content="浅色模式" />
+                        <ComboBoxItem Content="深色模式" />
                     </ComboBox>
                 </ofc:SettingItem>
                 <ofc:SettingItem Title="背景效果" Description="使本应用更耐看，还更卡。">
@@ -55,8 +57,8 @@
                         IsEnabled="{Binding IsSupportBackdrop}"
                         SelectedIndex="{Binding SettingInstance.BackdropSet, Converter={StaticResource EnumToIndexConverter}, ConverterParameter=-1}">
                         <ComboBoxItem Content="关闭" />
-                        <ComboBoxItem Content="Mica" />
-                        <ComboBoxItem Content="Acrylic" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
+                        <ComboBoxItem Content="Mica(云母)" />
+                        <ComboBoxItem Content="Acrylic(亚克力)" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
 
                         <ComboBoxItem Content="Mica Alt" IsEnabled="{Binding IsSupportBackdropMicaAlt}" />
                     </ComboBox>

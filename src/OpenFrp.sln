@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFrp.Bridge", "OpenFrp.Bridge\OpenFrp.Bridge.csproj", "{D3CD50C5-451B-414F-B4DB-F8FD7B421A0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFrp.Bridge", "OpenFrp.Bridge\OpenFrp.Bridge.csproj", "{D3CD50C5-451B-414F-B4DB-F8FD7B421A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +34,10 @@ Global
 		{69266936-1913-4E4C-918B-5B049CCC40A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69266936-1913-4E4C-918B-5B049CCC40A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69266936-1913-4E4C-918B-5B049CCC40A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23CC3662-278D-445B-BDA7-2395B042212A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23CC3662-278D-445B-BDA7-2395B042212A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23CC3662-278D-445B-BDA7-2395B042212A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23CC3662-278D-445B-BDA7-2395B042212A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3CD50C5-451B-414F-B4DB-F8FD7B421A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3CD50C5-451B-414F-B4DB-F8FD7B421A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3CD50C5-451B-414F-B4DB-F8FD7B421A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU

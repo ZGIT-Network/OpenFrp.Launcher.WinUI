@@ -101,8 +101,7 @@ namespace OpenFrp.Core
                 }
                 PushClient.Start(true);
             };
-
-            LogHelper.Add(0, $"OpenFrp Launcher 2023 | 系统服务模式: {Utils.IsWindowsService} | 启动器版本 {Utils.LauncherVersion}", TraceLevel.Warning, false);
+            LogHelper.Add(0, $"OpenFrp Launcher Release 2023 | 系统服务模式: {Utils.IsWindowsService} | 启动器版本 {Utils.LauncherVersion}", TraceLevel.Warning, false);
 
             Win32Helper.SetConsoleCtrlHandler(o =>
             {
@@ -196,29 +195,17 @@ namespace OpenFrp.Core
                         {
                             if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
                             {
-                                if (LogHelper.Logs[request.LogsRequest.Id].Count >= 500)
+                                if (LogHelper.Logs[request.LogsRequest.Id].Count >= 100)
                                 {
-                                    LogHelper.Logs[request.LogsRequest.Id].Clear();
-                                    LogHelper.Logs[request.LogsRequest.Id].Add(new()
-                                    {
-                                        Content = "[信息数已大于500条，为了改善性能，已清除。]",
-                                        Level = TraceLevel.Warning,
-                                        HashContent = "app_v2_clearlog"
-                                    });
+                                    LogHelper.Logs[request.LogsRequest.Id].RemoveAt(0);
                                 }
                                 LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
-                            else
+                            else if (LogHelper.Logs.ContainsKey(0))
                             {
-                                if (LogHelper.Logs[0].Count >= 500)
+                                if (LogHelper.Logs[0].Count >= 150)
                                 { 
-                                    LogHelper.Logs[0].Clear();
-                                    LogHelper.Logs[0].Add(new()
-                                    {
-                                        Content = "[信息数已大于500条，为了改善性能，已清除。]",
-                                        Level = TraceLevel.Warning,
-                                        HashContent = "app_v2_clearlog"
-                                    });
+                                    LogHelper.Logs[0].RemoveAt(1);
                                 }
                                 LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
@@ -235,10 +222,14 @@ namespace OpenFrp.Core
                         {
                             if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
                             {
+                                if (LogHelper.Logs[request.LogsRequest.Id].Count >= 250) LogHelper.Logs[request.LogsRequest.Id].RemoveRange(1, LogHelper.Logs[request.LogsRequest.Id].Count - 250);
+
                                 LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             else
                             {
+                                if (LogHelper.Logs[0].Count >= 250) LogHelper.Logs[0].RemoveRange(1, LogHelper.Logs[0].Count - 250);
+
                                 LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             response.LogsViewJson.Add(new Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel() { TunnelName = "全部日志",TunnelId = 0}.JSON());

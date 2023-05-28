@@ -152,7 +152,7 @@
                                         Margin="18"
                                         Padding="20,16,32,20"
                                         VerticalAlignment="Bottom"
-                                        NavigateUri="{Binding PreviewContent.Link}"
+                                        NavigateUri="{Binding PreviewContent.Url}"
                                         TextElement.FontWeight="Light"
                                         ToolTip="{Binding PreviewContent.Content}">
                                         <Grid>
@@ -167,7 +167,7 @@
                                                     <TextBlock
                                                         Grid.Column="0"
                                                         FontSize="22"
-                                                        Text="{Binding PreviewContent.Content}"
+                                                        Text="{Binding PreviewContent.Subtitle}"
                                                         TextTrimming="CharacterEllipsis" />
                                                     <ui:SymbolIcon
                                                         Grid.Column="1"
@@ -396,6 +396,7 @@
                     </Grid>
                 </ofc:ElementLoader>
             </Grid>
+
             <TextBlock
                 HorizontalAlignment="Center"
                 Foreground="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"

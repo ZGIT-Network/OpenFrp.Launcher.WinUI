@@ -50,7 +50,8 @@ namespace OpenFrp.Core.Helper
                         DownloadUrl = resp.Data.Launcher?.DonwloadUrl
                     };
                 }
-                else if (ConfigHelper.Instance.FrpcVersion != resp.Data.Latest)
+                else if (ConfigHelper.Instance.FrpcVersion != resp.Data.Latest ||
+                    !System.IO.File.Exists(Utils.Frpc))
                 {
                     // 当配置文件中 FRPC 版本与现版不同,进行更新。
                     return new()

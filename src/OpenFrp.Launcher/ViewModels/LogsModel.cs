@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -64,6 +65,7 @@ namespace OpenFrp.Launcher.ViewModels
 
 
 
+
                 if (response.LogsJson.Count > 0)
                 {
                     await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
@@ -73,6 +75,10 @@ namespace OpenFrp.Launcher.ViewModels
 
                             if (!LogContent.Select(x => x?.HashContent).Contains(x?.HashContent))
                             {
+                                if (LogContent.Count > 150)
+                                {
+                                    LogContent.RemoveRange(0, LogContent.Count - 150);
+                                }
                                 LogContent.Add(x);
                                 LogsViewer.Refresh();
                                 OnPropertyChanged(nameof(LogsViewer));
@@ -87,6 +93,45 @@ namespace OpenFrp.Launcher.ViewModels
                     LogsViewer?.Refresh();
                     OnPropertyChanged(nameof(LogsViewer));
                 }
+
+                //if (response.LogsJson.Count > 0)
+                //{
+                //    if (LogContent.Count > 150)
+                //    {
+                //        LogContent.RemoveRange(0, LogContent.Count - 150);
+                //    }
+                //    if (response.LogsJson.Count < LogContent.Count)
+                //    {
+                //        LogContent?.Clear();
+                //    }
+
+                //    await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
+                //    {
+                //        response.LogsJson.Select(x => x.PraseJson<LogHelper.LogContent>()).ToList().ForEach(x =>
+                //        {
+
+                //            if (!LogContent.Select(x => x?.HashContent).Contains(x?.HashContent))
+                //            {
+                //                if (LogContent.Count > 150)
+                //                {
+                //                    LogContent.RemoveRange(0, LogContent.Count - 150);
+                //                }
+                //                LogContent.Add(x);
+
+                //                LogsViewer.DeferRefresh();
+                //                OnPropertyChanged(nameof(LogsViewer));
+                //            }
+
+                //        });
+                //    }, System.Windows.Threading.DispatcherPriority.Background);
+                //}
+                //else
+                //{
+                //    LogContent?.Clear();
+                //    LogsViewer.DeferRefresh();
+                //    OnPropertyChanged(nameof(LogsViewer));
+                //}
+
 
                 if (response.LogsViewJson.Count > 0)
                 {
@@ -131,6 +176,18 @@ namespace OpenFrp.Launcher.ViewModels
                 }
 
                 OnPropertyChanged(nameof(LogsHeaders));
+
+                //await App.Current.Dispatcher.InvokeAsync(() =>
+                //{
+                //    LogsViewer.Refresh();
+                //    LogsHeaders.Refresh();
+
+                //    OnPropertyChanged(nameof(LogsViewer));
+                //    OnPropertyChanged(nameof(LogsHeaders));
+                //});
+
+
+
             }
 
 

@@ -45,7 +45,7 @@ namespace OpenFrp.Launcher.Views
             await Task.Delay(500);
 
             Model.RefreshPreview();
-            Model.RefreshUserInfoView();
+            Model.RefreshUserInfoView(true);
             Model.RefreshBroadCast();
         }
 
