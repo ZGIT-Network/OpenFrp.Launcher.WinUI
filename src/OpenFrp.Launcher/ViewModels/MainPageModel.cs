@@ -233,8 +233,8 @@ namespace OpenFrp.Launcher.ViewModels
                 };
                 if (await dialog.ShowDialogFixed() is ContentDialogResult.Primary)
                 {
-
-                    Process.Start(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {ur.JSON()}");
+                    // 2023-5-29 (可能是)修复了下载失败的问题
+                    new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"--update {ur.JSON()}").RunAsUAC();
 
                     await ConfigHelper.Instance.WriteConfig();
                     var resp = await AppShareHelper.PipeClient.Request(new()

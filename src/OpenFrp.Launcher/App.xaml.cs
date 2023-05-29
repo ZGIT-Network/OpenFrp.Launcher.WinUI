@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.Notifications;
 using Google.Protobuf;
@@ -59,6 +60,27 @@ namespace OpenFrp.Launcher
 
             await ConfigHelper.ReadConfig();
 
+            var processes = Process.GetProcessesByName("OpenFrp.Launcher");
+            if (processes.Length > 1)
+            {
+                foreach (var process in processes)
+                {
+                    if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"))
+                    {
+                        IntPtr hwnd = WindHelper.FindWindowA(null, $"OpenFrp Launcher - {process.MainModule.FileName.GetMD5()}");
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            WindHelper.ShowWindow(hwnd, 9);
+                            WindHelper.SetForegroundWindow(hwnd);
+
+                        }
+
+                    }
+                }
+                Environment.Exit(0);
+
+            }
+
             if (File.Exists(Utils.Frpc))
             {
                 try
@@ -81,26 +103,7 @@ namespace OpenFrp.Launcher
 
 
 
-                    var processes = Process.GetProcessesByName("OpenFrp.Launcher");
-                    if (processes.Length > 1)
-                    {
-                        foreach(var process in processes)
-                        {
-                            if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"))
-                            {
-                                IntPtr hwnd = WindHelper.FindWindowA(null, $"OpenFrp Launcher - {process.MainModule.FileName.GetMD5()}");
-                                if (hwnd != IntPtr.Zero)
-                                {
-                                    WindHelper.ShowWindow(hwnd, 9);
-                                    WindHelper.SetForegroundWindow(hwnd);
 
-                                }
-
-                            }
-                        }
-                        Environment.Exit(0);
-
-                    }
 
                     CheckDeamon();
 
@@ -134,9 +137,13 @@ namespace OpenFrp.Launcher
                     }
                     AppShareHelper.TaskbarIcon = new()
                     {
-                        Icon =
-                          new System.Drawing.Icon(GetResourceStream(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/main.ico")).Stream)
+                        MenuActivation = H.NotifyIcon.Core.PopupActivationMode.RightClick,
+                        NoLeftClickDelay = true,
+                        IconSource = new BitmapImage(new Uri("pack://application:,,,/OpenFrp.Launcher;component/Resourecs/main.ico"))
+                        //Icon =
+                        //  new System.Drawing.Icon(GetResourceStream(new Uri("")).Stream)
                     };
+                    
                     AppShareHelper.TaskbarIcon.TrayLeftMouseUp += (sender, args) =>
                     {
                         if (App.Current.MainWindow is Window wind)
@@ -178,6 +185,7 @@ namespace OpenFrp.Launcher
                 }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
+                    AppShareHelper.TaskbarIcon.ForceCreate();
                     AutoLogin();
                     PipeIOStart();
                     if (e.Args.Contains("-noeffect")) ConfigHelper.Instance.BackdropSet = BackdropType.None;
@@ -189,7 +197,6 @@ namespace OpenFrp.Launcher
                     await ConfigHelper.Instance.WriteConfig(true);
                     await Task.Delay(500);
                     new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
-
                     App.Current.Shutdown();
                 }
                 catch (System.ComponentModel.Win32Exception ex)
@@ -298,16 +305,25 @@ namespace OpenFrp.Launcher
                         if (count > 0)
                         {
                             var request = RequestBase.Parser.ParseFrom(worker.Buffer, 0, worker.EnsureMessageComplete(count));
+                            // 2023.5.29 修复了提示"未连接到**"但是可以打开隧道页面的问题
                             ResponseBase response = request.Action switch
                             {
                                 RequestType.ServerUpdateTunnels => new Func<ResponseBase>(() =>
                                 {
-                                    if (App.Current?.MainWindow is MainPage wind)
+                                    
+                                    try
                                     {
-                                        if (wind.Of_nViewFrame.Content is Tunnels tunnels)
+                                        if (App.Current?.MainWindow is MainPage wind)
                                         {
-                                            tunnels.Model.RefreshUserProxies();
+                                            if (wind.Of_nViewFrame.Content is Tunnels tunnels)
+                                            {
+                                                tunnels.Model.RefreshUserProxies();
+                                            }
                                         }
+                                    }
+                                    catch
+                                    {
+
                                     }
 
 
@@ -318,46 +334,53 @@ namespace OpenFrp.Launcher
                                 })(),
                                 RequestType.ServerSendNotifiy => new Func<ResponseBase>(() =>
                                 {
-                                    var tunnel = request.NotifiyRequest.TunnnelJson.PraseJson<ResponseBody.UserTunnelsResponse.UserTunnel>();
-                                    if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Toast)
+                                    try
                                     {
-                                        if (OSVersionHelper.IsWindows10OrGreater)
+                                        var tunnel = request.NotifiyRequest.TunnnelJson.PraseJson<ResponseBody.UserTunnelsResponse.UserTunnel>();
+                                        if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Toast)
                                         {
-                                            if (request.NotifiyRequest.Flag)
+                                            if (OSVersionHelper.IsWindows10OrGreater)
                                             {
-                                                new ToastContentBuilder()
-                                                    .AddText($"隧道 {tunnel?.TunnelName} 启动成功!")
-                                                    .AddText($"点击复制按钮，将链接发给你的朋友吧！")
-                                                    .AddAttributionText($"{tunnel?.TunnelType},{tunnel?.LocalAddress}:{tunnel?.LocalPort}")
-                                                    .AddButton(new ToastButton() { ActivationType = ToastActivationType.Foreground }
-                                                            .SetContent("复制连接")
-                                                            .AddArgument("--cl", tunnel?.ConnectAddress))
-                                                    .AddButton("确定", ToastActivationType.Foreground, "")
-                                                    .Show();
+                                                if (request.NotifiyRequest.Flag)
+                                                {
+                                                    new ToastContentBuilder()
+                                                        .AddText($"隧道 {tunnel?.TunnelName} 启动成功!")
+                                                        .AddText($"点击复制按钮，将链接发给你的朋友吧！")
+                                                        .AddAttributionText($"{tunnel?.TunnelType},{tunnel?.LocalAddress}:{tunnel?.LocalPort}")
+                                                        .AddButton(new ToastButton() { ActivationType = ToastActivationType.Foreground }
+                                                                .SetContent("复制连接")
+                                                                .AddArgument("--cl", tunnel?.ConnectAddress))
+                                                        .AddButton("确定", ToastActivationType.Foreground, "")
+                                                        .Show();
+                                                }
+                                                else
+                                                {
+                                                    new ToastContentBuilder()
+                                                            .AddText($"隧道 {tunnel?.TunnelName} 启动失败")
+                                                            .AddText(request.NotifiyRequest.Content)
+                                                            .AddAttributionText($"远程端口: {tunnel?.RemotePort}")
+                                                            .AddButton("确定", ToastActivationType.Foreground, "")
+
+                                                            .Show();
+                                                }
                                             }
                                             else
                                             {
-                                                new ToastContentBuilder()
-                                                        .AddText($"隧道 {tunnel?.TunnelName} 启动失败")
-                                                        .AddText(request.NotifiyRequest.Content)
-                                                        .AddAttributionText($"远程端口: {tunnel?.RemotePort}")
-                                                        .AddButton("确定", ToastActivationType.Foreground, "")
-                                                        
-                                                        .Show();
+                                                ConfigHelper.Instance.MessagePullMode = ConfigHelper.TnMode.Notifiy;
+                                                AppShareHelper.TaskbarIcon?.ShowNotification($"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", "",
+                                                request.NotifiyRequest.Flag ? H.NotifyIcon.Core.NotificationIcon.Info : H.NotifyIcon.Core.NotificationIcon.Warning);
                                             }
-                                        }
-                                        else
-                                        {
-                                            ConfigHelper.Instance.MessagePullMode = ConfigHelper.TnMode.Notifiy;
-                                            AppShareHelper.TaskbarIcon?.ShowBalloonTip($"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", "",
-                                            request.NotifiyRequest.Flag ? Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info : Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Warning);
-                                        }
 
+                                        }
+                                        else if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Notifiy)
+                                        {
+                                            AppShareHelper.TaskbarIcon?.ShowNotification($"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", "",
+                                                request.NotifiyRequest.Flag ? H.NotifyIcon.Core.NotificationIcon.Info : H.NotifyIcon.Core.NotificationIcon.Warning);
+                                        }
                                     }
-                                    else if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Notifiy)
+                                    catch
                                     {
-                                        AppShareHelper.TaskbarIcon?.ShowBalloonTip($"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", "",
-                                            request.NotifiyRequest.Flag ? Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info : Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Warning);
+
                                     }
 
                                     return new ResponseBase()

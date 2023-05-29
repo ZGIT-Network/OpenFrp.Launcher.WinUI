@@ -79,7 +79,9 @@ namespace OpenFrp.Launcher.ViewModels
                                 {
                                     LogContent.RemoveRange(0, LogContent.Count - 150);
                                 }
+
                                 LogContent.Add(x);
+                                
                                 LogsViewer.Refresh();
                                 OnPropertyChanged(nameof(LogsViewer));
                             }

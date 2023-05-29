@@ -46,6 +46,16 @@ namespace OpenFrp.Core
             {
                 ServiceBase.Run(new ServiceWorker());
             }
+            else if (Environment.UserInteractive)
+            {
+                Console.WriteLine("Debug Mode");
+                Console.WriteLine("Input \"ps\" to start service");
+                if (Console.ReadLine() is "ps")
+                {
+                    await PipeService();
+                }
+            }
+
         }
 
         #region Console App
@@ -77,15 +87,20 @@ namespace OpenFrp.Core
             server.Start();
             PushClient.Start(true);
 
+            Log("启动成功 Line#90");
+
             server.OnDataRecived += OnDataRecived;
 
             server.OnConnectedEvent += async delegate
             {
-                await Task.Delay(3000);
+                Log("传入链接,");
+                await Task.Delay(5000);
 
                 if (PushClient?.Pipe?.IsConnected is false)
                 {
+                    Log("客户都断链 Line#101");
                     server.Disconnect();
+                    
                 }
             };
 
@@ -94,6 +109,7 @@ namespace OpenFrp.Core
 
             server.OnRestart = () =>
             {
+                Log("Console Restart Line#111");
                 PushClient.Disponse();
                 if (PushClient.Pipe?.IsConnected == true)
                 {
@@ -105,6 +121,7 @@ namespace OpenFrp.Core
 
             Win32Helper.SetConsoleCtrlHandler(o =>
             {
+                Log("Wrapper Exit Line#123");
                 if (ConsoleHelper.Wrappers.Count > 0)
                 {
                     ConfigHelper.Instance.AutoStartupList = ConsoleHelper.Wrappers.Keys.ToArray();
@@ -134,6 +151,11 @@ namespace OpenFrp.Core
             }
         }
 
+
+        private static void Log(object obj)
+        {
+            if (Environment.UserInteractive) Console.WriteLine(obj);
+        }
         /// <summary>
         /// 管道收到数据
         /// </summary>

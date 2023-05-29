@@ -40,12 +40,11 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.21.12" />
 	  <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
-	  <PackageReference Include="Hardcodet.Wpf.TaskbarNotification" Version="1.0.5" />
+	  <PackageReference Include="H.NotifyIcon.Wpf" Version="2.0.108" />
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
 	  <PackageReference Include="ModernWpfUI" Version="10.2.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Awe.LanPlay\src\Awe.AppModel\Awe.AppModel.csproj" />
 	  <ProjectReference Include="..\OpenFrp.Core\OpenFrp.Core.csproj" />
 	</ItemGroup>
 	<ItemGroup>

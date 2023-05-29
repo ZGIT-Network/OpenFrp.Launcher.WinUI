@@ -18,6 +18,7 @@ using System.IO.Compression;
 using System.Security.Principal;
 using System.Windows.Threading;
 using ModernWpf;
+using Google.Protobuf.WellKnownTypes;
 
 namespace OpenFrp.Core
 {
@@ -50,7 +51,7 @@ namespace OpenFrp.Core
             if (UpdateInfo is not null && !string.IsNullOrEmpty(UpdateInfo.DownloadUrl))
             {
                 AddIntoView($"下载链接: {UpdateInfo.DownloadUrl}");
-                FileName = Path.Combine(Utils.ApplicatioDataPath, $"{UpdateInfo.DownloadUrl!.GetMD5()}.{UpdateInfo.DownloadUrl?.Split('.').LastOrDefault()}");
+                FileName = Path.Combine(Utils.ApplicationExecutePath, $"{UpdateInfo.DownloadUrl!.GetMD5()}.{UpdateInfo.DownloadUrl?.Split('.').LastOrDefault()}");
                 Download(UpdateInfo.DownloadUrl!, FileName, UpdateInfo);
             }
             else
@@ -69,9 +70,10 @@ namespace OpenFrp.Core
 
                     return;
                 }
-                AddIntoView($"{Enum.GetName(typeof(UpdateCheckHelper.UpdateLevel), resp.Level)} - 下载链接: {resp.DownloadUrl}");
 
-                Download(resp.DownloadUrl!, Path.Combine(Utils.ApplicatioDataPath, $"{resp.DownloadUrl!.GetMD5()}.{resp.DownloadUrl?.Split('.').LastOrDefault()}"), resp);
+                AddIntoView($"{System.Enum.GetName(typeof(UpdateCheckHelper.UpdateLevel), resp.Level)} - 下载链接: {resp.DownloadUrl}");
+
+                Download(resp.DownloadUrl!, Path.Combine(Utils.ApplicationExecutePath, $"{resp.DownloadUrl!.GetMD5()}.{resp.DownloadUrl?.Split('.').LastOrDefault()}"), resp);
             }
         }
 
@@ -108,9 +110,6 @@ namespace OpenFrp.Core
                             await Task.Delay(1500);
                         }
 
-
-
-
                         Directory.CreateDirectory(frpcd);
 
                         var dir = new DirectoryInfo(frpcd);
@@ -124,27 +123,56 @@ namespace OpenFrp.Core
 
 
 
-                        using var zip = new ZipArchive(File.OpenRead(filename));
-                        zip.ExtractToDirectory(frpcd);
-                        zip.Dispose();
-
-                        if (FileName is not null && File.Exists(FileName)) File.Delete(FileName);
-
-                        ConfigHelper.Instance.FrpcVersion = level.Version;
-
-                        await ConfigHelper.Instance.WriteConfig(true);
-
-                        await Task.Delay(500);
 
 
+                        try
+                        {
+                            using var zip = new ZipArchive(File.OpenRead(filename));
+                            zip.ExtractToDirectory(frpcd);
+                            zip.Dispose();
+
+                            if (FileName is not null && File.Exists(FileName)) File.Delete(FileName);
+
+                            ConfigHelper.Instance.FrpcVersion = level.Version;
+
+                            await ConfigHelper.Instance.WriteConfig(true);
+
+                            await Task.Delay(500);
+
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = Utils.Frpc,
+                                Arguments = $"-v",
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            });
+                            
+                        }
+                        catch (System.ComponentModel.Win32Exception ex)
+                        {
+                            Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                            Environment.Exit(-1);
+                        }
+                        catch (System.IO.IOException ex)
+                        {
+                            if (ex.Message.Contains("无法成功完成操作，因为文件包含病毒或潜在的垃圾软件"))
+                            {
+                                Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
+                            }
+                            else
+                            {
+                                MessageBox.Show(ex.ToString());
+                            }
+                            
+                            Environment.Exit(-1);
+                        }
                         Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+                        Environment.Exit(0);
                     }
                     catch
                     {
                         new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
                     }
-
-                    Environment.Exit(0);
                 }
                 else if (level.Level is UpdateCheckHelper.UpdateLevel.LauncherUpdate)
                 {

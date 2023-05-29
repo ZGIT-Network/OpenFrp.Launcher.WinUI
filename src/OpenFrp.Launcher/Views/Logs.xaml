@@ -71,7 +71,7 @@
                     ItemsSource="{Binding LogsViewer}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ofc:SelectableTextBlock Text="{Binding Content}" TextWrapping="Wrap">
+                            <ofc:SelectableTextBlock Text="{Binding Path=Content}" TextWrapping="Wrap">
                                 <ofc:SelectableTextBlock.Style>
                                     <Style BasedOn="{StaticResource SelectableTextBlockDefualtStyle}" TargetType="ofc:SelectableTextBlock">
 

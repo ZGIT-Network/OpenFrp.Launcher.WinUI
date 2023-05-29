@@ -66,6 +66,8 @@ namespace OpenFrp.Core.Libraries.Pipe
             }
             else
             {
+                Disconnect();
+                Start();
                 return new() { Success = false, Message = "未连接到守护进程,大部分功能无法正常使用。" };
             }
 
