@@ -19,6 +19,7 @@ using System.Security.Principal;
 using System.Windows.Threading;
 using ModernWpf;
 using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json;
 
 namespace OpenFrp.Core
 {
@@ -38,49 +39,79 @@ namespace OpenFrp.Core
 
         protected override async void OnInitialized(EventArgs e)
         {
+
             base.OnInitialized(e);
+
             await ConfigHelper.ReadConfig();
             AppDomain.CurrentDomain.UnhandledException += (s, e) => MessageBox.Show(e.ExceptionObject.ToString());
-            Dispatcher.RunOnUIThread(Inst);
+            Dispatcher.RunOnUIThread(() =>
+            {
+                Title = $"OpenFrp 下载窗口 ::: {Utils.LauncherVersion}";
+                Inst();
+            });
+            
         }
 
-        async void Inst()
+        void Inst()
         {
-            Btn_Reload.IsEnabled = false;
-
-            if (UpdateInfo is not null && !string.IsNullOrEmpty(UpdateInfo.DownloadUrl))
+            Dispatcher.RunOnUIThread(async () =>
             {
-                AddIntoView($"下载链接: {UpdateInfo.DownloadUrl}");
-                FileName = Path.Combine(Utils.ApplicationExecutePath, $"{UpdateInfo.DownloadUrl!.GetMD5()}.{UpdateInfo.DownloadUrl?.Split('.').LastOrDefault()}");
-                Download(UpdateInfo.DownloadUrl!, FileName, UpdateInfo);
-            }
-            else
-            {
-                AddIntoView("获取更新中...");
-                var resp = await UpdateCheckHelper.CheckUpdate();
-                if (resp.Level is UpdateCheckHelper.UpdateLevel.None)
+                Btn_Reload.IsEnabled = false;
+
+                if (UpdateInfo is not null && !string.IsNullOrEmpty(UpdateInfo.DownloadUrl))
                 {
-                    //Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
-                    Environment.Exit(0);
+                    AddIntoView($"下载链接: {UpdateInfo.DownloadUrl}");
+                    FileName = Path.Combine(Utils.ApplicationExecutePath, $"{UpdateInfo.DownloadUrl!.GetMD5()}.{UpdateInfo.DownloadUrl?.Split('.').LastOrDefault()}");
+                    Download(UpdateInfo.DownloadUrl!, FileName, UpdateInfo);
                 }
-                else if (resp.Level is UpdateCheckHelper.UpdateLevel.Unsuccessful)
+                else
                 {
-                    AddIntoView("获取列表失败,请点击\"重新下载\"按钮重试。您可能打开了代理软件。");
-                    Btn_Reload.IsEnabled = true;
 
-                    return;
+                    AddIntoView("获取更新中...");
+                    var resp = await UpdateCheckHelper.CheckUpdate();
+                    if (resp.Level is UpdateCheckHelper.UpdateLevel.None)
+                    {
+                        //Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+                        Environment.Exit(0);
+                    }
+                    else if (resp.Level is UpdateCheckHelper.UpdateLevel.Unsuccessful)
+                    {
+                        string fallback = $"https://sq.oss.imzzh.cn/launcher/lock/{Utils.FrpcPlatform}.zip";
+                        if (File.Exists(Utils.Frpc))
+                        {
+                            AddIntoView($"fallback frpc url: {fallback}");
+                            Download(fallback, Path.Combine(Utils.ApplicationExecutePath, $"{fallback.GetMD5()}.{fallback.Split('.').LastOrDefault()}"),new UpdateCheckHelper.UpdateInfo
+                            {
+                                Level = UpdateCheckHelper.UpdateLevel.FrpcUpdate,
+                                Version = "lock version"
+                            });
+                        }
+                        else
+                        {
+                            AddIntoView($"获取列表失败,请点击\"重新下载\"按钮重试。{JsonConvert.SerializeObject(resp)}");
+                            Dispatcher.RunOnUIThread(() =>
+                            {
+                                Btn_Reload.IsEnabled = true;
+                            });
+                        }
+                        
+
+                        return;
+                    }
+
+                    AddIntoView($"{System.Enum.GetName(typeof(UpdateCheckHelper.UpdateLevel), resp.Level)} - 下载链接: {resp.DownloadUrl}");
+
+                    Download(resp.DownloadUrl!, Path.Combine(Utils.ApplicationExecutePath, $"{resp.DownloadUrl!.GetMD5()}.{resp.DownloadUrl?.Split('.').LastOrDefault()}"), resp);
                 }
-
-                AddIntoView($"{System.Enum.GetName(typeof(UpdateCheckHelper.UpdateLevel), resp.Level)} - 下载链接: {resp.DownloadUrl}");
-
-                Download(resp.DownloadUrl!, Path.Combine(Utils.ApplicationExecutePath, $"{resp.DownloadUrl!.GetMD5()}.{resp.DownloadUrl?.Split('.').LastOrDefault()}"), resp);
-            }
+            });
+            
         }
 
         private async void Download(string url,string filename, UpdateCheckHelper.UpdateInfo level)
         {
             FileName = filename;
-            if (await UpdateCheckHelper.DownloadWithProgress(url, FileName, (sender, ar) => AddIntoView($"Download Progress: {ar.ProgressPercentage}")))
+            var vl = await UpdateCheckHelper.DownloadWithProgress(url, FileName, (sender, ar) => AddIntoView($"Download Progress: {ar.ProgressPercentage}"));
+            if (vl.Item2)
             {
 
                 // Successful
@@ -183,18 +214,22 @@ namespace OpenFrp.Core
             }
             else
             {
-                AddIntoView("下载失败,请点击\"重新下载\"按钮重试。");
-                this.Dispatcher.Invoke(() => Btn_Reload.IsEnabled = true);
+                Dispatcher.RunOnUIThread(() =>
+                {
+                    AddIntoView("下载失败,请点击\"重新下载\"按钮重试。");
+                    AddIntoView(vl.Item1?.ToString() ?? "");
+                    Btn_Reload.IsEnabled = true;
+                });
             }
         }
 
-        private void AddIntoView(string data) => this.Dispatcher?.Invoke(() =>
+        private void AddIntoView(string data) => Dispatcher.RunOnUIThread(() =>
         {
             LogView?.AppendText($"{data}\n");
             LogView?.ScrollToEnd();
         });
 
-        private void Button_Click(object sender, RoutedEventArgs e) => Inst();
+        private void Button_Click(object sender, RoutedEventArgs e) => Dispatcher.RunOnUIThread(Inst);
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -210,6 +245,13 @@ namespace OpenFrp.Core
 
             }
             Environment.Exit(0);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string frpcd = Path.Combine(Utils.ApplicationExecutePath, "frpc");
+            Directory.CreateDirectory(frpcd);
+            Process.Start("explorer",frpcd);
         }
     }
 }

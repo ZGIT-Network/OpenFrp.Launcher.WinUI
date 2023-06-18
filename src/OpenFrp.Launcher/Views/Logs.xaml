@@ -61,64 +61,76 @@
     </Grid>
     <ofc:ViewPage.ContentWithOverflow>
         <Grid Margin="0,48,0,0">
-            <ui:ScrollViewerEx PreviewMouseWheel="ScrollViewerEx_PreviewMouseWheel">
-                <ItemsControl
-                    x:Name="sbbv"
-                    MaxWidth="1410"
-                    Padding="56,4,56,24"
-                    FontFamily="{Binding Converter={StaticResource FontConverter}, ConverterParameter=logsf, Mode=OneWay}"
-                    FontSize="{Binding FontSetting.FontSize}"
-                    ItemsSource="{Binding LogsViewer}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ofc:SelectableTextBlock Text="{Binding Path=Content}" TextWrapping="Wrap">
-                                <ofc:SelectableTextBlock.Style>
-                                    <Style BasedOn="{StaticResource SelectableTextBlockDefualtStyle}" TargetType="ofc:SelectableTextBlock">
+            <ofc:ElementLoader x:Name="loadera" Panel.ZIndex="11">
+                <ui:ScrollViewerEx
+                    CanContentScroll="True"
+                    PreviewMouseWheel="ScrollViewerEx_PreviewMouseWheel"
+                    VirtualizingPanel.CacheLength="10,10"
+                    VirtualizingPanel.CacheLengthUnit="Item"
+                    VirtualizingPanel.ScrollUnit="Pixel"
+                    VirtualizingPanel.VirtualizationMode="Recycling">
+                    <ItemsControl
+                        x:Name="sbbv"
+                        MaxWidth="1410"
+                        Padding="56,4,56,24"
+                        FontFamily="{Binding Converter={StaticResource FontConverter}, ConverterParameter=logsf, Mode=OneWay}"
+                        FontSize="{Binding FontSetting.FontSize}"
+                        ItemsSource="{Binding LogContent, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ofc:SelectableTextBlock Text="{Binding Path=Content}" TextWrapping="Wrap">
+                                    <ofc:SelectableTextBlock.Style>
+                                        <Style BasedOn="{StaticResource SelectableTextBlockDefualtStyle}" TargetType="ofc:SelectableTextBlock">
 
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding Level}" Value="Warning" />
-                                                    <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=ofc:ViewPage}}" Value="Dark" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Level}" Value="Warning" />
+                                                        <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=ofc:ViewPage}}" Value="Dark" />
 
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Foreground" Value="#ffc107" />
-                                            </MultiDataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding Level}" Value="Warning" />
-                                                    <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=ofc:ViewPage}}" Value="Light" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Foreground" Value="#ffc107" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Level}" Value="Warning" />
+                                                        <Condition Binding="{Binding (ui:ThemeManager.ActualTheme), RelativeSource={RelativeSource AncestorType=ofc:ViewPage}}" Value="Light" />
 
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Foreground" Value="#008074" />
-                                            </MultiDataTrigger>
-                                            <DataTrigger Binding="{Binding Level}" Value="Error">
-                                                <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
-                                            </DataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding DataContext.DebugMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}" Value="False" />
-                                                    <Condition Binding="{Binding IsDebug}" Value="True" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ofc:SelectableTextBlock.Style>
-                            </ofc:SelectableTextBlock>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Foreground" Value="#008074" />
+                                                </MultiDataTrigger>
+                                                <DataTrigger Binding="{Binding Level}" Value="Error">
+                                                    <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding DataContext.DebugMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}" Value="False" />
+                                                        <Condition Binding="{Binding IsDebug}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ofc:SelectableTextBlock.Style>
+                                </ofc:SelectableTextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-            </ui:ScrollViewerEx>
-            <Grid>
+                </ui:ScrollViewerEx>
+            </ofc:ElementLoader>
+            <Grid Panel.ZIndex="10">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding LogsViewer.Count}" Value="0">
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding LogContent.Count}" Value="0" />
+                                    <Condition Binding="{Binding IsLoading, ElementName=loadera}" Value="False" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>

@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -52,14 +53,33 @@ namespace OpenFrp.Launcher
                 }
                 Environment.Exit(-1);
             };
-
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
+            {
+                if (errors is not System.Net.Security.SslPolicyErrors.None)
+                {
+                    return MessageBox.Show($"来自服务器的证书无效:::" +
+                    $"\n Name:{certificate.Issuer}" +
+                    $"\n Reason:{Enum.GetName(typeof(System.Net.Security.SslPolicyErrors), errors)} " +
+                    $"是否允许访问?", "OpenFrp Launcher", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) is MessageBoxResult.OK ? true
+                 : false;
+                }
+                return true;
+            };
             JsonConvert.DefaultSettings = () => new()
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
-
             await ConfigHelper.ReadConfig();
 
+            if (OSVersionHelper.IsWindows10OrGreater)
+            {
+                if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
+                {
+                    Current.Shutdown();
+                    return;
+                }
+            }
             var processes = Process.GetProcessesByName("OpenFrp.Launcher");
             if (processes.Length > 1)
             {
@@ -99,12 +119,6 @@ namespace OpenFrp.Launcher
                         UxThemeHelper.ShouldSystemUseDarkMode();
                     }
 
-                    
-
-
-
-
-
                     CheckDeamon();
 
                     Microsoft.Win32.SystemEvents.SessionEnding += async (sender, e) =>
@@ -120,21 +134,26 @@ namespace OpenFrp.Launcher
 
                         ToastNotificationManagerCompat.OnActivated += (e) =>
                         {
-                            var args = ToastArguments.Parse(e.Argument);
-                            App.Current.RunOnUIThread(() =>
+                            if (!string.IsNullOrEmpty(e.Argument))
                             {
-                                try
+                                var args = ToastArguments.Parse(e.Argument);
+                                App.Current.RunOnUIThread(() =>
                                 {
-                                    Clipboard.SetText(args["--cl"]);
-                                }
-                                catch
-                                {
+                                    try
+                                    {
+                                        Clipboard.SetText(args["--cl"]);
+                                    }
+                                    catch
+                                    {
 
-                                }
-                            });
-
+                                    }
+                                });
+                            }
+                            
                         };
+
                     }
+                    #region TaskBar Icon
                     AppShareHelper.TaskbarIcon = new()
                     {
                         MenuActivation = H.NotifyIcon.Core.PopupActivationMode.RightClick,
@@ -143,7 +162,6 @@ namespace OpenFrp.Launcher
                         //Icon =
                         //  new System.Drawing.Icon(GetResourceStream(new Uri("")).Stream)
                     };
-                    
                     AppShareHelper.TaskbarIcon.TrayLeftMouseUp += (sender, args) =>
                     {
                         if (App.Current.MainWindow is Window wind)
@@ -156,36 +174,36 @@ namespace OpenFrp.Launcher
                             wind.Activate();
                         }
                     };
-
                     AppShareHelper.TaskbarIcon.ContextMenu = new()
                     {
                         Items =
-                {
-                    new MenuItem()
-                    {
-                        Icon = new SymbolIcon(Symbol.ShowResults),
-                        Header = "显示窗口",
-                        Command = ShowWindowCommand
-                    },
-                    new Separator(),
-                    new MenuItem()
-                    {
-                        Icon = new FontIcon(){ Glyph = "\ue89f" },
-                        Header = "退出启动器",
-                        Command = ExitLauncherCommand
-                    },
-                    new MenuItem()
-                    {
-                        Icon = new FontIcon(){Glyph = "\ue8bb"},
-                        Header = "彻底退出",
-                        Command = ExitAllCommand
+                                {
+                                    new MenuItem()
+                                    {
+                                        Icon = new SymbolIcon(Symbol.ShowResults),
+                                        Header = "显示窗口",
+                                        Command = ShowWindowCommand
+                                    },
+                                    new Separator(),
+                                    new MenuItem()
+                                    {
+                                        Icon = new FontIcon(){ Glyph = "\ue89f" },
+                                        Header = "退出启动器",
+                                        Command = ExitLauncherCommand
+                                    },
+                                    new MenuItem()
+                                    {
+                                        Icon = new FontIcon(){Glyph = "\ue8bb"},
+                                        Header = "彻底退出",
+                                        Command = ExitAllCommand
 
-                    }
+                                    }
 
-                }
+                                }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
-                    AppShareHelper.TaskbarIcon.ForceCreate();
+                    AppShareHelper.TaskbarIcon.ForceCreate(false);
+                    #endregion
                     AutoLogin();
                     PipeIOStart();
                     if (e.Args.Contains("-noeffect")) ConfigHelper.Instance.BackdropSet = BackdropType.None;
@@ -220,6 +238,8 @@ namespace OpenFrp.Launcher
 
                 App.Current.Shutdown();
             }
+
+
 
         }
 
@@ -374,8 +394,12 @@ namespace OpenFrp.Launcher
                                         }
                                         else if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Notifiy)
                                         {
-                                            AppShareHelper.TaskbarIcon?.ShowNotification($"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", "",
+                                            AppShareHelper.TaskbarIcon.ShowNotification(
+                                                $"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", 
+                                                $"{tunnel?.LocalAddress}:{tunnel?.LocalPort} 转发到 {tunnel?.ConnectAddress}",
                                                 request.NotifiyRequest.Flag ? H.NotifyIcon.Core.NotificationIcon.Info : H.NotifyIcon.Core.NotificationIcon.Warning);
+                                            //AppShareHelper.TaskbarIcon?.ShowNotification(,
+                                            //    request.NotifiyRequest.Flag ? H.NotifyIcon.Core.NotificationIcon.Info : H.NotifyIcon.Core.NotificationIcon.Warning);
                                         }
                                     }
                                     catch
@@ -589,6 +613,11 @@ namespace OpenFrp.Launcher
                 return await dialog!.ShowAsync();
             }
             return ContentDialogResult.None;
+        }
+
+        public static void VoidAsync(System.Windows.Threading.DispatcherOperation operation)
+        {
+
         }
     }
 }

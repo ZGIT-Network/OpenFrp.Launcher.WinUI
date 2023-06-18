@@ -23,6 +23,8 @@ namespace OpenFrp.Core.Helper
             public Process? Process { get; set; }
 
             public int RestartCount { get; set; } = 0;
+
+            public int ReconnectCount { get; set; } = 0;
         }
 
         public static Dictionary<int, ConsoleWrapper> Wrappers = new();
@@ -153,7 +155,19 @@ namespace OpenFrp.Core.Helper
         {
             
             if (data?.ToString().Contains("[E]") is true) level = TraceLevel.Error;
-            else if (data?.ToString().Contains("[W]") is true) level = TraceLevel.Warning;
+            else if (data?.ToString().Contains("[W]") is true)
+            {
+                level = TraceLevel.Warning;
+                if (data?.ToString().Contains("正在尝试重连到服务器") is true && Wrappers.ContainsKey(id))
+                {
+                    Wrappers[id].ReconnectCount++;
+
+                    if (Wrappers[id].ReconnectCount > 10)
+                    {
+                        LogHelper.Add(0, $"隧道 {id} 重连次数过多，正在尝试重新打开。。", TraceLevel.Warning, true);
+                    }
+                }
+            }
 
             if (data?.ToString().Contains("面板强制下线") ?? false)
             {

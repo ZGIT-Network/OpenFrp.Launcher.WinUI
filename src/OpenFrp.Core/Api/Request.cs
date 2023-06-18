@@ -159,9 +159,21 @@ namespace OpenFrp.Core.Libraries.Api
                     }
                     return (await response.Content.ReadAsStringAsync()).PraseJson<T>();
                 }
+                else
+                {
+                    if (typeof(T) == typeof(Api.Models.ResponseBody.BaseResponse))
+                    {
+                        return (T)new Models.ResponseBody.BaseResponse()
+                        {
+                            Exception = new Exception(response.RequestMessage.ToString()),
+                            Message = "发生了未知错误"
+                        };
+                    }
+                }
             }
             catch (Exception ex)
             {
+                
                 LogHelper.Add(0,ex.ToString(),System.Diagnostics.TraceLevel.Warning,true);
                 if (typeof(T) == typeof(Api.Models.ResponseBody.BaseResponse))
                 {
@@ -181,15 +193,18 @@ namespace OpenFrp.Core.Libraries.Api
         {
             try
             {
+
+                
                 var handler = new HttpClientHandler()
                 {
-                    UseProxy = ConfigHelper.Instance.BypassProxy
+                    UseProxy = !ConfigHelper.Instance.BypassProxy
                 };
                 var httpClient = new HttpClient(handler);
 
                 httpClient.DefaultRequestHeaders.Authorization = string.IsNullOrEmpty(Authorization) ? default : new(Authorization);
                 httpClient.Timeout = new TimeSpan(0, 0, 0, 10);
                 var response = await httpClient.GetAsync(url, token);
+
 
                 if (response.IsSuccessStatusCode && !token.IsCancellationRequested)
                 {

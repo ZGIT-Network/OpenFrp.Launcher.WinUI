@@ -239,7 +239,6 @@ namespace OpenFrp.Launcher.ViewModels
             var response = await ApiRequest.GETAny<Awe.AppModel.Response.BaseResponse<Awe.AppModel.AppNews>>($"{ApiUrls.LauncherBaseUrl}api/news?query=openfrpLauncher");
             if (response != null && response.Success && response.Data != null)
             {
-
                 if (response.Data.Content?.Data != null)
                 {
                     if (true)
@@ -267,6 +266,15 @@ namespace OpenFrp.Launcher.ViewModels
                 }
                 PreviewContent = response.Data;
             }
+            else
+            {
+                PreviewContent = new Awe.AppModel.AppNews()
+                {
+                    Title = " 一番荷芰生池沼，槛前风送馨香",
+                    Subtitle = "打开官网",
+                    Url = "https://of.gs"
+                };
+            }
             MainPage.OfApp_PreviewXLoader.ShowContent();
 
         }
@@ -287,6 +295,8 @@ namespace OpenFrp.Launcher.ViewModels
             }
             else
             {
+                MainPage.OfApp_BroadCastXLoader.ShowError();
+                MainPage.OfApp_BroadCastXLoader.PushMessage(RefreshBroadCast,response?.Message ?? "加载失败了捏","重新加载"); ;
                 // MainPage?.OfApp_BroadCastXContent.Children.Add("")
             }
         }

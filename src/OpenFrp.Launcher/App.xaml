@@ -27,6 +27,8 @@
                 <ResourceDictionary Source="./Controls/Expander.xaml" />
                 <ResourceDictionary Source="./Controls/SelectableTextBlock.xaml" />
 
+                
+                
             </ResourceDictionary.MergedDictionaries>
 
             <!--  SystemControlForegroundBaseMediumBrush  -->
@@ -77,7 +79,9 @@
                     </WrapPanel>
                 </Border>
             </DataTemplate>
-
+            
+            <FontFamily x:Key="SegoeMDL2Assets">pack://application:,,,/OpenFrp.Launcher;component/Resourecs/#Segoe Fluent Icons</FontFamily>
+            <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/OpenFrp.Launcher;component/Resourecs/#Segoe Fluent Icons</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

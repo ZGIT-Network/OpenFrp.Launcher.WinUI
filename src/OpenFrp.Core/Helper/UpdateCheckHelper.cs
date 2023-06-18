@@ -13,7 +13,7 @@ namespace OpenFrp.Core.Helper
     {
         internal static WebClient _Client { get; set; } = new();
 
-        public static async ValueTask<bool> DownloadWithProgress(string url, string file, DownloadProgressChangedEventHandler onChanged)
+        public static async ValueTask<(Exception?,bool)> DownloadWithProgress(string url, string file, DownloadProgressChangedEventHandler onChanged)
         {
             try
             {
@@ -21,12 +21,16 @@ namespace OpenFrp.Core.Helper
                 {
                     _Client.Proxy = null;
                 }
+                
                 _Client.DownloadProgressChanged += onChanged;
                 await _Client.DownloadFileTaskAsync(url, file);
-                return true;
+                return (null,true);
             }
-            catch { }
-            return false;
+            catch (Exception ex)
+            {
+                return (ex,false);
+            }
+            
         }
 
         /// <summary>

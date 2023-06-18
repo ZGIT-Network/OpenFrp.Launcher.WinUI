@@ -190,15 +190,15 @@ namespace OpenFrp.Core.Helper
         {
             try
             {
-                var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
-                var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
-                acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
-                    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
-                    System.Security.AccessControl.FileSystemRights.FullControl,
-                    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
-                    System.Security.AccessControl.PropagationFlags.None,
-                    System.Security.AccessControl.AccessControlType.Allow));
-                dir.SetAccessControl(acl);
+                //var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
+                //var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
+                //acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                //    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
+                //    System.Security.AccessControl.FileSystemRights.FullControl,
+                //    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                //    System.Security.AccessControl.PropagationFlags.None,
+                //    System.Security.AccessControl.AccessControlType.Allow));
+                //dir.SetAccessControl(acl);
 
                 if (!fastWrite)
                 {

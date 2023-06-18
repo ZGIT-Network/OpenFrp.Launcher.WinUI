@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.ServiceProcess;
@@ -27,6 +28,19 @@ namespace OpenFrp.Core
         {
             if (args.Length is 1)
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                {
+                    if (!Utils.IsWindowsService & errors is not System.Net.Security.SslPolicyErrors.None)
+                    {
+                        return MessageBox.Show($"来自服务器的证书无效:::" +
+                        $"\n Name:{certificate.Issuer}" +
+                        $"\n Reason:{Enum.GetName(typeof(System.Net.Security.SslPolicyErrors), errors)} " +
+                        $"是否允许访问?", "OpenFrp Launcher", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) is MessageBoxResult.OK ? true
+                     : false;
+                    }
+                    else return false;
+                };
                 switch (args[0])
                 {
                     case "-ps": await PipeService();break;
@@ -79,6 +93,7 @@ namespace OpenFrp.Core
                 {
                     if (wrapper.Process is not null && wrapper.Process.HasExited is false) wrapper.Process.Kill();
                 }
+                Debugger.Launch();
             };
 
             var server = new PipeServer();
@@ -217,18 +232,18 @@ namespace OpenFrp.Core
                         {
                             if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
                             {
-                                if (LogHelper.Logs[request.LogsRequest.Id].Count >= 100)
-                                {
-                                    LogHelper.Logs[request.LogsRequest.Id].RemoveAt(0);
-                                }
+                                //if (LogHelper.Logs[request.LogsRequest.Id].Count >= 100)
+                                //{
+                                //    LogHelper.Logs[request.LogsRequest.Id].RemoveAt(0);
+                                //}
                                 LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             else if (LogHelper.Logs.ContainsKey(0))
                             {
-                                if (LogHelper.Logs[0].Count >= 150)
-                                { 
-                                    LogHelper.Logs[0].RemoveAt(1);
-                                }
+                                //if (LogHelper.Logs[0].Count >= 150)
+                                //{ 
+                                //    LogHelper.Logs[0].RemoveAt(1);
+                                //}
                                 LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             break;
@@ -244,13 +259,13 @@ namespace OpenFrp.Core
                         {
                             if (ConsoleHelper.Wrappers.ContainsKey(request.LogsRequest.Id))
                             {
-                                if (LogHelper.Logs[request.LogsRequest.Id].Count >= 250) LogHelper.Logs[request.LogsRequest.Id].RemoveRange(1, LogHelper.Logs[request.LogsRequest.Id].Count - 250);
+                                //if (LogHelper.Logs[request.LogsRequest.Id].Count >= 250) LogHelper.Logs[request.LogsRequest.Id].RemoveRange(1, LogHelper.Logs[request.LogsRequest.Id].Count - 250);
 
                                 LogHelper.Logs[request.LogsRequest.Id].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }
                             else
                             {
-                                if (LogHelper.Logs[0].Count >= 250) LogHelper.Logs[0].RemoveRange(1, LogHelper.Logs[0].Count - 250);
+                                //if (LogHelper.Logs[0].Count >= 250) LogHelper.Logs[0].RemoveRange(1, LogHelper.Logs[0].Count - 250);
 
                                 LogHelper.Logs[0].ForEach(x => response.LogsJson.Add(x.JSON()));
                             }

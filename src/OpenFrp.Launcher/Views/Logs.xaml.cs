@@ -35,16 +35,30 @@ namespace OpenFrp.Launcher.Views
         {
             base.OnInitialized(e);
             sbbv.FontFamily = new FontFamily(ConfigHelper.Instance.FontSet.FontFamily ?? "Microsoft YaHei UI");
-            do
+            loadera.ShowLoader();
+            bool onec = false;
+            OpenFrp.Launcher.ExtendsUI.VoidAsync(App.Current.Dispatcher.BeginInvoke(async () =>
             {
-                Model.GetLogs();
-                await Task.Delay(1000);
-            } while (IsInitialized && IsLoaded );
+                do
+                {
+                    Model.GetLogs();
+                    await Task.Delay(1000);
+                    if (!onec)
+                    {
+                        loadera.ShowContent();
+                        onec = true;
+                    }
+                } while (IsInitialized && IsLoaded);
+            }, System.Windows.Threading.DispatcherPriority.Background));
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsInitialized && IsLoaded && sender is not null) Model.GetLogs(true);
+            loadera.ShowLoader();
+            if (IsInitialized && IsLoaded && sender is not null)
+            {
+                Model.GetLogs(true);
+            }
         }
 
         private void ScrollViewerEx_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => ((ScrollViewerEx)sender).ExcuteScroll(e);

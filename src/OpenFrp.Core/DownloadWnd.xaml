@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lib="clr-namespace:OpenFrp.Core"
     xmlns:local="clr-namespace:OpenFrp.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="DownloadWnd"
@@ -24,9 +25,13 @@
                 Text="下载一下,马上搞定。" />
         </Grid>
         <Grid Grid.Row="2">
-            <TextBox IsReadOnly="True" TextWrapping="Wrap" x:Name="LogView" VerticalScrollBarVisibility="Visible" />
+            <TextBox
+                x:Name="LogView"
+                IsReadOnly="True"
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Visible" />
         </Grid>
-        <StackPanel Grid.Row="4">
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
             <Button
                 x:Name="Btn_Reload"
                 Padding="12,8"
@@ -34,6 +39,10 @@
                 Click="Button_Click"
                 Content="重新安装"
                 Style="{x:Null}" />
+            <Button
+                Margin="4,0,0,0"
+                Click="Button_Click_1"
+                Content="打开 FRPC 存放文件夹" />
         </StackPanel>
     </Grid>
 </Window>

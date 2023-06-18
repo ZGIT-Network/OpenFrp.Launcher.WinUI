@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using OpenFrp.Core.Helper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -29,14 +30,15 @@ namespace OpenFrp.Launcher.ViewModels
 
         public List<Core.Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel?>? UserTunnels { get; set; }
 
-        public List<LogHelper.LogContent?>? LogContent { get; set; } 
+        [ObservableProperty]
+        public ObservableCollection<LogHelper.LogContent?>? logContent;
 
 
         [ObservableProperty]
         public int selectLogIndex;
 
         public ICollectionView LogsHeaders { get => CollectionViewSource.GetDefaultView(UserTunnels); }
-        public ICollectionView LogsViewer { get => CollectionViewSource.GetDefaultView(LogContent); }
+        //public ICollectionView LogsViewer { get => CollectionViewSource.GetDefaultView(LogContent); }
 
         private int Count { get; set; }
 
@@ -64,36 +66,51 @@ namespace OpenFrp.Launcher.ViewModels
                 LogContent ??= new();
 
 
-
+                
 
                 if (response.LogsJson.Count > 0)
                 {
-                    await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
+                    //bool refreshed = false;
+                    OpenFrp.Launcher.ExtendsUI.VoidAsync(App.Current.Dispatcher.BeginInvoke(() =>
                     {
                         response.LogsJson.Select(x => x.PraseJson<LogHelper.LogContent>()).ToList().ForEach(x =>
                         {
 
                             if (!LogContent.Select(x => x?.HashContent).Contains(x?.HashContent))
                             {
-                                if (LogContent.Count > 150)
-                                {
-                                    LogContent.RemoveRange(0, LogContent.Count - 150);
-                                }
+                                //if (LogContent.Count > 150)
+                                //{
+                                //    LogContent.RemoveRange(0, LogContent.Count - 150);
+                                //}
 
                                 LogContent.Add(x);
-                                
-                                LogsViewer.Refresh();
-                                OnPropertyChanged(nameof(LogsViewer));
+
+                                //if (refreshed)
+                                //{
+                                //    LogsViewer.Refresh();
+                                //    refreshed = true;
+                                    
+                                //}
+                                OnPropertyChanged(nameof(LogContent));
+
+
                             }
 
                         });
-                    }, System.Windows.Threading.DispatcherPriority.Background);
+                    }, System.Windows.Threading.DispatcherPriority.Background));
                 }
                 else
                 {
-                    LogContent?.Clear();
-                    LogsViewer?.Refresh();
-                    OnPropertyChanged(nameof(LogsViewer));
+                    if (LogContent.Count is not 0)
+                    {
+                        // 数量不为0 需要刷新 View
+                        LogContent?.Clear();
+                        //LogsViewer?.Refresh();
+                        //OnPropertyChanged(nameof(LogsViewer));
+                        OnPropertyChanged(nameof(LogContent));
+                    }
+
+
                 }
 
                 //if (response.LogsJson.Count > 0)
@@ -214,7 +231,8 @@ namespace OpenFrp.Launcher.ViewModels
             if (response.Success)
             {
                 LogContent?.Clear();
-                LogsViewer.Refresh();
+                OnPropertyChanged(nameof(LogContent));
+                //LogsViewer.Refresh();
                 GetLogs(true);
             }
         }
