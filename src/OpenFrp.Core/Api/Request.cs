@@ -143,7 +143,8 @@ namespace OpenFrp.Core.Libraries.Api
             {
                 var handler = new HttpClientHandler()
                 {
-                    UseProxy = ConfigHelper.Instance.BypassProxy
+                    UseProxy = !ConfigHelper.Instance.BypassProxy,
+                    AllowAutoRedirect = true,
                 };
                 var httpClient = new HttpClient(handler);
                
@@ -197,7 +198,8 @@ namespace OpenFrp.Core.Libraries.Api
                 
                 var handler = new HttpClientHandler()
                 {
-                    UseProxy = !ConfigHelper.Instance.BypassProxy
+                    UseProxy = !ConfigHelper.Instance.BypassProxy,
+                    AllowAutoRedirect = true,
                 };
                 var httpClient = new HttpClient(handler);
 

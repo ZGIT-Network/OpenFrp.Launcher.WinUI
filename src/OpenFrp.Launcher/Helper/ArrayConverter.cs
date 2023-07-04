@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace OpenFrp.Launcher.Helper
@@ -37,7 +38,10 @@ namespace OpenFrp.Launcher.Helper
             {
                 return str.Split(',');
             }
-            else throw new NotImplementedException();
+            else
+            {
+                return new string[0];   
+            }
         }
     }
 }

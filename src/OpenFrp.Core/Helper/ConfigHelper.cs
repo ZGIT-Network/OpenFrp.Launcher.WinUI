@@ -151,6 +151,9 @@ namespace OpenFrp.Core.Helper
             public string? FontFamily { get; set; }
 
             public double FontSize { get; set; } = 14;
+
+            [JsonIgnore]
+            public double ErrorSize { get => FontSize + 3; } 
         }
 
         /// <summary>

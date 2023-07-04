@@ -61,7 +61,7 @@ namespace OpenFrp.Launcher
                     return MessageBox.Show($"来自服务器的证书无效:::" +
                     $"\n Name:{certificate.Issuer}" +
                     $"\n Reason:{Enum.GetName(typeof(System.Net.Security.SslPolicyErrors), errors)} " +
-                    $"是否允许访问?", "OpenFrp Launcher", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) is MessageBoxResult.OK ? true
+                    $"\n是否允许访问?", "OpenFrp Launcher", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) is MessageBoxResult.OK ? true
                  : false;
                 }
                 return true;

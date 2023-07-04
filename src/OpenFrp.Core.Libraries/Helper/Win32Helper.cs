@@ -61,7 +61,7 @@ namespace OpenFrp.Core.Helper
                     }
                     return new()
                     {
-                        ProcessName = dic[pid],
+                        ProcessName = $"{(dic.ContainsKey(pid) ? dic[pid] : $"PID: {pid}")}",
                         Address = args[1].Split(':').First(),
                         Port = Convert.ToInt32(args[1].Split(':').Last())
                     };

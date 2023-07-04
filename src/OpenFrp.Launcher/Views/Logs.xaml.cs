@@ -52,12 +52,15 @@ namespace OpenFrp.Launcher.Views
             }, System.Windows.Threading.DispatcherPriority.Background));
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             loadera.ShowLoader();
             if (IsInitialized && IsLoaded && sender is not null)
             {
                 Model.GetLogs(true);
+                await Task.Delay(250);
+                loadera.ShowContent();
+
             }
         }
 

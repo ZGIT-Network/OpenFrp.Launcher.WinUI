@@ -23,6 +23,8 @@ namespace OpenFrp.Launcher.ViewModels
             set => Core.Helper.ConfigHelper.Instance.FontSet = value;
         }
 
+
+
         public bool DebugMode
         {
             get => ConfigHelper.Instance.DebugMode;

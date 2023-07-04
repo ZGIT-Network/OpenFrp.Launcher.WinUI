@@ -275,6 +275,7 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <ui:FontIcon
+                                                    
                                                     Grid.Column="0"
                                                     FontSize="21"
                                                     Glyph="{Binding Symbol}" />

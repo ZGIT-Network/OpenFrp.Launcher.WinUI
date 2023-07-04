@@ -101,6 +101,7 @@
                                                 </MultiDataTrigger>
                                                 <DataTrigger Binding="{Binding Level}" Value="Error">
                                                     <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+                                                    <Setter Property="FontSize" Value="{Binding DataContext.FontSetting.ErrorSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}" />
                                                 </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>

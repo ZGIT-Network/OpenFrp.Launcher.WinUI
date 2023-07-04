@@ -6,12 +6,12 @@
     xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ofc="clr-namespace:OpenFrp.Launcher.Controls"
-    xmlns:utils="clr-namespace:OpenFrp.Core;assembly=OpenFrp.Core.Libraries"
     xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:utils="clr-namespace:OpenFrp.Core;assembly=OpenFrp.Core.Libraries"
     Title="关于"
     d:DesignHeight="721.804"
-    Style="{StaticResource LauncherCustomPageControl}"
     d:DesignWidth="800"
+    Style="{StaticResource LauncherCustomPageControl}"
     mc:Ignorable="d">
 
     <ui:SimpleStackPanel Spacing="8">
@@ -64,9 +64,9 @@
             </ui:HyperlinkButton>
         </Grid>
         <Grid Margin="-4,0,0,8">
-            <ListView  IsHitTestVisible="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                
-                <ListViewItem >
+            <ListView IsHitTestVisible="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                <ListViewItem>
                     <StackPanel>
                         <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="作者" />
                         <TextBlock
@@ -118,7 +118,7 @@
                     Spacing="12">
                     <ui:FontIcon FontSize="24" Glyph="&#xe8c7;" />
                     <TextBlock VerticalAlignment="Center">
-                        <Run Text="赞组我们" />
+                        <Run Text="赞助我们" />
                         <LineBreak />
                         <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="共享更好的服务" />
                     </TextBlock>
@@ -201,7 +201,7 @@
                     <TextBlock Margin="0,0,24,0">
                         <Run Text="Google.Protobuf" /><LineBreak />
                         <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 3.21.12" /><LineBreak /></TextBlock>
-                    
+
                 </WrapPanel>
             </Grid>
         </ofc:Expander>

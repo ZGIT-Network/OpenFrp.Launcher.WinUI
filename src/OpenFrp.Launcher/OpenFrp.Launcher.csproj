@@ -16,7 +16,7 @@
 	<ItemGroup>
 	  <None Remove="Resourecs\fav2023.jpg" />
 	  <None Remove="Resourecs\previewImage.jpg" />
-	  <None Remove="Resourecs\SEGMDL2.TTF" />
+	  <None Remove="Resourecs\SEGOEICONS.TTF" />
 	  <None Remove="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -50,10 +50,11 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="Microsoft.CSharp" />
+	  <Reference Include="System.Net.Http" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="Resourecs\previewImage.jpg" />
-	  <Resource Include="Resourecs\SEGMDL2.TTF" />
+	  <Resource Include="Resourecs\SEGOEICONS.TTF" />
 	  <Resource Include="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>

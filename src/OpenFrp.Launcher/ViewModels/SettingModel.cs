@@ -119,6 +119,7 @@ namespace OpenFrp.Launcher.ViewModels
             }
             HasAccount = ApiRequest.HasAccount;
             UpdateProperty(nameof(HasAccount));
+            (App.Current.MainWindow.DataContext as MainPageModel)?.UpdateProperty("UserInfo");
             
         }
 

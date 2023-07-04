@@ -21,3 +21,5 @@
 /src/OpenFrp.Bridge/obj
 /src/OpenFrp.Bridge/bin/Release/net462
 /src/OpenFrp.Bridge/Properties/PublishProfiles
+/src/OpenFrp.Core/bin/Release/net48
+/src/OpenFrp.Launcher/bin/Release/net48

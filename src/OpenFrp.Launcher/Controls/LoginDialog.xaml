@@ -16,7 +16,7 @@
     PrimaryButtonText="登录"
     mc:Ignorable="d">
 
-    <Grid Width="498" Height="300">
+    <Grid Width="498" Height="280">
         <local:ElementLoader x:Name="_of_LoginLoader">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -36,49 +36,36 @@
                     <TextBox
                         x:Name="OfApp_Input_UserName"
                         ui:ControlHelper.Header="账户"
-                        AutomationProperties.Name="账户"
-                        ui:TextBoxHelper.IsDeleteButtonVisible="True" />
+                        ui:TextBoxHelper.IsDeleteButtonVisible="True"
+                        AutomationProperties.Name="账户" />
                     <PasswordBox
                         x:Name="OfApp_Input_Password"
                         ui:ControlHelper.Header="密码"
-                        AutomationProperties.Name="密码"
-                        ui:PasswordBoxHelper.PasswordRevealMode="Peek" />
+                        ui:PasswordBoxHelper.PasswordRevealMode="Peek"
+                        AutomationProperties.Name="密码" />
                 </ui:SimpleStackPanel>
                 <Grid Grid.Row="0" Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="6" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock
-                        Grid.Row="0"
-                        HorizontalAlignment="Left"
-                        Text="OpenFrp Launcher"
-                        TextWrapping="Wrap" />
                     <ui:ScrollViewerEx Grid.Row="2">
-                        <TextBlock AutomationProperties.Name=""  TextWrapping="Wrap">
-                            <Run Text="做自己喜欢的事，希望你的选项得到尊重。" />
+                        <TextBlock AutomationProperties.Name="" TextWrapping="Wrap">
+                            <Run FontSize="14" Text="做自己喜欢的事," />
+                            <LineBreak/>
+                            <Run FontSize="14" Text="希望你的选项得到尊重." />
                             <LineBreak />
                             <LineBreak />
 
                             <Run Text="登录账户即代表您准守以下协议:" />
                             <LineBreak />
-                            <Hyperlink AutomationProperties.Name="用户跳跃" NavigateUri="https://www.openfrp.net">用户条约</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="服务条款" NavigateUri="https://www.openfrp.net/policy/">服务条款</Hyperlink>
                             <LineBreak />
-                            <Hyperlink AutomationProperties.Name="隐私政策" NavigateUri="https://www.openfrp.net">隐私政策</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="隐私策略" NavigateUri="https://www.openfrp.net/privacy/">隐私策略</Hyperlink>
                             <LineBreak />
-                            <Hyperlink AutomationProperties.Name="使用时需准守" NavigateUri="https://www.openfrp.net">使用时需准守</Hyperlink>
+                            <Hyperlink AutomationProperties.Name="内容策略" NavigateUri="https://www.openfrp.net/content/">内容策略</Hyperlink>
                             <LineBreak />
                             <LineBreak />
-
-                            <Run Text="因未阅读网站公告导致的业务损失或奇葩问题，或者没带眼镜提出的问题一律不予回复，多次询问将直接拉黑" />
-                            <LineBreak />
-                            <Run Text="CFU统一识别码编码:" />
-                            <Hyperlink AutomationProperties.Name="CFU统一识别码编码" NavigateUri="https://cfu.openfrp.net/">DLPYU2N4</Hyperlink>
+                            <Run Text="因未阅读网站公告导致的业务损失或奇葩问题，或者没带眼镜提出的问题一律不予回复。" />
                         </TextBlock>
                     </ui:ScrollViewerEx>
                 </Grid>
-
                 <Grid
                     Grid.Row="2"
                     Grid.Column="0"
