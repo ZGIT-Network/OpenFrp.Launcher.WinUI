@@ -70,6 +70,7 @@
                     </ofc:Card.Style>
                     <ofc:ElementLoader x:Name="OfApp_PreviewXLoader" IsLoading="True">
                         <Grid>
+                            <!--  背景图  -->
                             <Border CornerRadius="6,0,0,0">
                                 <Border.Background>
                                     <ImageBrush
@@ -80,6 +81,9 @@
                                         Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
+                            <!--
+                                Home Bg Logic
+                            -->
                             <Border CornerRadius="6,0,0,0">
                                 <Border.ContextMenu>
                                     <ContextMenu>
@@ -275,7 +279,6 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <ui:FontIcon
-                                                    
                                                     Grid.Column="0"
                                                     FontSize="21"
                                                     Glyph="{Binding Symbol}" />

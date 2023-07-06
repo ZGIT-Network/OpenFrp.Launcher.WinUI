@@ -377,7 +377,7 @@ namespace OpenFrp.Core.Libraries.Api.Models
                 /// <summary>
                 /// 节点ID
                 /// </summary>
-                [JsonProperty("node")]
+                [JsonProperty("nid")]
                 public int NodeID { get; set; }
                 /// <summary>
                 /// 隧道 ID

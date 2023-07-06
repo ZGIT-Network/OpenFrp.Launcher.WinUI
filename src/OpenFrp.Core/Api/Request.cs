@@ -184,6 +184,14 @@ namespace OpenFrp.Core.Libraries.Api
                         Message = "发生了未知错误"
                     };
                 }
+                else if (typeof(T) == typeof(Api.Models.ResponseBody.UserTunnelsResponse)){
+                    return new Api.Models.ResponseBody.UserTunnelsResponse()
+                    {
+                        Exception = ex,
+                        Message = "发生了未知错误"
+
+                    } as T;
+                }
             }
             return default;
         }

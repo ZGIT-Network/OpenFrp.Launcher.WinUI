@@ -99,6 +99,7 @@ namespace OpenFrp.Launcher.ViewModels
                 }
                 else
                 {
+                    
                     TunnelsPage.OfApp_XLoader.PushMessage(() =>
                     {
                         RefreshUserProxies();
