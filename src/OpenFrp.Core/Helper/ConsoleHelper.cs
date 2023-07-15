@@ -53,8 +53,8 @@ namespace OpenFrp.Core.Helper
                             }
                         };
                         LogHelper.Add(0, $"传入参数: -u ************ -p {tunnel.TunnelId} {(ConfigHelper.Instance.ForceTLS ? "--force_tls " : "")}{(ConfigHelper.Instance.DebugMode ? "--debug" : "")}", TraceLevel.Info, true);
-                        process.OutputDataReceived += (sender, args) => Output(tunnel.TunnelId, args.Data);
-                        process.ErrorDataReceived += (sender, args) => Output(tunnel.TunnelId, args.Data, TraceLevel.Error);
+                        process.OutputDataReceived += (_, args) => Output(tunnel.TunnelId, args.Data);
+                        process.ErrorDataReceived += (_, args) => Output(tunnel.TunnelId, args.Data, TraceLevel.Error);
                         process.Start();
                         process.BeginErrorReadLine();
                         process.BeginOutputReadLine();

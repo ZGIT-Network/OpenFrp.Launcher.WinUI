@@ -52,6 +52,7 @@
                     Margin="-4,0,0,16"
                     Padding="4,4,0,16"
                     ItemsSource="{Binding NodeLists}">
+
                     <ui:GridView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel VirtualizingPanel.IsVirtualizing="True" />
@@ -95,6 +96,14 @@
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Margin" Value="0,0,0,8" />
                                 </MultiDataTrigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.6" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding Status, Mode=OneWay}" Value="401">
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                    <Setter Property="IsHitTestVisible" Value="False" />
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsVipNode}" Value="True" />
@@ -104,6 +113,7 @@
                                     <Setter Property="IsHitTestVisible" Value="False" />
                                     <Setter Property="IsEnabled" Value="False" />
                                 </MultiDataTrigger>
+
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsFully}" Value="True" />
@@ -112,22 +122,70 @@
                                     <Setter Property="IsHitTestVisible" Value="False" />
                                     <Setter Property="IsEnabled" Value="False" />
                                 </MultiDataTrigger>
+
                             </Style.Triggers>
                         </Style>
 
                     </ui:GridView.ItemContainerStyle>
                     <ui:GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="275" MinHeight="150">
+                            <Border
+                                Width="275"
+                                MinHeight="150"
+                                CornerRadius="4">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsVipNode}" Value="True">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush StartPoint="0.5,0.85">
+                                                            <GradientStop   Color="#fac9a906" />
+
+                                                            <GradientStop  Color="#fab69803" />
+                                                            <GradientStop Offset="1"  Color="#fadcb909" />
+
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                    
+                                                </Setter>
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}"/>
+                                                <Setter Property="TextElement.Foreground" Value="White" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                                 <ui:SimpleStackPanel Margin="20,20" VerticalAlignment="Top">
                                     <ui:SimpleStackPanel Orientation="Horizontal" Spacing="6">
-                                        <Grid HorizontalAlignment="Left" Height="25" Width="25" Background="#3F000000">
-                                            <TextBlock Foreground="#FFFFFF" FontSize="10" Text="{Binding NodeID,StringFormat='#{0}'}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <Grid
+                                            Width="25"
+                                            Height="25"
+                                            HorizontalAlignment="Left">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Background" Value="#3F000000" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Background" Value="#7fff0000" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="10"
+                                                Foreground="#FFFFFF"
+                                                Text="{Binding NodeID, StringFormat='#{0}'}" />
                                         </Grid>
                                         <!--  VIP节点  -->
-                                        <ui:SimpleStackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="2">
+                                        <ui:SimpleStackPanel
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="2">
 
-                                            <TextBlock VerticalAlignment="Center" Text="[VIP]">
+                                            <!--<TextBlock VerticalAlignment="Center" Text="[VIP]">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Style.Triggers>
@@ -144,7 +202,7 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </TextBlock.Style>
-                                            </TextBlock>
+                                            </TextBlock>-->
                                             <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
@@ -159,12 +217,12 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </TextBlock.Style>
-                                            <Run Text="[满载]" />
+                                                <Run Text="[满载]" />
                                             </TextBlock>
                                             <TextBlock
-                                            VerticalAlignment="Center"
-                                            Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}"
-                                            Text="[离线] ">
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}"
+                                                Text="[离线] ">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -177,9 +235,9 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
                                             <TextBlock
-                                            VerticalAlignment="Center"
-                                            FontSize="16"
-                                            Text="{Binding NodeName}" />
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Text="{Binding NodeName}" />
                                         </ui:SimpleStackPanel>
                                     </ui:SimpleStackPanel>
 
@@ -216,25 +274,29 @@
                                             <Run Text="{Binding SppedMagnification, StringFormat=x {0}}" />
                                         </TextBlock>
 
-                                        <TextBlock Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" TextWrapping="Wrap">
+                                        <TextBlock TextWrapping="Wrap">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ProtocolSupport.UnsupportedMode.Length}" Value="0">
                                                             <Setter Property="Visibility" Value="Collapsed" />
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsVipNode}" Value="True">
+                                                            <Setter Property="Foreground" Value="White" />
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
-                                            <Run Text="不可用" />
+                                            <Run Text="不允许" />
                                             <Run Text="{Binding ProtocolSupport.UnsupportedMode, Converter={StaticResource ArrayConverter}, Mode=OneWay}" />
 
                                         </TextBlock>
                                     </ui:SimpleStackPanel>
 
                                 </ui:SimpleStackPanel>
-                            </Grid>
+                            </Border>
                         </DataTemplate>
                     </ui:GridView.ItemTemplate>
                 </ui:GridView>

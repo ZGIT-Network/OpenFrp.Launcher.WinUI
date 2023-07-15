@@ -7,6 +7,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Padding" Value="56,0,56,0" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
 
         <Setter Property="Template">
             <Setter.Value>

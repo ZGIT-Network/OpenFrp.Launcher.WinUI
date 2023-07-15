@@ -44,6 +44,14 @@ namespace OpenFrp.Launcher
         /// </summary>
         protected override async void OnStartup(StartupEventArgs e)
         {
+            if (OSVersionHelper.IsWindows10OrGreater && ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
+            {
+                Environment.Exit(0);
+                return;
+            }
+            CheckMultiLauncher();
+
+
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
                 Clipboard.SetText(e.ExceptionObject.ToString());
@@ -71,35 +79,6 @@ namespace OpenFrp.Launcher
                 NullValueHandling = NullValueHandling.Ignore
             };
             await ConfigHelper.ReadConfig();
-
-            if (OSVersionHelper.IsWindows10OrGreater)
-            {
-                if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
-                {
-                    Current.Shutdown();
-                    return;
-                }
-            }
-            var processes = Process.GetProcessesByName("OpenFrp.Launcher");
-            if (processes.Length > 1)
-            {
-                foreach (var process in processes)
-                {
-                    if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"))
-                    {
-                        IntPtr hwnd = WindHelper.FindWindowA(null, $"OpenFrp Launcher - {process.MainModule.FileName.GetMD5()}");
-                        if (hwnd != IntPtr.Zero)
-                        {
-                            WindHelper.ShowWindow(hwnd, 9);
-                            WindHelper.SetForegroundWindow(hwnd);
-
-                        }
-
-                    }
-                }
-                Environment.Exit(0);
-
-            }
 
             if (File.Exists(Utils.Frpc))
             {
@@ -131,7 +110,6 @@ namespace OpenFrp.Launcher
 
                     if (OSVersionHelper.IsWindows10OrGreater)
                     {
-
                         ToastNotificationManagerCompat.OnActivated += (e) =>
                         {
                             if (!string.IsNullOrEmpty(e.Argument))
@@ -151,7 +129,6 @@ namespace OpenFrp.Launcher
                             }
                             
                         };
-
                     }
                     #region TaskBar Icon
                     AppShareHelper.TaskbarIcon = new()
@@ -219,7 +196,7 @@ namespace OpenFrp.Launcher
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    if (ex.Message.Contains("垃圾软件"))
+                    if (ex.Message.Contains("垃圾软件") || ex.Message.Contains("拒绝访问"))
                     {
                         Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
                     }
@@ -592,7 +569,35 @@ namespace OpenFrp.Launcher
             ExitLauncher();
         }
 
+        private void CheckMultiLauncher()
+        {
+            try
+            {
+                var processes = Process.GetProcessesByName("OpenFrp.Launcher");
+                if (processes.Length > 1)
+                {
+                    foreach (var process in processes)
+                    {
+                        if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"))
+                        {
+                            IntPtr hwnd = WindHelper.FindWindowA(null, $"OpenFrp Launcher - {process.MainModule.FileName.GetMD5()}");
+                            if (hwnd != IntPtr.Zero)
+                            {
+                                WindHelper.ShowWindow(hwnd, 9);
+                                WindHelper.SetForegroundWindow(hwnd);
+                                Environment.Exit(0);
+                            }
+                        }
+                    }
 
+                }
+            }
+            catch
+            {
+
+            }
+            
+        }
     }
 
     public static class ExtendsUI

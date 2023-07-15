@@ -75,7 +75,7 @@
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
-                                        AlignmentY="Top"
+                                        AlignmentY="Bottom"
                                         ImageSource="pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg"
                                         Opacity="0.95"
                                         Stretch="UniformToFill" />
@@ -202,6 +202,7 @@
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
                             <Setter Property="Grid.Row" Value="0" />
+                            
                             <Setter Property="TextElement.Foreground" Value="White" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
@@ -256,7 +257,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <ui:ListView Padding="16,0,12,0" ItemsSource="{Binding UserInfoListItems}">
+                                <ui:ListView ScrollViewer.PanningMode="VerticalOnly" Padding="16,0,12,0" ItemsSource="{Binding UserInfoListItems}">
                                     <ui:ListView.Style>
                                         <Style TargetType="ui:ListView">
                                             <Style.Triggers>
@@ -296,6 +297,7 @@
                                     </ui:ListView.ItemTemplate>
                                 </ui:ListView>
                                 <ui:GridView
+                                    ScrollViewer.PanningMode="None"
                                     Padding="16,0"
                                     ItemsSource="{Binding UserInfoListItems}"
                                     PreviewMouseWheel="PreviewMouseWheel">

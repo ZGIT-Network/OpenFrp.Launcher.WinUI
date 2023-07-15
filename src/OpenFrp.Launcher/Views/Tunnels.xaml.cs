@@ -37,5 +37,10 @@ namespace OpenFrp.Launcher.Views
             Model.TunnelsPage = this;
             Model.RefreshUserProxies();
         }
+
+        private void GridView_PreviewTouchMove(object sender, TouchEventArgs e)
+        {
+
+        }
     }
 }

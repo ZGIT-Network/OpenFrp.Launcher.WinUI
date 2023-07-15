@@ -47,6 +47,8 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <ui:GridView
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    ScrollViewer.PanningMode="None"
                     MaxWidth="1410"
                     Padding="56,8,56,32"
                     IsEnabled="{Binding HasDeamonProcess}"
@@ -163,14 +165,13 @@
                                 <!--  操控列表  -->
                                 <ui:CommandBar
                                     Margin="18,20"
-                                    
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Bottom">
                                     <ui:CommandBar.Style>
                                         <Style TargetType="ui:CommandBar">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
