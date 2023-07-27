@@ -119,7 +119,7 @@ namespace OpenFrp.Launcher.ViewModels
         {
             if (MainPage is null) return;
             MainPage.OfApp_UserInfoXLoader.ShowLoader();
-            if (ApiRequest.HasAccount)
+            if (ApiRequest.HasAccount && UserInfo != null)
             {
                 while (ApiRequest.UserInfo?.UserName is "未登录" or null)
                 {

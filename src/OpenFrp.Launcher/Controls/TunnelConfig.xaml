@@ -42,7 +42,7 @@
                                 <TextBox
                                     ui:ControlHelper.Header="本地地址"
                                     ui:ControlHelper.PlaceholderText="127.0.0.1"
-                                    AutomationProperties.Name="{Binding (ui:ControlHelper.Header), RelativeSource={RelativeSource Mode=Self}}"
+                                    AutomationProperties.Name="本地地址"
                                     Text="{Binding Config.LocalAddress, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
 
                             </ui:SimpleStackPanel>
@@ -52,7 +52,7 @@
                                     Grid.ColumnSpan="2"
                                     ui:ControlHelper.Header="隧道名称"
                                     ui:ControlHelper.PlaceholderText="不填为随机"
-                                    AutomationProperties.Name="{Binding (ui:ControlHelper.Header), RelativeSource={RelativeSource Mode=Self}}"
+                                    AutomationProperties.Name="隧道名称"
                                     MaxLength="20"
                                     Text="{Binding Config.TunnelName, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                 <ui:NumberBox
@@ -117,7 +117,7 @@
                             Margin="0,-4,0,0"
                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                             Style="{StaticResource BodyTextBlockStyle}"
-                            Text="这些选项仅给有需要的人使用,不需要的一般不填即可。" />
+                            Text="这些选项仅给有需要的人使用。若无需求，请勿填动。" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -147,7 +147,7 @@
                                 </ComboBox>
                                 <TextBox
                                     ui:ControlHelper.Header="绑定域名"
-                                    ui:ControlHelper.PlaceholderText="用逗号隔开，需要过白"
+                                    ui:ControlHelper.PlaceholderText="用逗号隔开"
                                     AutomationProperties.Name="绑定域名"
                                     Text="{Binding Config.BindDomain, Converter={StaticResource ArrayConverter}, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                 <TextBox
@@ -197,11 +197,18 @@
                                     TextWrapping="Wrap">
                                     <Run Text="Proxy Protocol 开启时,如果服务并不支持 / 未使用该协议,那么会无法访问。" />
                                     <LineBreak />
-                                    <Run Text="访问密码选项仅限于 XTCP / STCP 隧道。" />
+                                    <Run Text="开启数据加密 / 数据压缩可能会加大服务器和客户端压力。" />
                                     <LineBreak />
-                                    <Run Text="开启数据加密 / 压缩可能会加大服务器压力,导致延迟。" />
+                                    <Run Text="想要讨论这些? 可以在官方群聊讨论。" />
                                     <LineBreak />
-                                    <Run Text="想要讨论这些? 来我们官方①群。" />
+                                    <LineBreak />
+                                    <Run Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="因您没有仔细阅读本平台公告，造成业务损失或奇葩问题，由此产生的任何问题本平台概不负责。" />
+                                    <LineBreak />
+                                    <LineBreak />
+                                    <Run Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="穿透企业内网的用户，请注意设置访问权限，由此产生的任何问题本平台概不负责。" />
+                                    <LineBreak />
+                                    <LineBreak />
+                                    <Run Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" Text="使用非BGP节点进行远程桌面穿透请自行保留备用方式连接以防止失联，由此产生的任何问题本平台概不负责。" />
                                 </TextBlock>
                                 <TextBox
                                     Name="Of_CustomArgs_Box"

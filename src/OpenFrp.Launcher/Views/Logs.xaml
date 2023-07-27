@@ -147,7 +147,7 @@
                         <Run
                             FontSize="20"
                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                            Text="   可能是你点击的清除按钮了呢。" />
+                            Text="   可能是你点击到清除按钮了呢。" />
                     </TextBlock>
                 </ui:SimpleStackPanel>
 

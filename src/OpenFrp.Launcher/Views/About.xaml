@@ -24,7 +24,7 @@
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     Spacing="4">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="OpenFrp Launcher Re" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="OpenFrp Launcher Release" />
                     <TextBlock
                         Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                         Style="{StaticResource BodyTextBlockStyle}"
@@ -72,7 +72,7 @@
                         <TextBlock
                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                             Style="{StaticResource BodyTextBlockStyle}"
-                            Text="AYue"
+                            Text="越越(AYue)"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </ListViewItem>
@@ -92,7 +92,7 @@
                         <TextBlock
                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                             Style="{StaticResource BodyTextBlockStyle}"
-                            Text="ZGIT Network, 2023。"
+                            Text="OpenFrp Project Team, ZGIT Network, 2023。"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </ListViewItem>
@@ -102,7 +102,7 @@
                         <TextBlock
                             Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                             Style="{StaticResource BodyTextBlockStyle}"
-                            Text="本软件为 GPL3 协议，您可以修改且分发，但不得删除原作品的标记，且同样需要把修改过的源代码放出来。"
+                            Text="本软件以 GPL-3 协议开源，您可以修改且分发，但不得删除原作品的标记，且同样需要把修改过的源代码开源展示。"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </ListViewItem>
@@ -186,11 +186,11 @@
                     <TextBlock Margin="0,0,24,0">
                         <Run Text="CommunityToolkit.Mvvm" />
                         <LineBreak />
-                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 8.0.0" /><LineBreak /></TextBlock>
+                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 8.1.0" /><LineBreak /></TextBlock>
                     <TextBlock Margin="0,0,24,0">
-                        <Run Text="Hardcodet.NotifyIcon.Wpf" />
+                        <Run Text="H.NotifyIcon.Wpf" />
                         <LineBreak />
-                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 1.1.0" /><LineBreak /></TextBlock>
+                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 2.0.108" /><LineBreak /></TextBlock>
                     <TextBlock Margin="0,0,24,0">
                         <Run Text="Microsoft.Toolkit.Uwp.Notifications" />
                         <LineBreak />
@@ -201,6 +201,9 @@
                     <TextBlock Margin="0,0,24,0">
                         <Run Text="Google.Protobuf" /><LineBreak />
                         <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 3.21.12" /><LineBreak /></TextBlock>
+                    <TextBlock Margin="0,0,24,0">
+                        <Run Text="Microsoft.Xaml.Behaviors.Wpf" /><LineBreak />
+                        <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="Release 1.1.39" /><LineBreak /></TextBlock>
 
                 </WrapPanel>
             </Grid>

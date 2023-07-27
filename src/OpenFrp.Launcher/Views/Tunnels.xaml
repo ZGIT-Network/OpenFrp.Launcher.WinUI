@@ -47,12 +47,12 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <ui:GridView
-                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ScrollViewer.PanningMode="None"
                     MaxWidth="1410"
                     Padding="56,8,56,32"
                     IsEnabled="{Binding HasDeamonProcess}"
-                    ItemsSource="{Binding UserTunnels}">
+                    ItemsSource="{Binding UserTunnels}"
+                    ScrollViewer.PanningMode="None"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
                     <ui:GridView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel
@@ -167,30 +167,43 @@
                                     Margin="18,20"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Bottom">
-                                    <ui:CommandBar.Style>
-                                        <Style TargetType="ui:CommandBar">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ui:CommandBar.Style>
+
                                     <ui:AppBarButton
                                         Command="{Binding DataContext.CopyTunnelLinkCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
                                         CommandParameter="{Binding}"
                                         Icon="Copy"
+                                        IsEnabled="True"
                                         Label="复制链接" />
                                     <ui:AppBarButton
                                         Command="{Binding DataContext.EditTunnelCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
                                         CommandParameter="{Binding}"
                                         Icon="Edit"
-                                        Label="编辑" />
+                                        Label="编辑">
+                                        <ui:AppBarButton.Style>
+                                            <Style TargetType="ui:AppBarButton">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ui:AppBarButton.Style>
+                                    </ui:AppBarButton>
                                     <ui:AppBarButton
                                         Command="{Binding DataContext.DeleteTunnelCommand, RelativeSource={RelativeSource AncestorType=ui:GridView}}"
                                         CommandParameter="{Binding}"
                                         Icon="Remove"
-                                        Label="移除" />
+                                        Label="移除">
+                                        <ui:AppBarButton.Style>
+                                            <Style TargetType="ui:AppBarButton">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ui:AppBarButton.Style>
+                                    </ui:AppBarButton>
                                 </ui:CommandBar>
                             </Grid>
                         </DataTemplate>

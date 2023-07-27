@@ -68,6 +68,8 @@
                                     <Setter Property="Height" Value="30" />
                                     <Setter Property="MinHeight" Value="0" />
                                     <Setter Property="Margin" Value="0,0,0,8" />
+                                    <Setter Property="AutomationProperties.Name" Value="{Binding NodeName}" />
+                                    <Setter Property="AutomationProperties.HelpText" Value="{Binding Description}" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate>
@@ -140,17 +142,17 @@
                                                 <Setter Property="Background">
                                                     <Setter.Value>
                                                         <LinearGradientBrush StartPoint="0.5,0.85">
-                                                            <GradientStop   Color="#fac9a906" />
+                                                            <GradientStop Color="#fac9a906" />
 
-                                                            <GradientStop  Color="#fab69803" />
-                                                            <GradientStop Offset="1"  Color="#fadcb909" />
+                                                            <GradientStop Color="#fab69803" />
+                                                            <GradientStop Offset="1" Color="#fadcb909" />
 
                                                         </LinearGradientBrush>
                                                     </Setter.Value>
-                                                    
+
                                                 </Setter>
-                                                <Setter Property="BorderThickness" Value="2"/>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}"/>
+                                                <Setter Property="BorderThickness" Value="2" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
                                                 <Setter Property="TextElement.Foreground" Value="White" />
                                             </DataTrigger>
                                         </Style.Triggers>

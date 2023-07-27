@@ -31,7 +31,7 @@ namespace OpenFrp.Core
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
                 {
-                    if (!Utils.IsWindowsService & errors is not System.Net.Security.SslPolicyErrors.None)
+                    if (!Utils.IsWindowsService && errors is not System.Net.Security.SslPolicyErrors.None)
                     {
                         return MessageBox.Show($"来自服务器的证书无效:::" +
                         $"\n Name:{certificate.Issuer}" +

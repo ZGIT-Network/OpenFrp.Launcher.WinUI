@@ -30,7 +30,30 @@
 
 
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="RoundFocusVisualStyle">
 
+                <Setter Property="ui:FocusVisualHelper.FocusVisualPrimaryBrush" Value="{DynamicResource SystemControlFocusVisualPrimaryBrush}" />
+                <Setter Property="ui:FocusVisualHelper.FocusVisualSecondaryBrush" Value="{DynamicResource SystemControlFocusVisualSecondaryBrush}" />
+                <Setter Property="ui:FocusVisualHelper.IsSystemFocusVisual" Value="True" />
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border
+                                BorderBrush="{Binding (ui:FocusVisualHelper.FocusVisualPrimaryBrush), RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                BorderThickness="{Binding (ui:FocusVisualHelper.FocusVisualPrimaryThickness), RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                CornerRadius="{DynamicResource ControlCornerRadius}"
+                                SnapsToDevicePixels="True">
+                                <Border
+                                    BorderBrush="{Binding (ui:FocusVisualHelper.FocusVisualSecondaryBrush), RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                    BorderThickness="{Binding (ui:FocusVisualHelper.FocusVisualSecondaryThickness), RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                    CornerRadius="{DynamicResource ControlCornerRadius}" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}" BasedOn="{StaticResource RoundFocusVisualStyle}" />
             <!--  SystemControlForegroundBaseMediumBrush  -->
 
             <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>

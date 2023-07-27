@@ -75,7 +75,8 @@
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
-                                        AlignmentY="Bottom"
+                                        AlignmentY="Center"
+                                        AlignmentX="Left"
                                         ImageSource="pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg"
                                         Opacity="0.95"
                                         Stretch="UniformToFill" />
@@ -156,9 +157,12 @@
                                         Margin="18"
                                         Padding="20,16,32,20"
                                         VerticalAlignment="Bottom"
+                                        AutomationProperties.Name="{Binding PreviewContent.Subtitle}"
+                                        
+                                        
                                         NavigateUri="{Binding PreviewContent.Url}"
                                         TextElement.FontWeight="Light"
-                                        ToolTip="{Binding PreviewContent.Content}">
+                                        ToolTip="{Binding PreviewContent.Subtitle}">
                                         <Grid>
                                             <TextBlock VerticalAlignment="Bottom" Foreground="White">
                                                 <Run FontSize="28" Text="{Binding PreviewContent.Title}" />
@@ -179,8 +183,6 @@
                                                         FontSize="22"
                                                         Symbol="Link" />
                                                 </Grid>
-
-
                                             </TextBlock>
 
                                         </Grid>
