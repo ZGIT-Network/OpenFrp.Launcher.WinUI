@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace OpenFrp.Core.Libraries.Pipe
 {
+    // 2023-10-3 紧急补充:
+    // 部分源码借鉴于
+    // https://github.com/natfrp/launcher-windows/
+
     /// <summary>
     /// Stream I/O 简约化
     /// </summary>

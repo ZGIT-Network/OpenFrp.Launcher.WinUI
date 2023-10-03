@@ -99,6 +99,14 @@ namespace OpenFrp.Core.Libraries.Pipe
                 while (IsRunning)
                 {
                     var request = OnDataReviced();
+                    try
+                    {
+                        Console.WriteLine($"handle recived data: {request?.Action}");
+                    }
+                    catch
+                    {
+
+                    }
                     // 当请求体为 Null 或 不在运行状态 则退出;
                     if (request is null || !IsRunning)
                     {
@@ -107,6 +115,14 @@ namespace OpenFrp.Core.Libraries.Pipe
                     }
                     
                     OnDataRecived(this, request);
+                    try
+                    {
+                        Console.WriteLine($"feed back message: {request.Action}");
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             catch {

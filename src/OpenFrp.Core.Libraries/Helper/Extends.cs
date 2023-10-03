@@ -28,7 +28,7 @@ namespace OpenFrp.Core.Helper
         /// <summary>
         /// 反序列化
         /// </summary>
-        public static T? PraseJson<T>(this string str)
+        public static T? PraseJson<T>(this string str,bool allowThrow = false)
         {
             try
             {
@@ -36,6 +36,10 @@ namespace OpenFrp.Core.Helper
             }
             catch
             {
+                if (allowThrow)
+                {
+                    throw;
+                }
                 // Write error to logs
                 return default;
             }
@@ -64,13 +68,21 @@ namespace OpenFrp.Core.Helper
         /// 将目录拼成一个完整路径
         /// </summary>
         public static string CombinePath(this string str,params string[] strs) => Path.Combine(str, Path.Combine(strs));
+
+        
+        private static HMACMD5 hamcMD5 { get; set; } = new HMACMD5()
+        {
+            Key = new byte[] { 19, 45, 49, 51 }
+        };
         /// <summary>
         /// 获取文本的 MD5 值
         /// </summary>
         public static string GetMD5(this string str)
         {
             StringBuilder builder = new();
-            foreach (var item in MD5.Create().ComputeHash(str.GetBytes()))
+       
+            
+            foreach (var item in hamcMD5.ComputeHash(str.GetBytes()))
             {
                 builder.Append(item.ToString("x2"));
             }

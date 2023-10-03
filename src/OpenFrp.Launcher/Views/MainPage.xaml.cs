@@ -69,7 +69,15 @@ namespace OpenFrp.Launcher.Views
 
         protected override void OnActivated(EventArgs e)
         {
-            Visibility = Visibility.Visible;
+            try
+            {
+                Visibility = Visibility.Visible;
+            }
+            catch
+            {
+
+            }
+            
             base.OnActivated(e);
         }
     }

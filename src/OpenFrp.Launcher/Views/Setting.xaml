@@ -248,6 +248,15 @@
                         IsOn="{Binding SettingInstance.DebugMode}"
                         Style="{StaticResource LeftLabelToggleSwitchStyle}" />
                 </ofc:SettingItem>
+                <ofc:SettingItem
+                    xmlns:desktop="clr-namespace:OpenFrp.Launcher"
+                    Title="会话 ID"
+                    Description="{x:Static desktop:App.UserId}">
+                    <ofc:SettingItem.Icon>
+                        <ui:FontIcon FontSize="24" Glyph="&#xE2B3;" />
+                    </ofc:SettingItem.Icon>
+
+                </ofc:SettingItem>
             </ui:SimpleStackPanel>
         </HeaderedContentControl>
     </ui:SimpleStackPanel>

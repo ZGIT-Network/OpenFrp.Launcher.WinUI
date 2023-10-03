@@ -54,6 +54,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+
                 <!--  大图块  -->
                 <ofc:Card x:Name="Xbg2_" Grid.Column="0">
                     <ofc:Card.Style>
@@ -75,8 +76,8 @@
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="Xbg_"
-                                        AlignmentY="Center"
                                         AlignmentX="Left"
+                                        AlignmentY="Center"
                                         ImageSource="pack://application:,,,/OpenFrp.Launcher;component/Resourecs/previewImage.jpg"
                                         Opacity="0.95"
                                         Stretch="UniformToFill" />
@@ -152,14 +153,12 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <Grid>
+                                <Grid  MaxWidth="{Binding ActualWidth,ElementName=vw11,Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                     <ui:HyperlinkButton
                                         Margin="18"
                                         Padding="20,16,32,20"
                                         VerticalAlignment="Bottom"
                                         AutomationProperties.Name="{Binding PreviewContent.Subtitle}"
-                                        
-                                        
                                         NavigateUri="{Binding PreviewContent.Url}"
                                         TextElement.FontWeight="Light"
                                         ToolTip="{Binding PreviewContent.Subtitle}">
@@ -204,7 +203,7 @@
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="ui:ControlHelper.CornerRadius" Value="0" />
                             <Setter Property="Grid.Row" Value="0" />
-                            
+
                             <Setter Property="TextElement.Foreground" Value="White" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
@@ -259,7 +258,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <ui:ListView ScrollViewer.PanningMode="VerticalOnly" Padding="16,0,12,0" ItemsSource="{Binding UserInfoListItems}">
+                                <ui:ListView
+                                    Padding="16,0,12,0"
+                                    ItemsSource="{Binding UserInfoListItems}"
+                                    ScrollViewer.PanningMode="VerticalOnly">
                                     <ui:ListView.Style>
                                         <Style TargetType="ui:ListView">
                                             <Style.Triggers>
@@ -299,10 +301,10 @@
                                     </ui:ListView.ItemTemplate>
                                 </ui:ListView>
                                 <ui:GridView
-                                    ScrollViewer.PanningMode="None"
                                     Padding="16,0"
                                     ItemsSource="{Binding UserInfoListItems}"
-                                    PreviewMouseWheel="PreviewMouseWheel">
+                                    PreviewMouseWheel="PreviewMouseWheel"
+                                    ScrollViewer.PanningMode="None">
                                     <ui:GridView.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel VirtualizingPanel.IsVirtualizing="True" />
@@ -379,6 +381,22 @@
                         </Grid>
                     </ofc:ElementLoader>
                 </ofc:Card>
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    x:Name="vw11"
+                    Visibility="Hidden">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Grid.ColumnSpan" Value="1" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SmallDisplayMode}" Value="True">
+                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
             </Grid>
             <Grid MinHeight="200" Margin="16,4,16,0">
                 <ofc:ElementLoader x:Name="OfApp_BroadCastXLoader" IsLoading="True">
@@ -404,6 +422,7 @@
                     </Grid>
                 </ofc:ElementLoader>
             </Grid>
+
 
             <TextBlock
                 HorizontalAlignment="Center"

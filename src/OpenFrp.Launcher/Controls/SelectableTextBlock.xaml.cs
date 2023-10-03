@@ -22,7 +22,7 @@ namespace OpenFrp.Launcher.Controls
             TextEditorWrapper.RegisterCommandHandlers(typeof(SelectableTextBlock), true, true, true);
 
             // remove the focus rectangle around the control
-            FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata((object)null));
+            FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata((object)null!));
         }
 
         private readonly TextEditorWrapper _editor;

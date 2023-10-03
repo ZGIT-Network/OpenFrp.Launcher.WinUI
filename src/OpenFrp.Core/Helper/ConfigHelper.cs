@@ -84,7 +84,7 @@ namespace OpenFrp.Core.Helper
         [JsonProperty("autoStart")]
         public int[] AutoStartupList { get; set; } = new int[] { };
 
-        [JsonProperty("frpc_ver")]
+        [JsonIgnore]
         public string? FrpcVersion { get; set; }
 
 
@@ -165,7 +165,7 @@ namespace OpenFrp.Core.Helper
             {
                 if (File.Exists(Utils.ConfigFile))
                 {
-
+                    
                     Instance = JsonConvert.DeserializeObject<ConfigHelper>(await Task.Run(() => File.ReadAllText(Utils.ConfigFile)))
                             ?? throw new Exception("配置文件解析得到 NULL.");
                 }

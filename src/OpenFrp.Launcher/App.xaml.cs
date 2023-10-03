@@ -27,7 +27,9 @@ using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Core.Libraries.Protobuf;
 using OpenFrp.Launcher.Helper;
 using OpenFrp.Launcher.Views;
-using Windows.UI.Notifications;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace OpenFrp.Launcher
 {
@@ -37,6 +39,7 @@ namespace OpenFrp.Launcher
     public partial class App : Application
     {
 
+        public static string? UserId { get; set; }
 
         internal static Process? deamon;
         /// <summary>
@@ -51,12 +54,27 @@ namespace OpenFrp.Launcher
             }
             CheckMultiLauncher();
 
-
+            AppCenter.Start("7655be1b-6ace-41f5-8b35-d3405ff31dda",
+                  typeof(Analytics), typeof(Crashes));
+            var id = UserId = (await AppCenter.GetInstallIdAsync()).ToString();
+            AppCenter.SetUserId(id.ToString());
+            AppCenter.SetCountryCode(System.Globalization.CultureInfo.CurrentUICulture.EnglishName);
+            await AppCenter.SetEnabledAsync(true);
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
+                string ext = "";
+                Crashes.TrackError((Exception)e.ExceptionObject);
                 Clipboard.SetText(e.ExceptionObject.ToString());
-                if (MessageBox.Show($"错误内容已复制，按下Ctrl+V | 粘贴 来显示内容。点击\"确定\"按钮，会打开到兔小巢反馈问题。", "OpenFrp Launcher Throw Out!!", MessageBoxButton.OKCancel, MessageBoxImage.Error) is MessageBoxResult.OK)
+
+                if (((Exception)e.ExceptionObject).Message.Contains("0x80263001"))
                 {
+                    ext += "该问题可能由于您的系统禁用了 DWM 渲染(可能是RDP的原因)";
+                }
+
+                if (MessageBox.Show($"错误内容已复制，按下Ctrl+V | 粘贴 来显示内容。点击\"确定\"按钮，会打开到兔小巢反馈问题。" +
+                    $"\n您也可以不反馈该问题，因为问题已上传到云端。\n会话 ID: {UserId}\n{ext}", "OpenFrp Launcher Throw Out!!", MessageBoxButton.OKCancel, MessageBoxImage.Error) is MessageBoxResult.OK)
+                {
+
                     Process.Start("https://support.qq.com/product/424684#label=show");
                 }
                 Environment.Exit(-1);
@@ -84,14 +102,25 @@ namespace OpenFrp.Launcher
             {
                 try
                 {
-                    Process.Start(new ProcessStartInfo()
+                    var process = Process.Start(new ProcessStartInfo()
                     {
                         FileName = Utils.Frpc,
                         Arguments = $"-v",
                         UseShellExecute = false,
-                        CreateNoWindow = true
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true
                     });
 
+                    if (process is not null)
+                    {
+                        var acc = await process.StandardOutput.ReadToEndAsync();
+                        var args =  acc.Split(new char[] {'\n'},StringSplitOptions.RemoveEmptyEntries);
+
+                        if (args.Length > 0)
+                        {
+                            ConfigHelper.Instance.FrpcVersion = args.LastOrDefault();
+                        }
+                    }
                     if (UxThemeHelper.IsSupportDarkMode)
                     {
                         UxThemeHelper.AllowDarkModeForApp(true);
@@ -143,12 +172,19 @@ namespace OpenFrp.Launcher
                     {
                         if (App.Current.MainWindow is Window wind)
                         {
-                            wind.Visibility = Visibility.Visible;
-                            if (wind.WindowState is WindowState.Minimized && !wind.IsActive)
+                            try
                             {
-                                wind.WindowState = WindowState.Normal;
+                                wind.Visibility = Visibility.Visible;
+                                if (wind.WindowState is WindowState.Minimized && !wind.IsActive)
+                                {
+                                    wind.WindowState = WindowState.Normal;
+                                }
+                                wind.Activate();
                             }
-                            wind.Activate();
+                            catch
+                            {
+
+                            }
                         }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu = new()
@@ -174,12 +210,25 @@ namespace OpenFrp.Launcher
                                         Header = "彻底退出",
                                         Command = ExitAllCommand
 
+                                    },
+#if DEBUG
+                            new MenuItem
+                                    {
+                                        Header = "wwxxx",
+                                        Command = new RelayCommand(()=>throw new Exception())
                                     }
-
-                                }
+#endif
+                        }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
-                    AppShareHelper.TaskbarIcon.ForceCreate(false);
+                    try
+                    {
+                        AppShareHelper.TaskbarIcon.ForceCreate(false);
+                    }
+                    catch
+                    {
+
+                    }
                     #endregion
                     AutoLogin();
                     PipeIOStart();
@@ -206,9 +255,21 @@ namespace OpenFrp.Launcher
                     }
                     App.Current.Shutdown();
                 }
+                
             }
             else
             {
+                if (e.Args.Contains("--re"))
+                {
+                    var message = MessageBox.Show($"我们已经尝试下载，但文件似乎被杀软拦截了。\n请尝试将本软件文件夹(非\"frpc\")加入杀软白名单,若无效，请从网站上下载对应版本frpc\nPlatform: {Utils.FrpcPlatform},\nDir:{Path.Combine(Utils.ApplicationExecutePath,"frpc")}\n\n" +
+                        $"点击\"确定\"将重新尝试下载。", "OpenFrp Launcher",MessageBoxButton.OKCancel);
+                    if (message is MessageBoxResult.Cancel)
+                    {
+                        App.Current.Shutdown();
+                        return;
+                    }
+
+                }
                 ConfigHelper.Instance.FrpcVersion = "unset";
 
                 new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), "--update frpcDownload").RunAsUAC();
@@ -371,7 +432,7 @@ namespace OpenFrp.Launcher
                                         }
                                         else if (ConfigHelper.Instance.MessagePullMode is ConfigHelper.TnMode.Notifiy)
                                         {
-                                            AppShareHelper.TaskbarIcon.ShowNotification(
+                                            AppShareHelper.TaskbarIcon?.ShowNotification(
                                                 $"OpenFrp 隧道 {tunnel?.TunnelName} 启动{(request.NotifiyRequest.Flag ? "成功" : "失败")}", 
                                                 $"{tunnel?.LocalAddress}:{tunnel?.LocalPort} 转发到 {tunnel?.ConnectAddress}",
                                                 request.NotifiyRequest.Flag ? H.NotifyIcon.Core.NotificationIcon.Info : H.NotifyIcon.Core.NotificationIcon.Warning);
@@ -471,9 +532,9 @@ namespace OpenFrp.Launcher
                     }
                     return;
                 }
-                catch
+                catch(Exception e)
                 {
-                    
+                    Crashes.TrackError(e);
                 }
                 Environment.Exit(0);
             }
@@ -498,12 +559,47 @@ namespace OpenFrp.Launcher
             if (h.NavigateUri is not null &&
                 h.Parent.GetType() != typeof(HyperlinkButton))
             {
-                Process.Start(h!.NavigateUri.ToString());
+                try
+                {
+                    Process.Start(h!.NavigateUri.ToString());
+                    return;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/c start {h!.NavigateUri.ToString()}"
+                    });
+                }
+                catch
+                {
+
+                }
+                
             }
         }
 
         [RelayCommand]
-        void ShowWindow() => Current.MainWindow.Visibility = Visibility.Visible;
+        void ShowWindow()
+        {
+            try
+            {
+                Current.MainWindow.Visibility = Visibility.Visible;
+                if (Current.MainWindow.WindowState is WindowState.Minimized)
+                {
+                    Current.MainWindow.WindowState = WindowState.Normal;
+                }
+            }
+            catch
+            {
+
+            }
+        }
 
         [RelayCommand]
         public static async void ExitLauncher()
@@ -513,51 +609,75 @@ namespace OpenFrp.Launcher
         }
 
         [RelayCommand]
-        public static async void ExitAll()
+        public static void ExitAll()
         {
-            var request_tun2 = new RequestBase()
+            Task.Run(async () =>
             {
-                Action = RequestType.ClientGetRunningtunnelsid,
-            };
-            var response = await Helper.AppShareHelper.PipeClient.Request(request_tun2);
-
-            if (response.Success)
-            {
-                ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
-            }
-            else ConfigHelper.Instance.AutoStartupList = new int[0];
-
-            if (deamon is not null)
-                deamon.EnableRaisingEvents = false;
-            var resp = await AppShareHelper.PipeClient.Request(new()
-            {
-                Action = RequestType.ClientCloseIo
-            });
-            if (resp.Success)
-            {
-                if (ConfigHelper.Instance.IsServiceMode)
+                var request_tun2 = new RequestBase()
                 {
-                    new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
+                    Action = RequestType.ClientGetRunningtunnelsid,
+                };
+                var response = await Helper.AppShareHelper.PipeClient.Request(request_tun2);
+
+                if (response.Success)
+                {
+                    ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
                 }
-            }
+                else ConfigHelper.Instance.AutoStartupList = new int[0];
+                if (deamon is not null)
+                    deamon.EnableRaisingEvents = false;
+                var resp = await AppShareHelper.PipeClient.Request(new()
+                {
+                    Action = RequestType.ClientCloseIo
+                });
+                if (resp.Success)
+                {
+                    if (ConfigHelper.Instance.IsServiceMode)
+                    {
+                        new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
+                    }
+                }
+            }).GetAwaiter().GetResult();
+
+
             try
             {
                 foreach (var frpc in Process.GetProcessesByName($"{Utils.FrpcPlatform}.exe"))
                 {
                     if (frpc.MainModule.FileName.Equals(Utils.Frpc))
                     {
-                        frpc.Kill();
+                        try
+                        {
+                            frpc.Kill();
+                        }
+                        catch { }
                     }
                 }
+            }
+            catch
+            {
 
+            }
+            try
+            {
                 if (deamon is not null) { deamon.EnableRaisingEvents = false; }
                 if (deamon?.HasExited is false) { deamon.Kill(); }
+            }
+            catch
+            {
 
+            }
+            try
+            {
                 foreach (var process in Process.GetProcessesByName("OpenFrp.Core.exe"))
                 {
-                    if (process.MainModule.FileName == Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"))
+                    try
                     {
                         process.Kill();
+                    }
+                    catch
+                    {
+
                     }
                 };
             }
@@ -565,7 +685,6 @@ namespace OpenFrp.Launcher
             {
 
             }
-
             ExitLauncher();
         }
 

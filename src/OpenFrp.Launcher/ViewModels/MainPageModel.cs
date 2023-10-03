@@ -119,18 +119,51 @@ namespace OpenFrp.Launcher.ViewModels
         async void WindClosing(CancelEventArgs e)
         {
             e.Cancel = true;
-
-            App.Current.MainWindow.Visibility = Visibility.Collapsed;
-
-
-            var response = await AppShareHelper.PipeClient.Request(new RequestBase()
+            if (AppShareHelper.TaskbarIcon?.IsCreated is true)
             {
-                Action = RequestType.ClientGetRunningtunnelsid,
-            });
-            if (response.Success)
-            {
-                ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+                
+
+                App.Current.MainWindow.Visibility = Visibility.Collapsed;
+
+
+                var response = await AppShareHelper.PipeClient.Request(new RequestBase()
+                {
+                    Action = RequestType.ClientGetRunningtunnelsid,
+                });
+                if (response.Success)
+                {
+                    ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+                }
+
+                await ConfigHelper.Instance.WriteConfig(true);
             }
+            else
+            {
+                e.Cancel = true;
+
+                try
+                {
+                    var res = MessageBox.Show("托盘图标创建失败!点击关闭窗口后，会直接彻底退出启动器，\n您真的要关闭 OpenFRP 启动器嘛?", "OpenFrp Launcher", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res is MessageBoxResult.Yes)
+                    {
+                        App.ExitAll();
+                        await ConfigHelper.Instance.WriteConfig(true);
+                        try
+                        {
+                            Environment.Exit(0);
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+            
         }
 
         [RelayCommand]
@@ -283,7 +316,24 @@ namespace OpenFrp.Launcher.ViewModels
             }
             else
             {
-                if (args is bool) return;
+                if (args is bool)
+                {
+                    if (ur.Level is UpdateCheckHelper.UpdateLevel.None)
+                    {
+                        try
+                        {
+                            if (File.Exists(Path.Combine(Utils.ApplicationExecutePath, ur.DownloadUrl)))
+                            {
+                                File.Delete(Path.Combine(Utils.ApplicationExecutePath, ur.DownloadUrl));
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    return;
+                }
 
                 await new ContentDialog()
                 {

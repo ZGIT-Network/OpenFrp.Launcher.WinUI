@@ -220,22 +220,29 @@ namespace OpenFrp.Launcher.ViewModels
         [RelayCommand]
         async void ClearLogs()
         {
-            var request = new Core.Libraries.Protobuf.RequestBase()
+            try
             {
-                Action = Core.Libraries.Protobuf.RequestType.ClientClearLogs,
-                LogsRequest = new()
+                var request = new Core.Libraries.Protobuf.RequestBase()
                 {
-                    Id = UserTunnels?[SelectLogIndex]?.TunnelId ?? 0
-                }
-            };
-            var response = await Helper.AppShareHelper.PipeClient.Request(request);
+                    Action = Core.Libraries.Protobuf.RequestType.ClientClearLogs,
+                    LogsRequest = new()
+                    {
+                        Id = UserTunnels?[SelectLogIndex]?.TunnelId ?? 0
+                    }
+                };
+                var response = await Helper.AppShareHelper.PipeClient.Request(request);
 
-            if (response.Success)
+                if (response.Success)
+                {
+                    LogContent?.Clear();
+                    OnPropertyChanged(nameof(LogContent));
+                    //LogsViewer.Refresh();
+                    GetLogs(true);
+                }
+            }
+            catch
             {
-                LogContent?.Clear();
-                OnPropertyChanged(nameof(LogContent));
-                //LogsViewer.Refresh();
-                GetLogs(true);
+
             }
         }
 

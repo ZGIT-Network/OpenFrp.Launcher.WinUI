@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Api.Models;
+using Windows.UI.Xaml;
 
 namespace OpenFrp.Core.Helper
 {
@@ -66,12 +67,19 @@ namespace OpenFrp.Core.Helper
                         DownloadUrl = $"{resp.Data.Launcher?.BaseUrl}client/{resp.Data.Latest}/{Utils.FrpcPlatform}.zip"
                     };
                 }
+                else {
+                    return new()
+                    {
+                        Level = UpdateLevel.None,
+                        DownloadUrl = $"{resp.Data.Launcher?.BaseUrl}client/{resp.Data.Latest}/{Utils.FrpcPlatform}.zip".GetMD5()
+                    };
+                }
             }
             else
             {
                 return new()
                 {
-                    Level = UpdateLevel.Unsuccessful
+                    Level = UpdateLevel.Unsuccessful,
                 };
             }
             return new();

@@ -13,10 +13,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Google.Protobuf;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter;
 using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Core.Libraries.Protobuf;
+using Windows.System;
+
 
 namespace OpenFrp.Core
 {
@@ -87,8 +92,16 @@ namespace OpenFrp.Core
                 }
             }
 
+            AppCenter.Start("7655be1b-6ace-41f5-8b35-d3405ff31dda",
+                  typeof(Analytics), typeof(Crashes));
+            var id = (await AppCenter.GetInstallIdAsync()).ToString();
+            AppCenter.SetUserId(id.ToString());
+            AppCenter.SetCountryCode(System.Globalization.CultureInfo.CurrentUICulture.EnglishName);
+            await AppCenter.SetEnabledAsync(true);
+
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
+                Crashes.TrackError((Exception)args.ExceptionObject);
                 foreach (var wrapper in ConsoleHelper.Wrappers.Values)
                 {
                     if (wrapper.Process is not null && wrapper.Process.HasExited is false) wrapper.Process.Kill();
@@ -203,11 +216,13 @@ namespace OpenFrp.Core
                             {
                                 var tunnel = request.FrpRequest.UserTunnelJson.PraseJson<Libraries.Api.Models.ResponseBody.UserTunnelsResponse.UserTunnel>()!;
 
-
-                                var result = ConsoleHelper.Launch(tunnel);
-                                if (!result.Item1)
+                                if (!ConsoleHelper.Wrappers.ContainsKey(tunnel.TunnelId))
                                 {
-                                    response = new() { Message = "发生了未知错误.",Exception = result.Item2?.ToString() };
+                                    var result = ConsoleHelper.Launch(tunnel);
+                                    if (!result.Item1)
+                                    {
+                                        response = new() { Message = "发生了未知错误.", Exception = result.Item2?.ToString() };
+                                    }
                                 }
                                 break;
                             }

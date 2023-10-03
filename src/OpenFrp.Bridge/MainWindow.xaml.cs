@@ -204,6 +204,7 @@ namespace OpenFrp.Bridge
                     if (state)
                     {
                         int count = s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+                        //System.Diagnostics.Debug.WriteLine(Encoding.UTF8.GetString(buffer));
                         if (count > 0)
                         {
                             c.Send(buffer, 0, count, SocketFlags.None);

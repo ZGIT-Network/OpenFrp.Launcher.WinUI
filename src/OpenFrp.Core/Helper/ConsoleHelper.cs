@@ -235,7 +235,6 @@ namespace OpenFrp.Core.Helper
             }
             else if (!Utils.IsWindowsService && (data?.ToString().Contains("启动成功") is true || data?.ToString().Contains("启动失败") is true))
             {
-                Console.WriteLine(Enum.GetName(typeof(ConfigHelper.TnMode), ConfigHelper.Instance.MessagePullMode));
 
                 if (Program.PushClient is not null)
                 {

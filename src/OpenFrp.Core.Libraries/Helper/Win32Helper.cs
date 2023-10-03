@@ -39,33 +39,52 @@ namespace OpenFrp.Core.Helper
             var pool = new List<Task<ProcessNetworkInfo>>();
             foreach (var str in (await process.StandardOutput.ReadToEndAsync()).Split('\n'))
             {
-                var args = str.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-                if (args.Length < 3 || !(args[0] is "TCP" || args[0] is "UDP"))
+                try
                 {
-                    continue;
-                }
-                if (args[1][0] is '[') continue;
-
-
-                pool.Add(Task.Run<ProcessNetworkInfo>(() =>
-                {
-                    string pid = args[0] is "UDP" ? args[3] : args[4];
-                    if (!dic.ContainsKey(pid))
+                    var args = str.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                    if (args.Length < 3 || !(args[0] is "TCP" || args[0] is "UDP"))
                     {
-                        dic[pid] = "[拒绝访问]";
+                        continue;
+                    }
+                    if (args[1].Length is 0 || args[1][0] is '[') continue;
+
+
+                    pool.Add(Task.Run<ProcessNetworkInfo>(() =>
+                    {
                         try
                         {
-                            dic[pid] = Process.GetProcessById(Convert.ToInt32(pid)).ProcessName;
+                            string pid = args[0] is "UDP" ? args[3] : args[4];
+                            if (!dic.ContainsKey(pid))
+                            {
+                                dic[pid] = "[拒绝访问]";
+                                dic[pid] = Process.GetProcessById(Convert.ToInt32(pid)).ProcessName;
+                            
+                            }
+                            return new()
+                            {
+                                ProcessName = $"{(dic.ContainsKey(pid) ? dic[pid] : $"PID: {pid}")}",
+                                Address = args[1].Split(':').First(),
+                                Port = Convert.ToInt32(args[1].Split(':').Last())
+                            };
                         }
                         catch { }
-                    }
-                    return new()
+                        return new ProcessNetworkInfo
+                        {
+                            ProcessName = "[无法显示该进程] " + str
+                        };
+
+                    }));
+                }
+                catch
+                {
+                    pool.Add(new Task<ProcessNetworkInfo>(() =>
                     {
-                        ProcessName = $"{(dic.ContainsKey(pid) ? dic[pid] : $"PID: {pid}")}",
-                        Address = args[1].Split(':').First(),
-                        Port = Convert.ToInt32(args[1].Split(':').Last())
-                    };
-                }));
+                        return new ProcessNetworkInfo
+                        {
+                            ProcessName = "[无法显示该进程] " + str
+                        };
+                    }));
+                }
             }
 
             return await Task.WhenAll(pool);

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.AppCenter.Crashes;
 using OpenFrp.Core.Helper;
 using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Api.Models;
@@ -39,63 +40,71 @@ namespace OpenFrp.Launcher.Helper
         /// </summary>
         public static async ValueTask<ResponseBody.BaseResponse> LoginAndGetUserInfo(string? username,string? password,CancellationToken token = default)
         {
-            if (PipeClient.IsConnected)
+            try
             {
-                var loginResult = await ApiRequest.Login(username ?? "", password ?? "", token);
-                if (loginResult.Success)
+                if (PipeClient?.IsConnected is true)
                 {
-                    var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo).WithCancalToken(token);
-                    if (userinfoResult is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
-                    else if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
-                    else
+                    var loginResult = await ApiRequest.Login(username ?? "", password ?? "", token);
+                    if (loginResult.Success)
                     {
-                        var request = new Core.Libraries.Protobuf.RequestBase()
-                        {
-                            Action = Core.Libraries.Protobuf.RequestType.ClientPushLoginstate,
-                            LoginRequest = new()
-                            {
-                                Authorization = ApiRequest.Authorization,
-                                SessionId = ApiRequest.SessionId,
-                                UserInfoJson = userinfoResult.JSON(),
-                                AccountJson = new ConfigHelper.UserAccount(username, password).JSON()
-                            },
-                        };
-                        var response = await PipeClient.Request(request).WithCancalToken(token);
-
-                        if (response is null && token.IsCancellationRequested) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
-                        else if (response?.Success is false)
-                        {
-                            ApiRequest.ClearAuth();
-                            return new()
-                            {
-                                Exception = new Exception(response.Exception),
-                                Message = response.Message
-                            };
-                        }
+                        var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo).WithCancalToken(token);
+                        if (userinfoResult is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
+                        else if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
                         else
                         {
-
-                            ApiRequest.UserInfo = userinfoResult.Data;
-                            ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
-                            if ((((Views.MainPage)App.Current.MainWindow)).Of_nViewFrame.Content is Setting setting && setting.DataContext is ViewModels.SettingModel settingModel)
+                            var request = new Core.Libraries.Protobuf.RequestBase()
                             {
-                                settingModel.HasAccount = true;
-                                settingModel.UpdateProperty("UserInfo");
-                            }
-
-                            ConfigHelper.Instance.Account = new(username, password);
-                            return new()
-                            {
-                                Success = true,
+                                Action = Core.Libraries.Protobuf.RequestType.ClientPushLoginstate,
+                                LoginRequest = new()
+                                {
+                                    Authorization = ApiRequest.Authorization,
+                                    SessionId = ApiRequest.SessionId,
+                                    UserInfoJson = userinfoResult.JSON(),
+                                    AccountJson = new ConfigHelper.UserAccount(username, password).JSON()
+                                },
                             };
+                            var response = await PipeClient.Request(request).WithCancalToken(token);
+
+                            if (response is null && token.IsCancellationRequested) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
+                            else if (response?.Success is false)
+                            {
+                                ApiRequest.ClearAuth();
+                                return new()
+                                {
+                                    Exception = new Exception(response.Exception),
+                                    Message = response.Message
+                                };
+                            }
+                            else
+                            {
+
+                                ApiRequest.UserInfo = userinfoResult.Data;
+                                ((ViewModels.MainPageModel)App.Current.MainWindow.DataContext).UpdateProperty("UserInfo");
+                                if ((((Views.MainPage)App.Current.MainWindow)).Of_nViewFrame.Content is Setting setting && setting.DataContext is ViewModels.SettingModel settingModel)
+                                {
+                                    settingModel.HasAccount = true;
+                                    settingModel.UpdateProperty("UserInfo");
+                                }
+
+                                ConfigHelper.Instance.Account = new(username, password);
+                                return new()
+                                {
+                                    Success = true,
+                                };
+                            }
                         }
                     }
+                    return loginResult;
                 }
-                return loginResult;
+                else
+                {
+                    return new("未连接到守护进程。");
+                }
             }
-            else
+            catch( Exception ex)
             {
-                return new("未连接到守护进程。");
+                Crashes.TrackError(ex);
+                return new("请求已崩溃");
             }
             
         }

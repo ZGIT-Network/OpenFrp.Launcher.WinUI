@@ -43,15 +43,19 @@ namespace OpenFrp.Core.Libraries.Api
         public static async ValueTask<Models.ResponseBody.BaseResponse> Login(string username, string password,CancellationToken token = default)
         {
             var response = await POST<Models.ResponseBody.BaseResponse>(ApiUrls.UserLogin, new Models.RequestsBody.LoginRequest(username, password).ToJSONBody());
-            if (response is not null && !token.IsCancellationRequested)
+            if (response is not null)
             {
-                SessionId = response.Data?.ToString();
+                if (response.Data is not null && !token.IsCancellationRequested)
+                {
+                    SessionId = response.Data.ToString();
+                    return response;
+                }
+                else if (token.IsCancellationRequested)
+                {
+                    Authorization = null;
+                    return new("用户已取消操作。");
+                }
                 return response;
-            }
-            else if (token.IsCancellationRequested)
-            {
-                Authorization = null;
-                return new("用户已取消操作。");
             }
             else
             {
@@ -158,7 +162,21 @@ namespace OpenFrp.Core.Libraries.Api
                     {
                         Authorization = response.Headers.GetValues("Authorization").FirstOrDefault();
                     }
-                    return (await response.Content.ReadAsStringAsync()).PraseJson<T>();
+                    try
+                    {
+                        return (await response.Content.ReadAsStringAsync()).PraseJson<T>();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (typeof(T) == typeof(Api.Models.ResponseBody.BaseResponse))
+                        {
+                            return (T)new Models.ResponseBody.BaseResponse()
+                            {
+                                Exception = new Exception(await response.Content.ReadAsStringAsync(), ex),
+                                Message = "发生了未知错误"
+                            };
+                        }
+                    }
                 }
                 else
                 {

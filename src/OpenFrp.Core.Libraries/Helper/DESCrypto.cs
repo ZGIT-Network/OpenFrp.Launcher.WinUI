@@ -15,7 +15,7 @@ namespace OpenFrp.Core.Helper
         {
             get
             {
-                var strs = $"{Utils.PipesName}_{Utils.ConfigFile}".GetMD5();
+                var strs = $"{Environment.UserName}_{Utils.ConfigFile}".GetMD5();
                 if (!string.IsNullOrEmpty(strs) && strs.Length > 0)
                 {
                     return strs.Remove(8, strs.Length - 8).GetBytes();

@@ -37,16 +37,23 @@ namespace OpenFrp.Core.Helper
         {
             //if (id is not 0) Add(0,contnet,level,isDebug);
 
-            if (Logs.ContainsKey(id))
+            try
             {
-                Logs[id].Add(new(content, level,isDebug, $"{content}_appid_{id}".GetMD5()));
-            }
-            else
-            {
-                Logs.Add(id, new()
+                if (Logs.ContainsKey(id))
+                {
+                    Logs[id].Add(new(content, level, isDebug, $"{content}_appid_{id}".GetMD5()));
+                }
+                else
+                {
+                    Logs.Add(id, new()
                 {
                     new(content, level,isDebug,$"{content}_appid_{id}".GetMD5())
                 });
+                }
+            }
+            catch
+            {
+
             }
         }
         public static void Add(int id, object content, TraceLevel level = TraceLevel.Info, bool isDebug = false) => Add(id, content?.ToString() ?? "", level, isDebug);

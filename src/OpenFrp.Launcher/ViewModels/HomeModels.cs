@@ -20,6 +20,7 @@ using OpenFrp.Launcher.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Windows.UI.WebUI;
+using Microsoft.AppCenter.Crashes;
 
 namespace OpenFrp.Launcher.ViewModels
 {
@@ -113,20 +114,50 @@ namespace OpenFrp.Launcher.ViewModels
         }
 
         [RelayCommand]
-        void OpenInWeb() => Process.Start("https://console.openfrp.net");
+        void OpenInWeb()
+        {
+            try
+            {
+                Process.Start("https://console.openfrp.net");
+                return;
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c start https://console.openfrp.net"
+                });
+            }
+            catch
+            {
+
+            }
+        }
 
         public async void RefreshUserInfoView(bool redownload = false)
         {
-            if (MainPage is null) return;
-            MainPage.OfApp_UserInfoXLoader.ShowLoader();
-            if (ApiRequest.HasAccount && UserInfo != null)
+            try
             {
-                while (ApiRequest.UserInfo?.UserName is "未登录" or null)
+
+
+                if (MainPage is null) return;
+                MainPage?.OfApp_UserInfoXLoader?.ShowLoader();
+                if (ApiRequest.HasAccount && UserInfo != null && UserInfo.UserToken != null &&
+                    ApiRequest.UserInfo != null)
                 {
-                    await Task.Delay(250);
-                }
-                UserInfoListItems.Clear();
-                new List<UserInfoListItem>()
+                    try
+                    {
+                        while (ApiRequest.UserInfo.UserName is "未登录" or null)
+                        {
+                            await Task.Delay(250);
+                        }
+                        UserInfoListItems.Clear();
+                        new List<UserInfoListItem>()
                 {
                     new()
                     {
@@ -169,64 +200,99 @@ namespace OpenFrp.Launcher.ViewModels
                     {
                         Symbol = '\xec05',
                         Title = "带宽速率 (Mbps)",
-                        Content = $"{(UserInfo.InputLimit / 1024) * 8} / {(UserInfo.OutputLimit / 1024) * 8}",
-                        ASRContent = $"上行 {(UserInfo.InputLimit / 1024) * 8},下行 {(UserInfo.OutputLimit / 1024) * 8}"
+                        Content = $"{(UserInfo.InputLimit / (double)1024) * 8} / {(UserInfo.OutputLimit / (double)1024) * 8}",
+                        ASRContent = $"上行 {(UserInfo.InputLimit / (double)1024) * 8},下行 {(UserInfo.OutputLimit / (double)1024) * 8}"
                     },
-                }.ForEach(x=>
+                }.ForEach(x =>
                 {
-                    MainPage.OfApp_UserInfoXLoader.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+                    MainPage?.OfApp_UserInfoXLoader?.Dispatcher?.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
                     {
                         UserInfoListItems.Add(x);
                     });
                 });
-                if (!redownload) await Task.Delay(500);
-                else
-                {
-                    var request = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo);
-                    if (!string.IsNullOrEmpty(request.Message))
-                    {
-                        await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
+                        if (!redownload) await Task.Delay(500);
+                        else
+                        {
+                            var request = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo);
+                            if (!string.IsNullOrEmpty(request.Message))
+                            {
+                                await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
+                            }
+                            else if (request.Success) ApiRequest.UserInfo = request.Data;
+
+
+                        }
+
+                        MainPage?.OfApp_UserInfoXLoader.ShowContent();
                     }
-                    else if (request.Success) ApiRequest.UserInfo = request.Data;
-
-
-                }
-
-                MainPage.OfApp_UserInfoXLoader.ShowContent();
-            }
-            else
-            {
-                if (!AppShareHelper.HasDeamonProcess)
-                {
-                    MainPage.OfApp_UserInfoXLoader.PushMessage(async () =>
+                    catch (Exception ex)
                     {
-                        await Task.Delay(500);
-                        RefreshUserInfoView(redownload);
-                    }, "未连接到守护进程。", "重试");
-                    MainPage.OfApp_UserInfoXLoader.ShowError();
-                }
-                // 这里是没有账户的情况 
-                else if (ConfigHelper.Instance.Account.HasAccount)
-                {
-                    var request = await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
-                    // 登录失败
-                    if (!request.Success)
-                    {
-                        MainPage.OfApp_UserInfoXLoader.PushMessage(async () =>
+                        MainPage?.OfApp_UserInfoXLoader.PushMessage(async () =>
                         {
                             await Task.Delay(500);
                             RefreshUserInfoView(redownload);
-                        }, request.Message, "登录");
-                        MainPage.OfApp_UserInfoXLoader.ShowError();
+                        }, "请求出错啦!请等待修复", "重试");
+                        MainPage?.OfApp_UserInfoXLoader.ShowError();
+                        Crashes.TrackError(ex);
                     }
-                    else RefreshUserInfoView(false);
                 }
                 else
                 {
-                    // 没有登录
-                    MainPage.OfApp_UserInfoXLoader.PushMessage(MainPageModel.AccountInfo, "登录即可查看更多信息。", "登录");
-                    MainPage.OfApp_UserInfoXLoader.ShowError();
+                    try
+                    {
+                        if (!AppShareHelper.HasDeamonProcess)
+                        {
+                            MainPage?.OfApp_UserInfoXLoader.PushMessage(async () =>
+                            {
+                                await Task.Delay(500);
+                                RefreshUserInfoView(redownload);
+                            }, "未连接到守护进程。", "重试");
+                            MainPage?.OfApp_UserInfoXLoader.ShowError();
+                        }
+                        // 这里是没有账户的情况 
+                        else if (ConfigHelper.Instance.Account.HasAccount)
+                        {
+                            var request = await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
+                            // 登录失败
+                            if (request?.Success is false)
+                            {
+                                MainPage?.OfApp_UserInfoXLoader.PushMessage(async () =>
+                                {
+                                    await Task.Delay(500);
+                                    RefreshUserInfoView(redownload);
+                                }, request.Message, "登录");
+                                MainPage?.OfApp_UserInfoXLoader.ShowError();
+                            }
+                            else RefreshUserInfoView(false);
+                        }
+                        else
+                        {
+                            // 没有登录
+                            MainPage?.OfApp_UserInfoXLoader.PushMessage(MainPageModel.AccountInfo, "登录即可查看更多信息。", "登录");
+                            MainPage?.OfApp_UserInfoXLoader.ShowError();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MainPage?.OfApp_UserInfoXLoader.PushMessage(async () =>
+                        {
+                            await Task.Delay(500);
+                            RefreshUserInfoView(redownload);
+                        }, "请求出错啦!请等待修复", "重试");
+                        MainPage?.OfApp_UserInfoXLoader.ShowError();
+                        Crashes.TrackError(ex);
+                    }
                 }
+            }
+            catch ( Exception ex)
+            {
+                MainPage?.OfApp_UserInfoXLoader.PushMessage(async () =>
+                {
+                    await Task.Delay(500);
+                    RefreshUserInfoView(redownload);
+                }, "请求出错啦!请等待修复", "重试");
+                MainPage?.OfApp_UserInfoXLoader.ShowError();
+                Crashes.TrackError(ex);
             }
 
         }

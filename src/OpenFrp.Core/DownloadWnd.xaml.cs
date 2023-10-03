@@ -197,7 +197,7 @@ namespace OpenFrp.Core
                             
                             Environment.Exit(-1);
                         }
-                        Process.Start(new ProcessStartInfo("explorer", Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe")));
+                        Process.Start(new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Launcher.exe"),"--re"));
                         Environment.Exit(0);
                     }
                     catch
