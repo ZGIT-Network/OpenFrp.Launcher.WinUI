@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation.Peers;
 
 namespace OpenFrp.Core.Helper
 {
@@ -186,6 +188,8 @@ namespace OpenFrp.Core.Helper
         }
 
 
+        private static bool cvv = false;
+
         /// <summary>
         /// 写配置
         /// </summary>
@@ -193,15 +197,7 @@ namespace OpenFrp.Core.Helper
         {
             try
             {
-                //var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
-                //var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.Access);
-                //acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
-                //    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
-                //    System.Security.AccessControl.FileSystemRights.FullControl,
-                //    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
-                //    System.Security.AccessControl.PropagationFlags.None,
-                //    System.Security.AccessControl.AccessControlType.Allow));
-                //dir.SetAccessControl(acl);
+                
 
                 if (!fastWrite)
                 {
@@ -214,6 +210,49 @@ namespace OpenFrp.Core.Helper
                 }
                 else File.WriteAllText(Utils.ConfigFile, ConfigHelper.Instance.JSON());
 
+                if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+                {
+                    var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
+                    var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.All);
+
+                    //设定文件ACL继承
+                    var inherits = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+                    //添加ereryone用户组的访问权限规则 完全控制权限
+                    var everyoneFileSystemAccessRule = new FileSystemAccessRule("Everyone", FileSystemRights.FullControl, inherits, PropagationFlags.None, AccessControlType.Allow);
+                    //添加Users用户组的访问权限规则 完全控制权限
+                    //FileSystemAccessRule usersFileSystemAccessRule = new FileSystemAccessRule("Users", FileSystemRights.FullControl, inherits, PropagationFlags.None, AccessControlType.Allow);
+                    acl.ModifyAccessRule(AccessControlModification.Add, everyoneFileSystemAccessRule, out bool isModified);
+                    //dirSecurity.ModifyAccessRule(AccessControlModification.Add, usersFileSystemAccessRule, out bool isModified);
+                    //设置访问权限
+                    dir.SetAccessControl(acl);
+                    //acl.SetAccessRule(new System.Security.AccessControl.FileSystemAccessRule(
+                    //    new SecurityIdentifier(WellKnownSidType.LocalServiceSid, null),
+                    //    System.Security.AccessControl.FileSystemRights.FullControl,
+                    //    System.Security.AccessControl.InheritanceFlags.ObjectInherit,
+                    //    System.Security.AccessControl.PropagationFlags.None,
+                    //    System.Security.AccessControl.AccessControlType.Allow));
+                    //dir.SetAccessControl(acl);
+
+                    //var fi = new FileInfo(Utils.ConfigFile);
+                    //var ffp = fi.GetAccessControl(System.Security.AccessControl.AccessControlSections.All);
+
+                    //ffp.SetAccessRule(acl);
+
+
+                }
+
+            }
+            catch (UnauthorizedAccessException)
+            {
+                
+                if (cvv is false && new ProcessStartInfo(Path.Combine(Utils.ApplicationExecutePath, "OpenFrp.Core.exe"), $"-cc").RunAsUAC())
+                {
+                    cvv = true;
+
+                    await Task.Delay(1000);
+
+                    await WriteConfig(true);
+                }
             }
             catch (Exception ex)
             {

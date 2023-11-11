@@ -55,7 +55,7 @@ namespace OpenFrp.Launcher.Controls
             // 模拟操作
             var loginResult = await AppShareHelper.LoginAndGetUserInfo(OfApp_Input_UserName.Text, OfApp_Input_Password.Password,_cancellationTokenSource.Token);
             // 如果 API 返回成功,那么接下去发给服务端。
-            if (loginResult.Success)
+            if (loginResult is not null && loginResult.Success)
             {
                 // 如果取消了 那么清除后返回
                 if (_cancellationTokenSource.IsCancellationRequested)
@@ -67,13 +67,13 @@ namespace OpenFrp.Launcher.Controls
             }
             // 失败的情况
 
-            if (loginResult.Exception is not null)
+            if (loginResult is not null && loginResult.Exception is not null)
             {
                 handle = (sender, args) => MessageBox.Show(loginResult.Exception.ToString());
                 OfApp_Output_InfoBar.ActionButton.Click += handle;
                 OfApp_Output_InfoBar.ActionButton.Visibility = Visibility.Visible;
             }
-            ShowException(loginResult.Message);
+            ShowException(loginResult?.Message ?? "Unknown Error");
 
             // 显示弹窗
 

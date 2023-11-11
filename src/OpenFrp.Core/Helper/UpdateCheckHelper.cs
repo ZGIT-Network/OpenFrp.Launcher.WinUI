@@ -82,7 +82,6 @@ namespace OpenFrp.Core.Helper
                     Level = UpdateLevel.Unsuccessful,
                 };
             }
-            return new();
         }
         public class UpdateInfo
         {

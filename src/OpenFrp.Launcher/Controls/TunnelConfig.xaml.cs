@@ -111,7 +111,10 @@ namespace OpenFrp.Launcher.Controls
                         bo2x.Value = Config.LocalPort = (int)Math.Round(bo2x.Value);
                     }
 
-                    Config.NodeID = NodeInfo?.NodeID ?? 0;
+                    if (NodeInfo is not null)
+                    {
+                        Config.NodeID = NodeInfo.NodeID;
+                    }
 
                     var custom = new StringBuilder();
 

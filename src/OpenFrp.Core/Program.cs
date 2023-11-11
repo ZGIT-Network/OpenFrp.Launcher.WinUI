@@ -21,7 +21,7 @@ using OpenFrp.Core.Libraries.Api;
 using OpenFrp.Core.Libraries.Pipe;
 using OpenFrp.Core.Libraries.Protobuf;
 using Windows.System;
-
+using System.Security.AccessControl;
 
 namespace OpenFrp.Core
 {
@@ -52,6 +52,26 @@ namespace OpenFrp.Core
                     case "--install":await InstallService();break;
                     case "--uninstall":await UninstallService();break;
                     case "--uap":await UninstallAppProgress();break;
+                    case "-cc":
+                        {
+                            if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+                            {
+                                var dir = new DirectoryInfo(Utils.ApplicatioDataPath);
+                                var acl = dir.GetAccessControl(System.Security.AccessControl.AccessControlSections.All);
+
+                                //设定文件ACL继承
+                                var inherits = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+                                //添加ereryone用户组的访问权限规则 完全控制权限
+                                var everyoneFileSystemAccessRule = new FileSystemAccessRule("Everyone", FileSystemRights.FullControl, inherits, PropagationFlags.None, AccessControlType.Allow);
+                                //添加Users用户组的访问权限规则 完全控制权限
+                                //FileSystemAccessRule usersFileSystemAccessRule = new FileSystemAccessRule("Users", FileSystemRights.FullControl, inherits, PropagationFlags.None, AccessControlType.Allow);
+                                acl.ModifyAccessRule(AccessControlModification.Add, everyoneFileSystemAccessRule, out bool isModified);
+                                //dirSecurity.ModifyAccessRule(AccessControlModification.Add, usersFileSystemAccessRule, out bool isModified);
+                                //设置访问权限
+                                dir.SetAccessControl(acl);
+                            }
+                            new ProcessStartInfo("cmd", $"/c del /s /q \"{Utils.ConfigFile}\"").RunAsUAC();
+                        };break;
                 }
             }
             else if (args.Length is 2)

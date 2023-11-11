@@ -13,6 +13,10 @@ using System.Windows.Controls.Ribbon;
 
 namespace OpenFrp.Core.Libraries.Pipe
 {
+    // 2023-10-3 紧急补充:
+    // 部分源码借鉴于
+    // https://github.com/natfrp/launcher-windows/
+
     public class PipeServer : PipeWorker,IDisposable
     {
         public NamedPipeServerStream? Server { get; set; }

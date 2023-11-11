@@ -31,7 +31,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// 管道的名称
         /// </summary>
-        public static string PipesName { get => $"{Environment.MachineName}__{Environment.UserName}_Of2023_rel.app".GetMD5().ToUpper(); }
+        public static string PipesName { get => $"{Environment.MachineName}__{Environment.OSVersion.ToString()}_Of2023_rel.app".GetMD5().ToUpper(); }
         /// <summary>
         /// 是否以系统服务模式运行
         /// </summary>
@@ -55,7 +55,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// 启动器版本
         /// </summary>
-        public static string LauncherVersion { get => "of.launcher.relVer+3.9.6=fix7"; }//_devNight@1
+        public static string LauncherVersion { get => "of.launcher.relVer+3.9.8_fix1"; }//_devNight@1
 
         private static string Platform()
         {

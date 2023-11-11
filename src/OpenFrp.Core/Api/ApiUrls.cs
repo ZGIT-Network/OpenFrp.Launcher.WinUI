@@ -15,13 +15,28 @@ namespace OpenFrp.Core.Libraries.Api
         /// <summary>
         /// 官方 Api Url
         /// </summary>
+
         public const string BaseUrl = @"https://of-dev-api.bfsea.xyz";
+        //public const string BaseUrl = @"https://console.openfrp.net/web";
 
         public const string LauncherBaseUrl = @"https://api.mclan.icu/";
+
+
+        /// <summary>
+        /// OAuth (update on 2023-11-3)
+        /// </summary>
+        public const string OAuthUrl = @"https://openid.17a.icu/";
         /// <summary>
         /// 登录
         /// </summary>
-        public const string UserLogin = $"{BaseUrl}/user/login";
+        public const string UserLogin = $"{OAuthUrl}/api/public/login";
+        //public const string UserLogin = $"{BaseUrl}/user/login";
+
+        public const string Authorize = $"{OAuthUrl}/api/oauth2/authorize?response_type=code&redirect_uri=http:%2F%2Fconsole.openfrp.net%2Foauth_callback&client_id=openfrp";
+
+        public const string OpenFrpCodeImpt = $"{BaseUrl}/oauth2/callback?code=";
+
+
         /// <summary>
         /// 用户信息
         /// </summary>
@@ -40,7 +55,6 @@ namespace OpenFrp.Core.Libraries.Api
         public const string SoftwareSupport = $"{BaseUrl}/commonQuery/get?key=software";
         /// <summary>
         /// 用户隧道
-        /// </summary>
         public const string UserTunnels = $"{BaseUrl}/frp/api/getUserProxies";
         /// <summary>
         /// 节点列表

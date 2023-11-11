@@ -38,16 +38,44 @@ namespace OpenFrp.Launcher.Helper
         /// <summary>
         /// 登录且获得用户个人信息 
         /// </summary>
-        public static async ValueTask<ResponseBody.BaseResponse> LoginAndGetUserInfo(string? username,string? password,CancellationToken token = default)
+        public static async ValueTask<ResponseBody.BaseResponse?> LoginAndGetUserInfo(string? username,string? password,CancellationToken token = default)
         {
             try
             {
                 if (PipeClient?.IsConnected is true)
                 {
                     var loginResult = await ApiRequest.Login(username ?? "", password ?? "", token);
-                    if (loginResult.Success)
+                    if (loginResult.Code is System.Net.HttpStatusCode.OK)
                     {
+                        var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(ApiUrls.Authorize);
+
+                        if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
+                        {
+                            var vava = await ApiRequest.GET<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
+
+                            if (vava is not null && vava.Success && vava.Data is not null)
+                            {
+                                ApiRequest.SessionId = vava.Data.ToString();
+                            }
+                            else
+                            {
+                                return new ResponseBody.BaseResponse
+                                {
+                                    Message = $"[{vava?.Success}] {vava?.Message}",
+                                    Exception = vava?.Exception ?? null
+                                };
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseBody.BaseResponse
+                            {
+                                Message = $"[{oauthCode?.Code}] {oauthCode?.Message}",
+                            };
+                        }
+
                         var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo).WithCancalToken(token);
+
                         if (userinfoResult is null) { ApiRequest.ClearAuth(); return new("用户已取消操作。"); }
                         else if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
                         else
@@ -94,7 +122,10 @@ namespace OpenFrp.Launcher.Helper
                             }
                         }
                     }
-                    return loginResult;
+                    return new ResponseBody.BaseResponse
+                    {
+                        Message = $"[{loginResult.Code}]{loginResult.Message}"
+                    };
                 }
                 else
                 {

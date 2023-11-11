@@ -61,7 +61,14 @@ namespace OpenFrp.Launcher.ViewModels
                 };
                 dialog.PrimaryButtonClick += delegate { App.ExitAll(); };
                 await Task.Delay(1000);
-                await dialog.ShowDialogFixed();
+                try
+                {
+                    await dialog.ShowDialogFixed();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -260,6 +267,7 @@ namespace OpenFrp.Launcher.ViewModels
                             }
                         }
                     },
+                    IsPrimaryButtonEnabled = !Utils.LauncherVersion.Contains("bkupdate"),
                     DefaultButton = ContentDialogButton.Primary,
                     PrimaryButtonText = "下载并安装",
                     CloseButtonText = "取消"

@@ -27,12 +27,12 @@ namespace OpenFrp.Core
         /// <param name="args"></param>
         protected override async void OnStart(string[] args)
         {
-            // Debugger.Launch();
+            ///Debugger.Launch();
             
 
 
             await ConfigHelper.ReadConfig();
-            await Task.Delay(1000);
+            await Task.Delay(750);
 
             var server = new PipeServer();
             server.Start();
@@ -66,8 +66,8 @@ namespace OpenFrp.Core
                     NullValueHandling = NullValueHandling.Ignore
                 };
                 int tryCount = 0;
-                ResponseBody.BaseResponse response;
-                while (tryCount <= 5 && !(response = await TryLogin()).Success)
+                ResponseBody.BaseResponse? response;
+                while (tryCount <= 5 && !(response = await TryLogin())?.Success is true)
                 {
                     tryCount++;
                     LogHelper.Add(0, $"登录失败,重试 {tryCount} 次，共5次。等待 {5 * tryCount}s.", TraceLevel.Warning);
@@ -104,22 +104,53 @@ namespace OpenFrp.Core
 
         }
 
-        private async ValueTask<ResponseBody.BaseResponse> TryLogin()
+        private async ValueTask<ResponseBody.BaseResponse?> TryLogin()
         {
             var loginResult = await ApiRequest.Login(ConfigHelper.Instance.Account.UserName ?? "", ConfigHelper.Instance.Account.Password ?? "");
-            if (loginResult.Success)
+            if (loginResult.Code is System.Net.HttpStatusCode.OK)
             {
-                var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo);
-                if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
-                ApiRequest.UserInfo = userinfoResult.Data;
-                return new()
+                if (true)
                 {
-                    Success = true,
-                };
-            }
-            return loginResult;
-        }
+                    var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(ApiUrls.Authorize);
 
+                    if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
+                    {
+                        var vava = await ApiRequest.GETAny<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
+
+                        if (vava is not null && vava.Success && vava.Data is not null)
+                        {
+                            ApiRequest.SessionId = vava.Data.ToString();
+                        }
+                        else
+                        {
+                            return new ResponseBody.BaseResponse
+                            {
+                                Message = $"[{vava?.Success}] {vava?.Message}"
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseBody.BaseResponse
+                        {
+                            Message = $"[{oauthCode?.Code}] {oauthCode?.Message}"
+                        };
+                    }
+
+                    var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo);
+                    if (!userinfoResult.Success) { ApiRequest.ClearAuth(); return userinfoResult; }
+                    ApiRequest.UserInfo = userinfoResult.Data;
+                    return new()
+                    {
+                        Success = true,
+                    };
+                }
+            }
+            return new ResponseBody.BaseResponse
+            {
+                Message = $"[{loginResult.Code}]{loginResult.Message}"
+            };
+        }
         /// <summary>
         /// 当服务被关闭时
         /// </summary>

@@ -157,59 +157,60 @@ namespace OpenFrp.Launcher.ViewModels
                             await Task.Delay(250);
                         }
                         UserInfoListItems.Clear();
-                        new List<UserInfoListItem>()
-                {
-                    new()
-                    {
-                        Symbol = '\xe715',
-                        Title = "邮箱",
-                        Content = UserInfo.Email,
-                    },
-                    new()
-                    {
-                        Symbol = '\xe77b',
-                        Title = "昵称",
-                        Content = UserInfo.UserName,
-                    },
-                    new()
-                    {
-                        Symbol = '\xe8a4',
-                        Title = "隧道数",
-                        Content = $"{UserInfo.UsedProxies} / {UserInfo.MaxProxies}",
-                        ASRContent = $"已使用 {UserInfo.UsedProxies} 条,共可用 {UserInfo.MaxProxies} 条"
-                    },
-                    new()
-                    {
-                        Symbol = '\xeafc',
-                        Title = "可用流量",
-                        Content = $"{Math.Round(UserInfo.Traffic / 1024d,2)} Gib",
-                    },
-                    new()
-                    {
-                        Symbol = '\xe780',
-                        Title = "实名状态",
-                        Content = $"{(UserInfo.isRealname ? "已": "未")}实名",
-                    },
-                    new()
-                    {
-                        Symbol = '\xe902',
-                        Title = "所在组",
-                        Content = UserInfo.GroupCName,
-                    },
-                    new()
-                    {
-                        Symbol = '\xec05',
-                        Title = "带宽速率 (Mbps)",
-                        Content = $"{(UserInfo.InputLimit / (double)1024) * 8} / {(UserInfo.OutputLimit / (double)1024) * 8}",
-                        ASRContent = $"上行 {(UserInfo.InputLimit / (double)1024) * 8},下行 {(UserInfo.OutputLimit / (double)1024) * 8}"
-                    },
-                }.ForEach(x =>
-                {
-                    MainPage?.OfApp_UserInfoXLoader?.Dispatcher?.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
-                    {
-                        UserInfoListItems.Add(x);
-                    });
-                });
+                        var va = new List<UserInfoListItem>()
+                        {
+                            new()
+                            {
+                                Symbol = '\xe715',
+                                Title = "邮箱",
+                                Content = UserInfo.Email,
+                            },
+                            new()
+                            {
+                                Symbol = '\xe77b',
+                                Title = "昵称",
+                                Content = UserInfo.UserName,
+                            },
+                            new()
+                            {
+                                Symbol = '\xe8a4',
+                                Title = "隧道数",
+                                Content = $"{UserInfo.UsedProxies} / {UserInfo.MaxProxies}",
+                                ASRContent = $"已使用 {UserInfo.UsedProxies} 条,共可用 {UserInfo.MaxProxies} 条"
+                            },
+                            new()
+                            {
+                                Symbol = '\xeafc',
+                                Title = "可用流量",
+                                Content = $"{Math.Round(UserInfo.Traffic / 1024d,2)} Gib",
+                            },
+                            new()
+                            {
+                                Symbol = '\xe780',
+                                Title = "实名状态",
+                                Content = $"{(UserInfo.isRealname ? "已": "未")}实名",
+                            },
+                            new()
+                            {
+                                Symbol = '\xe902',
+                                Title = "所在组",
+                                Content = UserInfo.GroupCName,
+                            },
+                            new()
+                            {
+                                Symbol = '\xec05',
+                                Title = "带宽速率 (Mbps)",
+                                Content = $"{(UserInfo.InputLimit / (double)1024) * 8} / {(UserInfo.OutputLimit / (double)1024) * 8}",
+                                ASRContent = $"上行 {(UserInfo.InputLimit / (double)1024) * 8},下行 {(UserInfo.OutputLimit / (double)1024) * 8}"
+                            },
+                        };
+                        va.ForEach(x =>
+                        {
+                            MainPage?.OfApp_UserInfoXLoader?.Dispatcher?.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+                            {
+                                UserInfoListItems.Add(x);
+                            });
+                        });
                         if (!redownload) await Task.Delay(500);
                         else
                         {
@@ -219,8 +220,6 @@ namespace OpenFrp.Launcher.ViewModels
                                 await AppShareHelper.LoginAndGetUserInfo(ConfigHelper.Instance.Account.UserName, ConfigHelper.Instance.Account.Password);
                             }
                             else if (request.Success) ApiRequest.UserInfo = request.Data;
-
-
                         }
 
                         MainPage?.OfApp_UserInfoXLoader.ShowContent();
@@ -305,6 +304,7 @@ namespace OpenFrp.Launcher.ViewModels
             var response = await ApiRequest.GETAny<Awe.AppModel.Response.BaseResponse<Awe.AppModel.AppNews>>($"{ApiUrls.LauncherBaseUrl}api/news?query=openfrpLauncher");
             if (response != null && response.Success && response.Data != null)
             {
+                
                 if (response.Data.Content?.Data != null)
                 {
                     if (true)

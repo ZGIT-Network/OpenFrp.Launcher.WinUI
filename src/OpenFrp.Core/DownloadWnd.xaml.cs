@@ -179,7 +179,7 @@ namespace OpenFrp.Core
                             });
                             
                         }
-                        catch (System.ComponentModel.Win32Exception ex)
+                        catch (System.ComponentModel.Win32Exception)
                         {
                             Process.Start("https://docs.openfrp.net/use/desktop-launcher.html#%E5%8A%A0%E5%85%A5%E7%B3%BB%E7%BB%9F%E7%99%BD%E5%90%8D%E5%8D%95");
                             Environment.Exit(-1);

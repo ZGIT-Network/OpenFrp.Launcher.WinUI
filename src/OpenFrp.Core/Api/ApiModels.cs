@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
@@ -315,6 +317,33 @@ namespace OpenFrp.Core.Libraries.Api.Models
                 [JsonProperty("outLimit")]
                 public int OutputLimit { get; set; }
             }
+        }
+
+        public class AuthorizeData
+        {
+            [JsonProperty("code")]
+            public string? Code { get; set; }
+        }
+
+        public class OAuthResponse 
+        {
+            [JsonProperty("code")]
+            public HttpStatusCode Code { get; set; }
+
+            [JsonProperty("msg")]
+            public string? Message { get; set; }
+        }
+
+        public class OAuthResponse<T>
+        {
+            [JsonProperty("code")]
+            public HttpStatusCode Code { get; set; }
+
+            [JsonProperty("msg")]
+            public string? Message { get; set; }
+
+            [JsonProperty("data")]
+            public T? Data { get; set; }
         }
 
         /// <summary>

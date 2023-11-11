@@ -39,6 +39,8 @@ namespace OpenFrp.Launcher
     public partial class App : Application
     {
 
+        private static bool allowRestart = true;
+
         public static string? UserId { get; set; }
 
         internal static Process? deamon;
@@ -211,13 +213,6 @@ namespace OpenFrp.Launcher
                                         Command = ExitAllCommand
 
                                     },
-#if DEBUG
-                            new MenuItem
-                                    {
-                                        Header = "wwxxx",
-                                        Command = new RelayCommand(()=>throw new Exception())
-                                    }
-#endif
                         }
                     };
                     AppShareHelper.TaskbarIcon.ContextMenu.MinWidth = 150;
@@ -524,8 +519,11 @@ namespace OpenFrp.Launcher
                             deamon.EnableRaisingEvents = true;
                             deamon.Exited += async delegate
                             {
-                                await Task.Delay(1500);
-                                CheckDeamon();
+                                if (allowRestart)
+                                {
+                                    await Task.Delay(1500);
+                                    CheckDeamon();
+                                }
                             };
                         }
 
@@ -602,42 +600,50 @@ namespace OpenFrp.Launcher
         }
 
         [RelayCommand]
-        public static async void ExitLauncher()
+        public static async Task ExitLauncher()
         {
+            try { App.Current.MainWindow.Visibility = Visibility.Collapsed; }
+            catch { }
+
+            allowRestart = false;
+
             await ConfigHelper.Instance.WriteConfig(true);
+
             App.Current.Shutdown();
         }
 
         [RelayCommand]
-        public static void ExitAll()
+        public static async Task ExitAll()
         {
-            Task.Run(async () =>
-            {
-                var request_tun2 = new RequestBase()
-                {
-                    Action = RequestType.ClientGetRunningtunnelsid,
-                };
-                var response = await Helper.AppShareHelper.PipeClient.Request(request_tun2);
+            try { App.Current.MainWindow.Visibility = Visibility.Collapsed; }
+            catch { }
 
-                if (response.Success)
+            allowRestart = false;
+
+            var request_tun2 = new RequestBase()
+            {
+                Action = RequestType.ClientGetRunningtunnelsid,
+            };
+            var response = await Helper.AppShareHelper.PipeClient.Request(request_tun2);
+
+            if (response.Success)
+            {
+                ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+            }
+            else ConfigHelper.Instance.AutoStartupList = new int[0];
+            if (deamon is not null)
+                deamon.EnableRaisingEvents = false;
+            var resp = await AppShareHelper.PipeClient.Request(new()
+            {
+                Action = RequestType.ClientCloseIo
+            });
+            if (resp.Success)
+            {
+                if (ConfigHelper.Instance.IsServiceMode)
                 {
-                    ConfigHelper.Instance.AutoStartupList = response.RunningCount.ToArray();
+                    new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
                 }
-                else ConfigHelper.Instance.AutoStartupList = new int[0];
-                if (deamon is not null)
-                    deamon.EnableRaisingEvents = false;
-                var resp = await AppShareHelper.PipeClient.Request(new()
-                {
-                    Action = RequestType.ClientCloseIo
-                });
-                if (resp.Success)
-                {
-                    if (ConfigHelper.Instance.IsServiceMode)
-                    {
-                        new ProcessStartInfo("sc", "stop \"OpenFrp Launcher Service\"").RunAsUAC();
-                    }
-                }
-            }).GetAwaiter().GetResult();
+            }
 
 
             try
@@ -685,7 +691,7 @@ namespace OpenFrp.Launcher
             {
 
             }
-            ExitLauncher();
+            await ExitLauncher();
         }
 
         private void CheckMultiLauncher()
@@ -726,15 +732,22 @@ namespace OpenFrp.Launcher
         /// </summary>
         public async static ValueTask<ContentDialogResult> ShowDialogFixed(this ContentDialog dialog)
         {
-            if(App.Current?.MainWindow is Window wind)
+            try
             {
-                var dialogWind = ContentDialog.GetOpenDialog(wind);
-
-                if (dialog is not null)
+                if (App.Current?.MainWindow is Window wind)
                 {
-                    dialogWind?.Hide();
+                    var dialogWind = ContentDialog.GetOpenDialog(wind);
+
+                    if (dialog is not null)
+                    {
+                        dialogWind?.Hide();
+                    }
+                    return await dialog!.ShowAsync();
                 }
-                return await dialog!.ShowAsync();
+            }
+            catch
+            {
+
             }
             return ContentDialogResult.None;
         }
