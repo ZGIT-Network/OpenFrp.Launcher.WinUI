@@ -378,7 +378,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <ui:PersonPicture Height="40" />
+                                    <ui:PersonPicture Height="40" ProfilePicture="..\Resourecs\fav2023.jpg" />
                                     <!--  ProfilePicture="..\Resourecs\fav2023.jpg"  -->
                                 </Grid>
                                 <Grid Grid.Column="2">
@@ -386,6 +386,7 @@
                                         Padding="0,0,0,2"
                                         VerticalAlignment="Center"
                                         FontSize="12"
+                                        TextOptions.TextHintingMode="Animated"
                                         TextTrimming="CharacterEllipsis">
                                         <Run Text="{Binding UserInfo.UserName}" />
                                         <LineBreak />
@@ -402,11 +403,13 @@
                     Content="首页"
                     Icon="Home"
                     IsSelected="True"
-                    Tag="Home" />
+                    Tag="Home"
+                    TextOptions.TextHintingMode="Animated" />
                 <ui:NavigationViewItem
                     Content="隧道"
                     Icon="&#xe953;"
-                    Tag="Tunnels">
+                    Tag="Tunnels"
+                    TextOptions.TextHintingMode="Animated">
                     <ui:NavigationViewItem.Style>
                         <Style TargetType="ui:NavigationViewItem">
                             <Style.Triggers>
@@ -423,13 +426,20 @@
                 <ui:NavigationViewItem
                     Content="日志"
                     Icon="AlignLeft"
-                    Tag="Logs" />
+                    Tag="Logs"
+                    TextOptions.TextHintingMode="Animated" />
+                <ui:NavigationViewItem
+                    Content="新版本正在开发!"
+                    Icon="&#xED57;"
+                    Tag="NewTab"
+                    TextOptions.TextHintingMode="Animated" />
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem
                     Content="关于"
                     Icon="&#xE946;"
-                    Tag="About" />
+                    Tag="About"
+                    TextOptions.TextHintingMode="Animated" />
             </ui:NavigationView.FooterMenuItems>
             <ui:Frame x:Name="Of_nViewFrame" Source="./Home.xaml" />
         </ui:NavigationView>
@@ -486,7 +496,8 @@
                     <TextBlock
                         Padding="4,0,0,0"
                         FontSize="12"
-                        Text="OpenFrp Launcher 正式版" />
+                        Text="OpenFrp Launcher 正式版"
+                        TextOptions.TextHintingMode="Animated" />
                 </ui:SimpleStackPanel>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Top">

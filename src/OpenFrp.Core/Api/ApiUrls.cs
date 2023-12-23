@@ -25,14 +25,15 @@ namespace OpenFrp.Core.Libraries.Api
         /// <summary>
         /// OAuth (update on 2023-11-3)
         /// </summary>
-        public const string OAuthUrl = @"https://openid.17a.icu/";
+        public const string OAuthUrl = @"https://openid.17a.ink/";
         /// <summary>
         /// 登录
         /// </summary>
         public const string UserLogin = $"{OAuthUrl}/api/public/login";
         //public const string UserLogin = $"{BaseUrl}/user/login";
 
-        public const string Authorize = $"{OAuthUrl}/api/oauth2/authorize?response_type=code&redirect_uri=http:%2F%2Fconsole.openfrp.net%2Foauth_callback&client_id=openfrp";
+        public const string GetAuthorize = $"{BaseUrl}/oauth2/login";
+        //public const string Authorize = $"{OAuthUrl}/api/oauth2/authorize?response_type=code&redirect_uri=http:%2F%2Fconsole.openfrp.net%2Foauth_callback&client_id=openfrp";
 
         public const string OpenFrpCodeImpt = $"{BaseUrl}/oauth2/callback?code=";
 

@@ -111,30 +111,44 @@ namespace OpenFrp.Core
             {
                 if (true)
                 {
-                    var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(ApiUrls.Authorize);
+                    var ott = await ApiRequest.GETAny<ResponseBody.BaseResponse>(ApiUrls.GetAuthorize);
 
-                    if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
+                    if (ott is not null && ott.Success && ott.Data is string host)
                     {
-                        var vava = await ApiRequest.GETAny<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
 
-                        if (vava is not null && vava.Success && vava.Data is not null)
+                        // https://openid.17a.icu/oauth2/authorize?response_type=code&redirect_uri=http%3A%2F%2Fconsole.openfrp.net%2Foauth_callback&client_id=openfrp
+                        var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(host.Replace("/oauth2/authorize", "/api/oauth2/authorize"));
+
+                        if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
                         {
-                            ApiRequest.SessionId = vava.Data.ToString();
+                            var vava = await ApiRequest.GETAny<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
+
+                            if (vava is not null && vava.Success && vava.Data is not null)
+                            {
+                                ApiRequest.SessionId = vava.Data.ToString();
+                            }
+                            else
+                            {
+                                return new ResponseBody.BaseResponse
+                                {
+                                    Message = $"[{vava?.Success}] {vava?.Message}"
+                                };
+                            }
                         }
                         else
                         {
                             return new ResponseBody.BaseResponse
                             {
-                                Message = $"[{vava?.Success}] {vava?.Message}"
+                                Message = $"[{oauthCode?.Code}] {oauthCode?.Message}"
                             };
                         }
                     }
                     else
                     {
-                        return new ResponseBody.BaseResponse
+                        return ott ?? new ResponseBody.BaseResponse
                         {
-                            Message = $"[{oauthCode?.Code}] {oauthCode?.Message}"
-                        };
+                            Message = "Authorize Url 请求失败"
+                        }; ;
                     }
 
                     var userinfoResult = await ApiRequest.UniversalPOST<ResponseBody.UserInfoResponse>(ApiUrls.UserInfo);

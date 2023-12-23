@@ -331,6 +331,7 @@
                                                     Padding="0,12"
                                                     VerticalAlignment="Center"
                                                     FontSize="14"
+                                                    TextOptions.TextHintingMode="Animated"
                                                     TextWrapping="Wrap">
                                                     <Run Text="{Binding Title, StringFormat='{}{0}:'}" />
                                                     <Run Text="{Binding Content}" />

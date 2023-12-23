@@ -47,30 +47,44 @@ namespace OpenFrp.Launcher.Helper
                     var loginResult = await ApiRequest.Login(username ?? "", password ?? "", token);
                     if (loginResult.Code is System.Net.HttpStatusCode.OK)
                     {
-                        var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(ApiUrls.Authorize);
+                        var ott = await ApiRequest.GETAny<ResponseBody.BaseResponse>(ApiUrls.GetAuthorize);
 
-                        if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
+                        if (ott is not null && ott.Success && ott.Data is string host)
                         {
-                            var vava = await ApiRequest.GET<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
 
-                            if (vava is not null && vava.Success && vava.Data is not null)
+                            var oauthCode = await ApiRequest.GETAny<ResponseBody.OAuthResponse<ResponseBody.AuthorizeData>>(
+                                host.Replace("/oauth2/authorize", "/api/oauth2/authorize")
+                                .Replace("https://of-dev-api.bfsea.xyz/oauth_callback", "https%3A%2F%2Fof-dev-api.bfsea.xyz%2Foauth_callback"));
+
+                            if (oauthCode is not null && oauthCode.Code is System.Net.HttpStatusCode.OK)
                             {
-                                ApiRequest.SessionId = vava.Data.ToString();
+                                var vava = await ApiRequest.GET<ResponseBody.BaseResponse>($"{ApiUrls.OpenFrpCodeImpt}{oauthCode.Data?.Code}");
+
+                                if (vava is not null && vava.Success && vava.Data is not null)
+                                {
+                                    ApiRequest.SessionId = vava.Data.ToString();
+                                }
+                                else
+                                {
+                                    return new ResponseBody.BaseResponse
+                                    {
+                                        Message = $"[{vava?.Success}] {vava?.Message}",
+                                        Exception = vava?.Exception ?? null
+                                    };
+                                }
                             }
                             else
                             {
                                 return new ResponseBody.BaseResponse
                                 {
-                                    Message = $"[{vava?.Success}] {vava?.Message}",
-                                    Exception = vava?.Exception ?? null
+                                    Message = $"[{oauthCode?.Code}] {oauthCode?.Message}",
                                 };
                             }
                         }
-                        else
-                        {
-                            return new ResponseBody.BaseResponse
+                        else {
+                            return ott ?? new ResponseBody.BaseResponse
                             {
-                                Message = $"[{oauthCode?.Code}] {oauthCode?.Message}",
+                                Message = "Authorize Url 请求失败"
                             };
                         }
 

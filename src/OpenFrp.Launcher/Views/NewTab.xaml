@@ -1,0 +1,40 @@
+﻿<ofc:ViewPage
+    x:Class="OpenFrp.Launcher.Views.NewTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OpenFrp.Launcher.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ofc="clr-namespace:OpenFrp.Launcher.Controls"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="OpenFrp 感谢有你"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Style="{StaticResource LauncherCustomPageControl}"
+    mc:Ignorable="d">
+
+    <ui:SimpleStackPanel Margin="0,8,0,16" Spacing="10">
+        <TextBlock FontSize="18" TextWrapping="Wrap">
+            感谢您使用 OpenFrp Launcher。本项目从 2022-7 至今已已重构三个版本，为你不断增加体验！<LineBreak />
+            但是，我们仍有许多不足，需要您用 &quot;键盘&quot; 帮我们提供建议。</TextBlock>
+        <ui:HyperlinkButton NavigateUri="https://wj.qq.com/s2/13389890/3b38/">问卷调查!</ui:HyperlinkButton>
+        <Grid
+            MaxWidth="1000"
+            HorizontalAlignment="Left"
+            ui:ClipHelper.CornerRadius="4">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <Trigger Property="ui:ThemeManager.ActualTheme" Value="Light">
+                            <Setter Property="Background" Value="Black" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Image
+                Margin="0,0,-4,0"
+                Source="..\Resourecs\SnoopScreenshot_windHost_300_dark.png"
+                Stretch="UniformToFill" />
+        </Grid>
+    </ui:SimpleStackPanel>
+</ofc:ViewPage>

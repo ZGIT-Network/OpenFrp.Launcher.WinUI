@@ -50,6 +50,7 @@ namespace OpenFrp.Launcher.Views
                             "Tunnels" => typeof(Views.Tunnels),
                             "Logs" => typeof(Views.Logs),
                             "About" => typeof(Views.About),
+                            "NewTab" => typeof(Views.NewTab),
                             _ => null
                         };
                     })(),

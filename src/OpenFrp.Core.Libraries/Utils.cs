@@ -55,7 +55,7 @@ namespace OpenFrp.Core
         /// <summary>
         /// 启动器版本
         /// </summary>
-        public static string LauncherVersion { get => "of.launcher.relVer+3.9.8_fix1"; }//_devNight@1
+        public static string LauncherVersion { get => "of.launcher.relVer+3.9.8_fix8"; }//_devNight@1
 
         private static string Platform()
         {

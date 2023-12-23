@@ -64,7 +64,10 @@
             </ui:HyperlinkButton>
         </Grid>
         <Grid Margin="-4,0,0,8">
-            <ListView IsHitTestVisible="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView
+                IsHitTestVisible="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                TextOptions.TextHintingMode="Animated">
 
                 <ListViewItem>
                     <StackPanel>
@@ -117,7 +120,7 @@
                     Orientation="Horizontal"
                     Spacing="12">
                     <ui:FontIcon FontSize="24" Glyph="&#xe8c7;" />
-                    <TextBlock VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center" TextOptions.TextHintingMode="Animated">
                         <Run Text="赞助我们" />
                         <LineBreak />
                         <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="共享更好的服务" />
@@ -134,7 +137,7 @@
                             NavigateUri="https://afdian.net/a/zgitnetwork">
                             <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                 <ui:FontIcon FontSize="24" Glyph="&#xeb41;" />
-                                <TextBlock VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" TextOptions.TextHintingMode="Animated">
                                     <Run Text="在爱发电上" />
                                     <LineBreak />
                                     <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="https://afdian.net/a/zgitnetwork" />
@@ -148,7 +151,7 @@
                             NavigateUri="https://www.openfrp.net/home/addon">
                             <ui:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                 <ui:FontIcon FontSize="24" Glyph="&#xebd2;" />
-                                <TextBlock VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" TextOptions.TextHintingMode="Animated">
                                     <Run Text="参与增值服务" />
                                     <LineBreak />
                                     <Run Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Text="他人受益,自己也受益。" />
@@ -159,7 +162,8 @@
                     <TextBlock
                         Margin="8,12"
                         Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                        Text="特此谢明: SakuraFrp Launcher" />
+                        Text="特此谢明: SakuraFrp Launcher"
+                        TextOptions.TextHintingMode="Animated" />
                 </ui:SimpleStackPanel>
             </Grid>
         </ofc:Expander>

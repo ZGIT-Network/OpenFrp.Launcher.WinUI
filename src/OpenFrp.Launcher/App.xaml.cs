@@ -110,6 +110,7 @@ namespace OpenFrp.Launcher
                         Arguments = $"-v",
                         UseShellExecute = false,
                         CreateNoWindow = true,
+                        StandardOutputEncoding = System.Text.Encoding.UTF8,
                         RedirectStandardOutput = true
                     });
 

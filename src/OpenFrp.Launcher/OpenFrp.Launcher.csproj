@@ -17,6 +17,7 @@
 	  <None Remove="Resourecs\fav2023.jpg" />
 	  <None Remove="Resourecs\previewImage.jpg" />
 	  <None Remove="Resourecs\SEGOEICONS.TTF" />
+	  <None Remove="Resourecs\SnoopScreenshot_windHost_300_dark.png" />
 	  <None Remove="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -58,6 +59,7 @@
 	<ItemGroup>
 	  <Resource Include="Resourecs\previewImage.jpg" />
 	  <Resource Include="Resourecs\SEGOEICONS.TTF" />
+	  <Resource Include="Resourecs\SnoopScreenshot_windHost_300_dark.png" />
 	  <Resource Include="Resourecs\winui.png" />
 	</ItemGroup>
 	<ItemGroup>
